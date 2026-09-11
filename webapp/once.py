@@ -71,7 +71,18 @@ def main():
                   f"{journal.floor_bar(now):%Y-%m-%dT%H:%MZ} already decided — nothing to do")
         return 0
     strat = get(a.strategy)()
-    broker = make_broker(a.equity)
+    try:
+        broker = make_broker(a.equity)
+    except PermissionError as e:
+        # The state every new install is in for its first hour: the schedule is
+        # already firing and .env is still blank. A traceback every hour reads
+        # like a broken bot rather than an unfinished setup.
+        print(f"{now:%Y-%m-%dT%H:%M:%SZ}  cannot start: {e}\n"
+              f"  Put your TESTNET key and secret in .env "
+              f"(BINANCE_TEST_KEY / BINANCE_TEST_SECRET) and this will run.\n"
+              f"  Get them at testnet.binancefuture.com. Nothing is placed until "
+              f"you also pass --arm.", file=sys.stderr)
+        return 3
     plan = engine.plan_orders(strat, broker, a.equity, a.risk)
 
     # And again against the bar the DATA actually landed on, which is not always
