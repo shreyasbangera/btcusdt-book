@@ -41,7 +41,7 @@ def run(store, *args):
 def main():
     from webapp import journal
     store = pathlib.Path(tempfile.mkdtemp(prefix="laptop-"))
-    bar = journal.floor_bar(dt.datetime.now(UTC))
+    bar = journal.decision_bar(dt.datetime.now(UTC))
     synth_panels(store, bar)
     (store / "v7_plan.json").write_bytes((ROOT / "plans/v7_plan.json").read_bytes())
     print(f"  --  store {store}, bar {bar:%Y-%m-%dT%H:%MZ}")

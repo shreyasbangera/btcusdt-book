@@ -65,10 +65,10 @@ def main():
     # currently inside has already been traded, there is nothing to do and no
     # reason to touch the exchange.
     now = dt.datetime.now(dt.timezone.utc)
-    if a.once_per_bar and journal.decided(config.STORE, journal.floor_bar(now)):
+    if a.once_per_bar and journal.decided(config.STORE, journal.decision_bar(now)):
         if not a.json:
             print(f"{now:%Y-%m-%dT%H:%M:%SZ}  bar "
-                  f"{journal.floor_bar(now):%Y-%m-%dT%H:%MZ} already decided — nothing to do")
+                  f"{journal.decision_bar(now):%Y-%m-%dT%H:%MZ} already decided — nothing to do")
         return 0
     strat = get(a.strategy)()
     try:

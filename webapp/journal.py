@@ -47,6 +47,16 @@ def floor_bar(t):
                      minute=0, second=0, microsecond=0)
 
 
+def decision_bar(t):
+    """The bar a run at time t decides on: the last one that has CLOSED.
+
+    Bars are named by their OPEN time, so at 20:03 the bar named 12:00 is still
+    being built and the newest decidable bar is the one named 00:00. Getting
+    this wrong by one bar is how the bot came to trade on half-formed data.
+    """
+    return floor_bar(t) - dt.timedelta(hours=BAR_HOURS)
+
+
 def expected(first, last):
     """Every 12h bar from first to last inclusive."""
     out, b = [], floor_bar(first)
@@ -139,7 +149,7 @@ def coverage(store, now=None):
     # months later the record still has to distinguish "I had not armed it yet"
     # from "my laptop was shut".
     dry = {b for b, s, r in bars if not s and "not armed" in r} - did
-    first, last = min(ran), floor_bar(now)
+    first, last = min(ran), decision_bar(now)
     exp = expected(first, last)
     exps = set(exp)
     missed = [b for b in exp if b not in did and b not in dry]

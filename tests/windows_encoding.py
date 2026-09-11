@@ -54,7 +54,7 @@ def main():
     import synth
     from webapp import journal
     store = pathlib.Path(tempfile.mkdtemp(prefix="wincp-"))
-    bar = journal.floor_bar(dt.datetime.now(dt.timezone.utc))
+    bar = journal.decision_bar(dt.datetime.now(dt.timezone.utc))
     synth.write(store, bar)
     (store / "v7_plan.json").write_bytes((ROOT / "plans/v7_plan.json").read_bytes())
 

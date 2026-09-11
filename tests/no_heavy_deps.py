@@ -70,8 +70,8 @@ def main():
     # way through build_signals().
     sys.path.insert(0, str(ROOT / "tests"))
     import synth, datetime as dtm
-    bar = dtm.datetime.now(dtm.timezone.utc).replace(minute=0, second=0, microsecond=0)
-    bar = bar.replace(hour=0 if bar.hour < 12 else 12)
+    from webapp import journal
+    bar = journal.decision_bar(dtm.datetime.now(dtm.timezone.utc))
     g, m4 = synth.write(store, bar)
     (pathlib.Path(store) / "v7_plan.json").write_bytes(
         (ROOT / "plans/v7_plan.json").read_bytes())
