@@ -35,7 +35,7 @@ scratch. Then:
 
 * `webapp/ACTIONS.md` — the twice-daily bot on GitHub Actions
 * `webapp/DEPLOY.md` — putting the dashboard on a URL
-* `webapp/PAPER_TRADING.md` — judging the strategy before risking anything
+* `live/PAPER_TRADING.md` — judging the strategy before risking anything
 * `live/V7.md` — how the three-sleeve book works in one account
 
 ```bash
