@@ -313,8 +313,9 @@ def _update_from_archive(a, g_old, m_old):
     g_new, _ = assemble(k12, cm12, hourly, funding_series("BTCUSDT", months), m)
     g = (pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last")
            .sort_values("dt").reset_index(drop=True))
-    panelstore.write(drop_unclosed(g, "12h"), STORE, "panel_12h")
-    panelstore.write(drop_unclosed(m, "4h"), STORE, "panel_4h")
+    g, m = drop_unclosed(g, "12h"), drop_unclosed(m, "4h")
+    panelstore.write(g, STORE, "panel_12h")
+    panelstore.write(m, STORE, "panel_4h")
     # from the bar's CLOSE: dt is the OPEN time, so a just-closed 12h bar is
     # labelled 12 hours ago and would otherwise always look stale
     lag = ((pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds() / 3600) - 12
@@ -372,8 +373,9 @@ def main():
         print(f"positioning metrics: {len(mdays)} daily files", flush=True)
         metrics4 = archive_metrics("BTCUSDT", mdays)
         g, m4 = assemble(k12, cm12, hourly, funding, metrics4)
-        panelstore.write(drop_unclosed(g, "12h"), STORE, "panel_12h")
-        panelstore.write(drop_unclosed(m4, "4h"), STORE, "panel_4h")
+        g, m4 = drop_unclosed(g, "12h"), drop_unclosed(m4, "4h")
+        panelstore.write(g, STORE, "panel_12h")
+        panelstore.write(m4, STORE, "panel_4h")
         print(f"wrote {len(g)} 12h rows and {len(m4)} 4h rows to {STORE}")
         print(f"\npositioning covers {(m4.dt.max() - m4.dt.min()).days} days, against the "
               f"80 the 480-bar z-scores need.")
@@ -396,7 +398,8 @@ def main():
             return _update_from_archive(a, g_old, m_old)
         m = pd.concat([m_old, m_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
-        panelstore.write(drop_unclosed(m, "4h"), STORE, "panel_4h")
+        m = drop_unclosed(m, "4h")
+        panelstore.write(m, STORE, "panel_4h")
         k12 = rest_klines("BTCUSDT","12h"); cm12 = rest_klines("BTCUSD_PERP","12h",
                                                                base=DAPI, path="/dapi/v1/klines")
         hourly = {"BTCUSDT": rest_klines("BTCUSDT","1h").set_index("dt")["quote_volume"]}
@@ -408,8 +411,12 @@ def main():
         g_new, _ = assemble(k12, cm12, hourly, rest_funding(), m)
         g = pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
-        panelstore.write(drop_unclosed(g, "12h"), STORE, "panel_12h")
-        print(f"12h panel now {len(g)} rows to {g.dt.max()};  4h panel {len(m)} rows to {m.dt.max()}")
+        g = drop_unclosed(g, "12h")
+        panelstore.write(g, STORE, "panel_12h")
+        lag = ((pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds()
+               / 3600) - 12
+        print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h past its "
+              f"close);  4h panel {len(m)} rows to {m.dt.max()}")
 
 if __name__ == "__main__":
     main()
