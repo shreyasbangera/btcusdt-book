@@ -187,11 +187,12 @@ Then compare against the backtest, in this order:
 
 ## Two things that will go wrong
 
-**The positioning runway.** `s_posn` uses 80 days of 4-hour history and the REST
-endpoint serves about 30. Until you have backfilled from the archive's
-`futures/um/daily/metrics` files, that signal is quietly wrong — not missing,
-*wrong*, which is worse. Check `runner.py verify` shows a plausible `posn` before
-trusting anything.
+**The positioning runway — fixed, but check it anyway.** `s_posn` uses 80 days of
+4-hour history and the REST endpoint serves about 30. Seeding now reads it from
+the archive instead, so a fresh store starts with the full history. Still confirm
+`runner.py verify` shows a plausible `posn` rather than `0.000`: that signal
+treats NaN as zero, so too little history looks like "no opinion" rather than an
+error — which is the failure mode worth catching.
 
 **Missed bars.** If your machine is asleep at 00:05 UTC you miss a decision. The
 backtest never misses one. A week of missed bars makes the comparison
