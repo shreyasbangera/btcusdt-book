@@ -1,12 +1,11 @@
-# Runtime dependencies, derived by walking the imports of the three entry
-# points: webapp/app.py, webapp/once.py and live/v7_select.py.
+# What the TWICE-DAILY BOT needs, and nothing else.
 #
-# numba is not optional. The quarterly selection runs 200 real backtests through
-# engine/core.py, which is a numba-jitted loop - a webapp-only requirements file
-# leaves the bot able to fetch data and unable to decide anything.
+# Verified by walking the imports of webapp/once.py: the decision path never
+# touches engine/core.py, so numba is not needed to run the bot. That is worth
+# knowing - it means the always-on machine can be very small.
+#
+# The quarterly selection is heavier and runs elsewhere; see
+# requirements-research.txt.
 pandas>=2.2
 numpy>=1.26
-pyarrow>=14
-numba>=0.60          # must support the numpy above; keep the two in step
-fastapi>=0.110
-uvicorn>=0.27
+pyarrow>=14          # parquet panels

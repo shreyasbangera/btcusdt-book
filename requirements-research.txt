@@ -1,0 +1,5 @@
+# Everything above, plus what the RESEARCH side needs: the numba backtest loop
+# behind the quarterly selection, the registry and every strategy in
+# strategies/. Only needed on the machine that re-selects each quarter.
+-r requirements.txt
+numba>=0.60          # must support the numpy above; keep the two in step

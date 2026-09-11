@@ -1,0 +1,4 @@
+# The optional dashboard. The bot does not need it.
+-r requirements.txt
+fastapi>=0.110
+uvicorn>=0.27
