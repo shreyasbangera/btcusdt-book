@@ -21,17 +21,28 @@ def _decision_bar(panels):
     return pd.Timestamp(df.dt.iloc[-1]).tz_convert("UTC")
 
 
-def _bar_age(panels):
-    """Hours between the last decision bar and now.
+def _bar_step(panels):
+    """The panel's own bar length, rather than a hardcoded 12h."""
+    df = panels.get("panel_12h")
+    if df is None or len(df) < 3:
+        return pd.Timedelta(hours=12)
+    return pd.Series(df.dt).diff().median()
 
-    The book decides on 12h bars, so anything past ~12-24h means the data feed
-    is behind and the decision is being made on stale prices. Worth printing
-    every run rather than discovering it in the P&L.
+
+def _bar_age(panels):
+    """Hours since the decision bar CLOSED.
+
+    Measured from the CLOSE, not the label. Binance labels a bar by its OPEN
+    time, so a bar labelled 12:00 covers 12:00-24:00 and is only decidable
+    after 24:00. Measuring from the label made a bar that had just closed look
+    12 hours old, and a bar still forming look fresh - the exact inversion of
+    what the guard is for.
     """
     bar = _decision_bar(panels)
     if bar is None:
         return None
-    return round((pd.Timestamp.now("UTC") - bar).total_seconds() / 3600, 1)
+    close = bar + _bar_step(panels)
+    return round((pd.Timestamp.now("UTC") - close).total_seconds() / 3600, 1)
 
 
 def load_panels(names):
@@ -89,10 +100,15 @@ def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
                        if conflict else ""))
 
 
-# One 12h bar plus an hour of slack. In normal operation the run fires five
-# minutes after a bar closes, so the age is near zero; anything past 13h means a
-# whole decision bar was missed. 24h was the first value here and it was useless:
-# the archive fallback lags 22-23h, which sailed under it.
+# Hours since the decision bar CLOSED. In normal operation the run fires within
+# the hour after a close, so the age is near zero; past 13h the next bar has
+# already closed too and this one is history.
+#
+# Two earlier versions of this were wrong in opposite directions. 24h was
+# useless because the archive fallback lags 22-23h and sailed under it. Then the
+# age was measured from the bar's LABEL, which is its OPEN time - so a bar that
+# had just closed read as 12h old and a bar still forming read as fresh, which
+# is precisely backwards.
 MAX_BAR_AGE_HOURS = 13.0
 
 
@@ -110,6 +126,17 @@ def execute(plan, broker, armed: bool, max_bar_age=MAX_BAR_AGE_HOURS):
     if plan["conflict"]:
         return dict(sent=False, reason=plan["conflict_note"])
     age = plan.get("bar_age_hours")
+    if age is not None and age < 0:
+        # A negative age means the last row in the panel is a bar that has not
+        # closed yet. That should be impossible - live/fetch.py drops the
+        # forming bar from every feed - but if one ever gets in, its signals are
+        # computed on half a bar and change with the clock. Refusing is the only
+        # safe answer, and a panel written before that fix looks exactly like
+        # this until the bar closes.
+        return dict(sent=False, reason=(
+            f"the last panel bar has not closed yet ({-age:.0f}h to go). Its "
+            f"values are still moving, so any decision from it is not the "
+            f"backtest's. Run `python live/fetch.py update` to clean the panel."))
     if age is not None and age > max_bar_age:
         return dict(sent=False, reason=(
             f"data is {age:.0f}h old (limit {max_bar_age:.0f}h). The decision bar "

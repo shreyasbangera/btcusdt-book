@@ -201,13 +201,45 @@ def archive_metrics(sym, days):
     return d[["dt", "tt_pos", "tt_acct", "retail_acct"]]
 
 
+TF_HOURS = {"1m": 1/60, "5m": 1/12, "15m": .25, "30m": .5, "1h": 1, "2h": 2,
+            "4h": 4, "6h": 6, "8h": 8, "12h": 12, "1d": 24}
+
+
+def drop_unclosed(d, tf, now=None):
+    """Remove the bar that is still forming.
+
+    THIS IS NOT COSMETIC. Binance klines are labelled by OPEN time and the list
+    always ends with the CURRENT, INCOMPLETE bar. The archive never contains
+    one, so a seeded panel is clean and a REST top-up silently is not.
+
+    The book decides on a CLOSED 12h bar and the backtest acts at the open of
+    the next one. Leaving the forming bar in makes the live bot compute its
+    signals on half a bar - and worse, on a DIFFERENT half depending on what
+    time the machine happened to wake, so two laptops running the same book
+    take different positions. That is not a small error in V7; it is a
+    different strategy with no backtest behind it.
+
+    Observed in the wild: a run at 19:53 UTC returned a flat target and a run
+    at 20:03 UTC on the same 12h bar returned +0.022, because a new 4h
+    positioning bucket had landed inside the unclosed bar.
+    """
+    if not len(d):
+        return d
+    h = TF_HOURS.get(tf)
+    if h is None:
+        return d
+    now = pd.Timestamp.now("UTC") if now is None else pd.Timestamp(now)
+    return d[d.dt + pd.Timedelta(hours=h) <= now].reset_index(drop=True)
+
+
 def rest_klines(sym, tf, limit=1500, base=FAPI, path="/fapi/v1/klines"):
     j = json.loads(curl(f"{base}{path}?symbol={sym}&interval={tf}&limit={limit}"))
     d = pd.DataFrame(j, columns=KL[:len(j[0])])
     d["dt"] = pd.to_datetime(d.open_time, unit="ms", utc=True)
     for c in ("open","high","low","close","volume","quote_volume","taker_buy_base"):
         d[c] = pd.to_numeric(d[c], errors="coerce")
-    return d[["dt","open","high","low","close","volume","quote_volume","taker_buy_base"]]
+    d = d[["dt","open","high","low","close","volume","quote_volume","taker_buy_base"]]
+    return drop_unclosed(d, tf)
 
 def rest_metrics(sym="BTCUSDT", period="4h", limit=500):
     """Positioning ratios.  ~30 days of history is all these endpoints return."""
@@ -221,7 +253,11 @@ def rest_metrics(sym="BTCUSDT", period="4h", limit=500):
             .merge(ga[["timestamp","retail_acct"]], on="timestamp")
     out["dt"] = pd.to_datetime(out.timestamp, unit="ms", utc=True).dt.floor("4h")
     for c in ("tt_pos","tt_acct","retail_acct"): out[c] = pd.to_numeric(out[c], errors="coerce")
-    return out[["dt","tt_pos","tt_acct","retail_acct"]].sort_values("dt").reset_index(drop=True)
+    out = out[["dt","tt_pos","tt_acct","retail_acct"]].sort_values("dt").reset_index(drop=True)
+    # The current 4h bucket is partial for the same reason the klines are, and
+    # it is the one that feeds the positioning composite - so it moves the
+    # signal mid-bar. See drop_unclosed().
+    return drop_unclosed(out, period)
 
 def rest_funding(sym="BTCUSDT", limit=1000):
     j = json.loads(curl(f"{FAPI}/fapi/v1/fundingRate?symbol={sym}&limit={limit}"))
@@ -277,12 +313,14 @@ def _update_from_archive(a, g_old, m_old):
     g_new, _ = assemble(k12, cm12, hourly, funding_series("BTCUSDT", months), m)
     g = (pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last")
            .sort_values("dt").reset_index(drop=True))
-    panelstore.write(g, STORE, "panel_12h")
-    panelstore.write(m, STORE, "panel_4h")
-    lag = (pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds() / 3600
-    print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h behind now); "
+    panelstore.write(drop_unclosed(g, "12h"), STORE, "panel_12h")
+    panelstore.write(drop_unclosed(m, "4h"), STORE, "panel_4h")
+    # from the bar's CLOSE: dt is the OPEN time, so a just-closed 12h bar is
+    # labelled 12 hours ago and would otherwise always look stale
+    lag = ((pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds() / 3600) - 12
+    print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h past its close); "
           f"4h panel {len(m)} rows to {m.dt.max()}")
-    if lag > 30:
+    if lag > 18:          # from the CLOSE now, so 18h is already a bar behind
         print("WARNING: the panel is more than a day old. The archive publishes "
               "yesterday's file each morning; if this keeps growing, the data "
               "source is stale and the decisions are not current.")
@@ -334,8 +372,8 @@ def main():
         print(f"positioning metrics: {len(mdays)} daily files", flush=True)
         metrics4 = archive_metrics("BTCUSDT", mdays)
         g, m4 = assemble(k12, cm12, hourly, funding, metrics4)
-        panelstore.write(g, STORE, "panel_12h")
-        panelstore.write(m4, STORE, "panel_4h")
+        panelstore.write(drop_unclosed(g, "12h"), STORE, "panel_12h")
+        panelstore.write(drop_unclosed(m4, "4h"), STORE, "panel_4h")
         print(f"wrote {len(g)} 12h rows and {len(m4)} 4h rows to {STORE}")
         print(f"\npositioning covers {(m4.dt.max() - m4.dt.min()).days} days, against the "
               f"80 the 480-bar z-scores need.")
@@ -358,7 +396,7 @@ def main():
             return _update_from_archive(a, g_old, m_old)
         m = pd.concat([m_old, m_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
-        panelstore.write(m, STORE, "panel_4h")
+        panelstore.write(drop_unclosed(m, "4h"), STORE, "panel_4h")
         k12 = rest_klines("BTCUSDT","12h"); cm12 = rest_klines("BTCUSD_PERP","12h",
                                                                base=DAPI, path="/dapi/v1/klines")
         hourly = {"BTCUSDT": rest_klines("BTCUSDT","1h").set_index("dt")["quote_volume"]}
@@ -370,7 +408,7 @@ def main():
         g_new, _ = assemble(k12, cm12, hourly, rest_funding(), m)
         g = pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
-        panelstore.write(g, STORE, "panel_12h")
+        panelstore.write(drop_unclosed(g, "12h"), STORE, "panel_12h")
         print(f"12h panel now {len(g)} rows to {g.dt.max()};  4h panel {len(m)} rows to {m.dt.max()}")
 
 if __name__ == "__main__":

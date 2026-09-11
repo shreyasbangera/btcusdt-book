@@ -119,24 +119,35 @@ def coverage(store, now=None):
     """
     now = now or dt.datetime.now(dt.timezone.utc)
     es = entries(store)
+    blank = dict(empty=True, first=None, last=None, expected=0, sent=0, ran=0,
+                 missed=[], dry=[], pct=0.0)
     if not es:
-        return dict(empty=True, first=None, last=None, expected=0,
-                    sent=0, ran=0, missed=[], pct=0.0)
+        return blank
 
-    bars = [(_parse(e.get("bar")), bool(e.get("sent"))) for e in es]
-    bars = [(b, s) for b, s in bars if b is not None]
+    bars = [(_parse(e.get("bar")), bool(e.get("sent")), str(e.get("reason", "")))
+            for e in es]
+    bars = [t for t in bars if t[0] is not None]
     if not bars:
-        return dict(empty=True, first=None, last=None, expected=0,
-                    sent=0, ran=0, missed=[], pct=0.0)
+        return blank
 
-    ran = {b for b, _ in bars}
-    did = {b for b, s in bars if s}
+    ran = {b for b, _, _ in bars}
+    did = {b for b, s, _ in bars if s}
+    # A bar you deliberately did not trade is not a bar you MISSED. While the
+    # bot is unarmed every run reports "not armed", and counting those as
+    # misses made a correct dry run print "0/1 bars decided (0%) - 1 MISSED",
+    # which reads like a broken bot on day one. Worth separating permanently:
+    # months later the record still has to distinguish "I had not armed it yet"
+    # from "my laptop was shut".
+    dry = {b for b, s, r in bars if not s and "not armed" in r} - did
     first, last = min(ran), floor_bar(now)
     exp = expected(first, last)
-    missed = [b for b in exp if b not in did]
+    exps = set(exp)
+    missed = [b for b in exp if b not in did and b not in dry]
+    live = len(exps) - len(dry & exps)          # bars where trading was intended
     return dict(empty=False, first=first, last=last, expected=len(exp),
-                sent=len(did & set(exp)), ran=len(ran & set(exp)),
-                missed=missed, pct=100.0 * len(did & set(exp)) / max(len(exp), 1))
+                sent=len(did & exps), ran=len(ran & exps),
+                missed=missed, dry=sorted(dry & exps),
+                pct=100.0 * len(did & exps) / max(live, 1))
 
 
 def summary_line(store, now=None):
@@ -144,10 +155,14 @@ def summary_line(store, now=None):
     c = coverage(store, now)
     if c["empty"]:
         return "  record: this is the first entry"
-    n = len(c["missed"])
+    n, nd = len(c["missed"]), len(c["dry"])
+    live = c["expected"] - nd
+    if live == 0:
+        return f"  record: {nd} bar{'s' if nd != 1 else ''} so far, all dry runs — nothing armed yet"
+    tail = f", {nd} dry run{'s' if nd != 1 else ''}" if nd else ""
     if n == 0:
-        return f"  record: {c['sent']}/{c['expected']} bars decided — complete"
-    return (f"  record: {c['sent']}/{c['expected']} bars decided ({c['pct']:.0f}%)"
+        return f"  record: {c['sent']}/{live} bars decided — complete{tail}"
+    return (f"  record: {c['sent']}/{live} bars decided ({c['pct']:.0f}%){tail}"
             f" — {n} MISSED, see `python -m webapp.journal`")
 
 
@@ -156,11 +171,17 @@ def report(store, now=None):
     if c["empty"]:
         return (f"No decisions recorded yet in {path(store)}.\n"
                 f"The record starts with the first run.")
+    live = c["expected"] - len(c["dry"])
     out = [f"record      {path(store)}",
            f"from        {c['first']:%Y-%m-%d %H:%MZ}",
            f"to          {c['last']:%Y-%m-%d %H:%MZ}",
-           f"bars        {c['expected']} expected, {c['ran']} ran, {c['sent']} decided",
-           f"coverage    {c['pct']:.1f}%"]
+           f"bars        {c['expected']} expected, {c['ran']} ran, {c['sent']} decided"
+           + (f", {len(c['dry'])} dry run (not armed)" if c["dry"] else ""),
+           f"coverage    {c['pct']:.1f}% of the {live} bars you meant to trade"]
+    if live == 0:
+        return "\n".join(out + ["", "Nothing was armed in this range, so there is "
+                                "no trading record yet - only proof the machine "
+                                "was awake."])
     if c["missed"]:
         out += ["", f"{len(c['missed'])} bars with no decision. Any conclusion you draw "
                     f"from the P&L is about", "these bars being absent as much as about "

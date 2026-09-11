@@ -225,6 +225,10 @@ Only after you have watched a few dry runs and they look sane.
   .\deploy\laptop-setup.ps1 -Arm
   ```
   To go back to a dry run, run it again without `-Arm`.
+
+  That arms the **scheduled task**. A run you start by hand is still a dry run
+  unless you say so — `.\deploy\run.ps1 -Arm`. Deliberate: typing `run.ps1` to
+  look at something should never place an order.
 * **macOS / Linux:** `crontab -e`, and append ` --arm` to the `run.sh` line.
 
 Start at `BOT_RISK=0.08`, which is what the `.env` already says. At that setting

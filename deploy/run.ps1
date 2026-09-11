@@ -47,11 +47,28 @@ $py  = Join-Path $Root ".venv\Scripts\python.exe"
 $log = Join-Path $Root "book.log"
 if (-not (Test-Path $py)) { throw "no virtualenv at $py - run deploy\laptop-setup.ps1 first" }
 
-"--- {0:yyyy-MM-ddTHH:mm:ss}Z" -f (Get-Date).ToUniversalTime() | Add-Content -Encoding utf8 $log
-& $py live\fetch.py update *>&1 | Add-Content -Encoding utf8 $log
-if ($LASTEXITCODE -ne 0) { "fetch failed; deciding on what we have" | Add-Content -Encoding utf8 $log }
+# From here on, a native command writing to stderr must NOT abort this script.
+# With ErrorActionPreference=Stop, PowerShell turns any stderr output from
+# python.exe into a terminating NativeCommandError - so a Python traceback
+# killed the run AND never reached the log, leaving "Traceback (most recent
+# call last):" on screen with no body and an empty book.log. The one thing a
+# log exists for.
+$ErrorActionPreference = "Continue"
+
+function Log([string[]]$lines) { $lines | Add-Content -Encoding utf8 -Path $log }
+
+Log @("--- {0:yyyy-MM-ddTHH:mm:ss}Z" -f (Get-Date).ToUniversalTime())
+
+# 2>&1 merges stderr into the output stream; "$_" stringifies the ErrorRecords
+# so what lands in the log is the text, not an object description.
+$out = & $py live\fetch.py update 2>&1 | ForEach-Object { "$_" }
+Log $out
+if ($LASTEXITCODE -ne 0) { Log @("fetch failed (exit $LASTEXITCODE); deciding on what we have") }
 
 $decide = @("-m", "webapp.once", "--once-per-bar")
 if ($Arm) { $decide += "--arm" }
-& $py @decide *>&1 | Add-Content -Encoding utf8 $log
-exit $LASTEXITCODE
+$out = & $py @decide 2>&1 | ForEach-Object { "$_" }
+Log $out
+$code = $LASTEXITCODE
+if ($code -ne 0) { Log @("webapp.once exited $code") }
+exit $code

@@ -22,10 +22,13 @@ def bar(day, hour):
 
 
 def write(store, rows):
+    """rows: (bar, sent) or (bar, sent, reason)."""
     with open(journal.path(store), "w") as f:
-        for b, sent in rows:
+        for row in rows:
+            b, sent = row[0], row[1]
+            reason = row[2] if len(row) > 2 else ""
             f.write(json.dumps(dict(ts=b.isoformat(), bar=b.isoformat(),
-                                    sent=sent, target=0)) + "\n")
+                                    sent=sent, reason=reason, target=0)) + "\n")
 
 
 def main():
@@ -91,6 +94,36 @@ def main():
     line = journal.summary_line(store, now=dt.datetime(2026, 9, 3, 6, tzinfo=UTC))
     assert "MISSED" in line, line
     print(f"  ok  summary line says so: {line.strip()}")
+
+    # A bar you deliberately did not trade is not a bar you missed. Every run
+    # before arming says "not armed", and counting those as misses made a
+    # correct first day print "0/1 bars decided (0%) - 1 MISSED".
+    write(store, [(bar(1, 0), False, "not armed"),
+                  (bar(1, 12), False, "not armed")])
+    c = journal.coverage(store, now=dt.datetime(2026, 9, 1, 18, tzinfo=UTC))
+    assert c["missed"] == [], c["missed"]
+    assert c["dry"] == [bar(1, 0), bar(1, 12)], c["dry"]
+    line = journal.summary_line(store, now=dt.datetime(2026, 9, 1, 18, tzinfo=UTC))
+    assert "MISSED" not in line and "dry run" in line, line
+    print(f"  ok  unarmed runs are dry, not missed: {line.strip()}")
+
+    # But a bar with no entry at all, in a range where you WERE armed, still is.
+    write(store, [(bar(1, 0), False, "not armed"),
+                  (bar(1, 12), True),
+                  (bar(2, 12), True)])
+    c = journal.coverage(store, now=dt.datetime(2026, 9, 2, 18, tzinfo=UTC))
+    assert c["dry"] == [bar(1, 0)], c["dry"]
+    assert c["missed"] == [bar(2, 0)], c["missed"]
+    assert c["sent"] == 2 and abs(c["pct"] - 200/3) < 1e-9, (c["sent"], c["pct"])
+    print("  ok  coverage is measured over the bars you meant to trade (2/3)")
+
+    # A refusal that is NOT "not armed" - stale data - stays a miss.
+    write(store, [(bar(1, 0), True),
+                  (bar(1, 12), False, "data is 20h old (limit 13h)")])
+    c = journal.coverage(store, now=dt.datetime(2026, 9, 1, 18, tzinfo=UTC))
+    assert c["missed"] == [bar(1, 12)], c["missed"]
+    assert c["dry"] == [], c["dry"]
+    print("  ok  a stale-data refusal is still a miss, not a dry run")
 
     print("\nPASS  journal coverage")
     return 0
