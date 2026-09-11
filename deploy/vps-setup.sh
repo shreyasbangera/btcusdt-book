@@ -25,6 +25,31 @@ else
   exit 1
 fi
 
+say "Checking the clock is UTC"
+# The schedule is written in UTC (00:05 and 12:05). A box set to IST would fire
+# five and a half hours off and nothing would look wrong.
+TZ_NOW="$(timedatectl show -p Timezone --value 2>/dev/null || cat /etc/timezone 2>/dev/null || echo unknown)"
+if [ "$TZ_NOW" != "UTC" ] && [ "$TZ_NOW" != "Etc/UTC" ]; then
+  echo "    clock is $TZ_NOW - setting it to UTC so the cron times mean what they say"
+  sudo timedatectl set-timezone UTC || echo "    could not change it; adjust the cron times by hand"
+else
+  echo "    UTC"
+fi
+
+say "Checking memory"
+# Oracle's always-free micro shape has 1 GB, and pandas plus a 36-month seed is
+# tight in that. A swap file costs nothing and turns an out-of-memory kill into
+# a slow step.
+MEM_MB=$(awk '/MemTotal/{print int($2/1024)}' /proc/meminfo)
+echo "    ${MEM_MB} MB RAM"
+if [ "$MEM_MB" -lt 1800 ] && [ ! -f /swapfile ]; then
+  echo "    adding a 2 GB swap file"
+  sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap -q /swapfile \
+    && sudo swapon /swapfile \
+    && echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null \
+    && echo "    swap on"
+fi
+
 say "Installing packages"
 sudo apt-get update -qq
 sudo apt-get install -y -qq python3 python3-pip python3-venv git curl >/dev/null
