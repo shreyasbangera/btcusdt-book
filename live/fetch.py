@@ -319,7 +319,7 @@ def _update_from_archive(a, g_old, m_old):
     # from the bar's CLOSE: dt is the OPEN time, so a just-closed 12h bar is
     # labelled 12 hours ago and would otherwise always look stale
     lag = ((pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds() / 3600) - 12
-    print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h past its close); "
+    print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.1f}h past its close); "
           f"4h panel {len(m)} rows to {m.dt.max()}")
     if lag > 18:          # from the CLOSE now, so 18h is already a bar behind
         print("WARNING: the panel is more than a day old. The archive publishes "
@@ -415,7 +415,7 @@ def main():
         panelstore.write(g, STORE, "panel_12h")
         lag = ((pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds()
                / 3600) - 12
-        print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h past its "
+        print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.1f}h past its "
               f"close);  4h panel {len(m)} rows to {m.dt.max()}")
 
 if __name__ == "__main__":

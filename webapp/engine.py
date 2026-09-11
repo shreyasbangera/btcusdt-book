@@ -134,12 +134,12 @@ def execute(plan, broker, armed: bool, max_bar_age=MAX_BAR_AGE_HOURS):
         # safe answer, and a panel written before that fix looks exactly like
         # this until the bar closes.
         return dict(sent=False, reason=(
-            f"the last panel bar has not closed yet ({-age:.0f}h to go). Its "
+            f"the last panel bar has not closed yet ({-age:.1f}h to go). Its "
             f"values are still moving, so any decision from it is not the "
             f"backtest's. Run `python live/fetch.py update` to clean the panel."))
     if age is not None and age > max_bar_age:
         return dict(sent=False, reason=(
-            f"data is {age:.0f}h old (limit {max_bar_age:.0f}h). The decision bar "
+            f"data is {age:.1f}h old (limit {max_bar_age:.0f}h). The decision bar "
             f"closed too long ago to trade on. Fix the feed rather than raising "
             f"the limit."))
     done = []

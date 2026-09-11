@@ -109,7 +109,7 @@ def main():
             limit = engine.MAX_BAR_AGE_HOURS
             flag = f"  STALE - past the {limit:.0f}h limit, this will not trade" \
                    if age > limit else ""
-            print(f"  bar {plan.get('bar','?')}, {age:.0f}h old{flag}")
+            print(f"  bar {plan.get('bar','?')}, {age:.1f}h old{flag}")
         print(f"  held {plan['position']:+.4f}   target {plan['target']:+.4f}")
         for s in plan["sleeves"]:
             q = f"{s['qty']:+.4f}" if s["qty"] else "flat"
