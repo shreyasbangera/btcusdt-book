@@ -75,10 +75,18 @@ jobs:
         # otherwise - re-choosing whenever convenient turns a walk-forward rule
         # into hindsight.
         run: |
-          if [ "$(date -u +%d)" = "01" ] && echo "01 04 07 10" | grep -qw "$(date -u +%m)"; then
+          PLAN="$BOOK_STORE/v7_plan.json"
+          if [ ! -f "$PLAN" ]; then
+            # No plan at all: this is a first run. Without this the quarterly gate
+            # below means a fresh install never makes its first selection and the
+            # book holds nothing until the next quarter boundary.
+            echo "no plan yet - making the first selection"
+            python live/v7_select.py
+          elif [ "$(date -u +%d)" = "01" ] && echo "01 04 07 10" | grep -qw "$(date -u +%m)"; then
+            echo "quarter boundary - re-selecting"
             python live/v7_select.py
           else
-            echo "not a selection date; keeping the current plan"
+            echo "not a selection date and a plan exists; keeping it"
           fi
 
       - name: Decide
