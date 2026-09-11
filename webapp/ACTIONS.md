@@ -54,9 +54,7 @@ unchecked. That computes a full decision and places nothing. Read the artifact.
    positioning all come from there, so no API key is needed to compute a
    decision, only to place an order. REST supplies the funding tail when
    reachable and is skipped with a printed warning when it is not
-4. on 1 Jan / 1 Apr / 1 Jul / 1 Oct only, re-runs the quarterly selection.
-   Re-choosing whenever convenient turns a walk-forward rule into hindsight, so
-   the date check is in the workflow rather than left to discipline
+4. installs the quarterly plan from `plans/v7_plan.json` (see below)
 5. decides, and on a **scheduled** run places the order and the reduce-only stop
    ladder; a manual run is a dry run unless you tick **arm**
 6. uploads the decision and the full plan JSON as an artifact, kept 90 days
@@ -97,3 +95,45 @@ three reduce-only stops against one netted position, surviving a restart
 mid-position. It will not tell you whether the strategy makes money: its book is
 thin, its prices drift from production, and Binance resets testnet balances
 periodically.
+
+
+## The quarterly plan, and why the runner does not choose it
+
+The plan names the three configurations the book holds. Choosing them means
+ranking 200 configurations by backtesting each over the trailing twelve months,
+and that needs the **research data cache** — roughly 1.7 GB of parquet that is
+not in this repository and would be absurd to rebuild twice a day. So the chosen
+plan is committed at `plans/v7_plan.json` and the workflow just installs it.
+
+The one in the repo was selected **as of 2026-09-11** on a 12-month lookback:
+
+| | exponent | stop | target | hold | gate |
+|---|---|---|---|---|---|
+| 1 | 3.0 | 3.0 ATR | 2.0 R | 14 d | none |
+| 2 | 3.0 | 3.0 ATR | 2.0 R | 21 d | none |
+| 3 | 2.5 | 3.0 ATR | 2.0 R | 14 d | none |
+
+**All three chose no gate**, which is worth understanding rather than glossing.
+The trend gate earns its place across 2022–2026 as a whole; over the most recent
+twelve months alone the ungated configurations ranked better. That is the
+walk-forward rule working as designed — it picks what the recent past supports,
+not what the full-sample study concluded — and it is also a reminder that the
+gate's benefit is an average over regimes rather than a property of every year.
+
+### Re-selecting
+
+Due **1 January, 1 April, 1 July and 1 October**. Not in between: re-choosing
+whenever convenient is exactly how a walk-forward rule turns into hindsight.
+
+On a machine with the research data:
+
+```bash
+python live/v7_select.py --asof $(date -u +%F)
+cp ~/quant/data/live/v7_plan.json plans/v7_plan.json
+git commit -am "plan: quarterly selection $(date -u +%F)" && git push
+```
+
+The workflow installs whatever is committed, so the new plan takes effect on the
+next run. If `$BOOK_STORE/v7_plan.json` already exists on the runner — restored
+from the cache — it is left alone, so delete the cache or bump its key when you
+want a new plan to take hold immediately.

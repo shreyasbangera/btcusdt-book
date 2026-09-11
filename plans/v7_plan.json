@@ -1,0 +1,31 @@
+{
+ "asof": "2026-09-11",
+ "lookback_months": 12,
+ "configs": [
+  [
+   3.0,
+   3.0,
+   2.0,
+   14,
+   null,
+   0
+  ],
+  [
+   3.0,
+   3.0,
+   2.0,
+   21,
+   null,
+   0
+  ],
+  [
+   2.5,
+   3.0,
+   2.0,
+   14,
+   null,
+   0
+  ]
+ ],
+ "note": "fields: exponent, stop_atr, reward_risk, hold_days, gate_kind, gate_span"
+}

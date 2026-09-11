@@ -1,5 +1,12 @@
+# Runtime dependencies, derived by walking the imports of the three entry
+# points: webapp/app.py, webapp/once.py and live/v7_select.py.
+#
+# numba is not optional. The quarterly selection runs 200 real backtests through
+# engine/core.py, which is a numba-jitted loop - a webapp-only requirements file
+# leaves the bot able to fetch data and unable to decide anything.
+pandas>=2.2
+numpy>=1.26
+pyarrow>=14
+numba>=0.60          # must support the numpy above; keep the two in step
 fastapi>=0.110
 uvicorn>=0.27
-pandas>=2.0
-numpy>=1.24
-pyarrow>=14

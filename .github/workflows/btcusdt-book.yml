@@ -57,6 +57,21 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Preflight
+        # Import everything the run needs BEFORE the expensive steps. A missing
+        # dependency used to surface after a 15-minute data seed; here it fails
+        # in seconds and names itself.
+        run: |
+          python - <<'EOF'
+          import importlib
+          for m in ("pandas", "numpy", "pyarrow", "numba",
+                    "engine.core", "research.harness", "live.runner",
+                    "live.fetch", "strategies.s87_combined", "webapp.once"):
+              importlib.import_module(m)
+              print(f"  ok  {m}")
+          print("preflight passed")
+          EOF
+
       # The panels are under a megabyte and change every run, so the cache key is
       # unique (always a miss, always a save) and restore-keys picks up the most
       # recent. A cold cache falls back to a full seed, which is slow but works.
@@ -70,24 +85,22 @@ jobs:
       - name: Top up market data
         run: python live/fetch.py update || python live/fetch.py seed --months 36
 
-      - name: Refresh the quarterly selection
-        # The plan is re-chosen on the 1st of Jan/Apr/Jul/Oct and left alone
-        # otherwise - re-choosing whenever convenient turns a walk-forward rule
-        # into hindsight.
+      - name: Install the quarterly plan
+        # The SELECTION cannot run here. It ranks 200 configurations by
+        # backtesting each over the trailing year, which needs the research data
+        # cache - about 1.7 GB of parquet that is not in this repository and is
+        # not worth rebuilding twice a day. So the chosen plan is committed under
+        # plans/ and simply installed. Re-selecting is a quarterly local step;
+        # see webapp/ACTIONS.md.
         run: |
-          PLAN="$BOOK_STORE/v7_plan.json"
-          if [ ! -f "$PLAN" ]; then
-            # No plan at all: this is a first run. Without this the quarterly gate
-            # below means a fresh install never makes its first selection and the
-            # book holds nothing until the next quarter boundary.
-            echo "no plan yet - making the first selection"
-            python live/v7_select.py
-          elif [ "$(date -u +%d)" = "01" ] && echo "01 04 07 10" | grep -qw "$(date -u +%m)"; then
-            echo "quarter boundary - re-selecting"
-            python live/v7_select.py
+          mkdir -p "$BOOK_STORE"
+          if [ ! -f "$BOOK_STORE/v7_plan.json" ]; then
+            cp plans/v7_plan.json "$BOOK_STORE/v7_plan.json"
+            echo "installed the committed plan:"
           else
-            echo "not a selection date and a plan exists; keeping it"
+            echo "plan already present:"
           fi
+          python -c "import json;p=json.load(open('$BOOK_STORE/v7_plan.json'));print('  as of',p['asof'],'-',len(p['configs']),'configurations');[print('   ',c) for c in p['configs']]"
 
       - name: Decide
         run: |
