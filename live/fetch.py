@@ -33,31 +33,75 @@ def curl(url, timeout=30):
     return r.stdout
 
 def curl_bin(url, timeout=90):
-    r = subprocess.run(["curl","-sS","--max-time",str(timeout),url], capture_output=True)
-    return r.stdout if r.returncode == 0 and len(r.stdout) > 500 else None
+    """Fetch a zip, or None if the archive does not have it.
+
+    Validity is decided by the ZIP MAGIC BYTES, not by size. The previous
+    version required > 500 bytes to reject error pages, which also silently
+    discarded every legitimate daily file - a 12h daily kline zip is about 415
+    bytes because it holds two bars. The panel then stopped at the last complete
+    month and nothing said so.
+    """
+    r = subprocess.run(["curl", "-sS", "--max-time", str(timeout), url],
+                       capture_output=True)
+    if r.returncode or len(r.stdout) < 22:      # 22 = smallest possible zip
+        return None
+    return r.stdout if r.stdout[:2] == b"PK" else None
 
 KL = ["open_time","open","high","low","close","volume","close_time","quote_volume",
       "count","taker_buy_base","taker_buy_quote","ignore"]
 
-def archive_klines(sym, tf, months, market="futures/um"):
-    """Monthly kline zips from the public archive."""
+def _read_kline_zip(blob):
+    """One archive zip to a frame.
+
+    Binance added a HEADER ROW to these CSVs; older files have none. Reading a
+    headered file with header=None turns the header into a data row, and the
+    frame then fails in confusing ways far from here. Detect it instead of
+    assuming either format.
+    """
+    z = zipfile.ZipFile(io.BytesIO(blob))
+    raw = z.read(z.namelist()[0]).decode("utf-8", "replace")
+    if not raw.strip():
+        return None
+    hdr = 0 if raw.split("\n", 1)[0].lower().startswith("open_time") else None
+    d = pd.read_csv(io.StringIO(raw), header=hdr)
+    d = d.iloc[:, :12]
+    d.columns = KL[:d.shape[1]]          # normalise positionally; names vary by era
+    return d
+
+
+def archive_klines(sym, tf, months, market="futures/um", days=None):
+    """Kline zips from the public archive.
+
+    Monthly files for whole months, plus DAILY files for the current month,
+    which has no monthly file until it ends. Without the daily tail the panel
+    stops up to a month short of today, which for a live book is fatal and
+    silent.
+    """
     out = []
     for ym in months:
         blob = curl_bin(f"{ARCHIVE}/data/{market}/monthly/klines/{sym}/{tf}/{sym}-{tf}-{ym}.zip")
         if blob is None: continue
-        z = zipfile.ZipFile(io.BytesIO(blob))
-        with z.open(z.namelist()[0]) as fh:
-            d = pd.read_csv(fh, header=None)
-        d = d.iloc[:, :12]; d.columns = KL[:d.shape[1]]
-        out.append(d)
-    if not out: return pd.DataFrame()
+        d = _read_kline_zip(blob)
+        if d is not None: out.append(d)
+    for ymd in (days or []):
+        blob = curl_bin(f"{ARCHIVE}/data/{market}/daily/klines/{sym}/{tf}/{sym}-{tf}-{ymd}.zip")
+        if blob is None: continue
+        d = _read_kline_zip(blob)
+        if d is not None: out.append(d)
+    if not out:
+        raise RuntimeError(
+            f"no archive data for {sym} {tf} ({market}). Tried {len(months)} monthly "
+            f"and {len(days or [])} daily files and every one was missing or empty. "
+            f"Check the symbol and that {ARCHIVE} is reachable.")
     d = pd.concat(out, ignore_index=True)
-    unit = "us" if d.open_time.max() > 1e15 else "ms"
+    d["open_time"] = pd.to_numeric(d.open_time, errors="coerce")
+    d = d.dropna(subset=["open_time"])
+    unit = "us" if d.open_time.max() > 1e15 else "ms"   # Binance switched in 2025
     d["dt"] = pd.to_datetime(d.open_time, unit=unit, utc=True)
     for c in ("open","high","low","close","volume","quote_volume","taker_buy_base"):
         d[c] = pd.to_numeric(d[c], errors="coerce")
-    return d[["dt","open","high","low","close","volume","quote_volume","taker_buy_base"]] \
-             .sort_values("dt").reset_index(drop=True)
+    return (d[["dt","open","high","low","close","volume","quote_volume","taker_buy_base"]]
+            .drop_duplicates("dt").sort_values("dt").reset_index(drop=True))
 
 def rest_klines(sym, tf, limit=1500, base=FAPI, path="/fapi/v1/klines"):
     j = json.loads(curl(f"{base}{path}?symbol={sym}&interval={tf}&limit={limit}"))
@@ -110,16 +154,25 @@ def main():
     a = ap.parse_args()
     os.makedirs(STORE, exist_ok=True)
     if a.mode == "seed":
-        end = pd.Timestamp.utcnow().normalize()
+        end = pd.Timestamp.now("UTC").normalize()
         months = pd.date_range(end - pd.DateOffset(months=a.months), end,
                                freq="MS").strftime("%Y-%m").tolist()
-        print(f"seeding {len(months)} months from the archive...")
-        k12 = archive_klines("BTCUSDT", "12h", months)
-        cm12 = archive_klines("BTCUSD_PERP", "12h", months, market="futures/cm")
-        hourly = {"BTCUSDT": archive_klines("BTCUSDT","1h",months).set_index("dt")["quote_volume"]}
+        # The current month has no monthly file yet, so take it a day at a time.
+        # Yesterday is the last day the archive is guaranteed to have published.
+        days = pd.date_range(end.replace(day=1), end - pd.Timedelta(days=1),
+                             freq="D").strftime("%Y-%m-%d").tolist()
+        print(f"seeding {len(months)} months + {len(days)} days from the archive...",
+              flush=True)
+        k12 = archive_klines("BTCUSDT", "12h", months, days=days)
+        cm12 = archive_klines("BTCUSD_PERP", "12h", months, market="futures/cm", days=days)
+        hourly = {"BTCUSDT": archive_klines("BTCUSDT","1h",months,
+                                            days=days).set_index("dt")["quote_volume"]}
         alt = None
         for s in ALTS:
-            q = archive_klines(s, "1h", months)
+            try:
+                q = archive_klines(s, "1h", months, days=days)
+            except RuntimeError as e:
+                print(f"  {s} skipped: {e}", flush=True); continue
             if not len(q): continue
             v = q.set_index("dt")["quote_volume"]
             alt = v if alt is None else alt.add(v, fill_value=0)
@@ -135,6 +188,11 @@ def main():
               "will be too short for the 480-bar z-scores until you have run `update`\n"
               "daily for a few months, OR you backfill it from your own records.")
     else:
+        if not (os.path.exists(f"{STORE}/panel_4h.parquet")
+                and os.path.exists(f"{STORE}/panel_12h.parquet")):
+            print(f"no panels in {STORE} yet - seeding first", flush=True)
+            sys.argv = [sys.argv[0], "seed", "--months", str(a.months)]
+            return main()
         m_old = pd.read_parquet(f"{STORE}/panel_4h.parquet")
         m_new = rest_metrics()
         m = pd.concat([m_old, m_new]).drop_duplicates("dt", keep="last") \
