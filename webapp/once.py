@@ -62,7 +62,13 @@ def main():
         print(json.dumps(plan, indent=1, default=str))
     else:
         print(f"{plan['ts']}  mode={plan['mode']}  {plan['strategy']}")
-        print(f"  price {plan['price']:,.1f}   equity {plan['equity']:,.2f}")
+        eq, cfg = plan["equity"], plan.get("configured_equity")
+        note = "" if cfg is None or abs(eq - cfg) < 1 else f"  (config said {cfg:,.0f})"
+        print(f"  price {plan['price']:,.1f}   equity {eq:,.2f}{note}")
+        age = plan.get("bar_age_hours")
+        if age is not None:
+            flag = "  STALE - the feed is behind" if age > 24 else ""
+            print(f"  last bar {age:.0f}h old{flag}")
         print(f"  held {plan['position']:+.4f}   target {plan['target']:+.4f}")
         for s in plan["sleeves"]:
             q = f"{s['qty']:+.4f}" if s["qty"] else "flat"

@@ -12,6 +12,20 @@ from .config import STORE, MODE
 from .strategies.registry import get, discover
 
 
+def _bar_age(panels):
+    """Hours between the last decision bar and now.
+
+    The book decides on 12h bars, so anything past ~12-24h means the data feed
+    is behind and the decision is being made on stale prices. Worth printing
+    every run rather than discovering it in the P&L.
+    """
+    df = panels.get("panel_12h")
+    if df is None or not len(df):
+        return None
+    last = pd.Timestamp(df.dt.iloc[-1])
+    return round((pd.Timestamp.now("UTC") - last).total_seconds() / 3600, 1)
+
+
 def load_panels(names):
     out = {}
     for n in names:
@@ -25,14 +39,21 @@ def load_panels(names):
 def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
     """Everything the engine decides, as data.  Nothing is sent from here."""
     panels = load_panels(strategy.needs())
-    d = strategy.decide(panels, equity, risk)
+
+    # Ask the account what it holds BEFORE sizing anything. The first version
+    # sized off the configured `equity` and only read the real balance
+    # afterwards, for display - so a 10,000 setting against a 5,000 account
+    # placed every bet at twice the intended risk, and the log showed the true
+    # balance next to positions that had ignored it.
+    pos = broker.position()
+    px = broker.price()
+    sizing_equity = pos.equity if pos.equity and pos.equity > 0 else equity
+
+    d = strategy.decide(panels, sizing_equity, risk)
     target = sum(s.qty for s in d.sleeves)
 
     sides = {1 if s.qty > 0 else -1 for s in d.sleeves if s.qty}
     conflict = len(sides) > 1
-
-    pos = broker.position()
-    px = broker.price()
     delta = target - pos.qty
     order = None
     if abs(delta) * px >= min_notional and not conflict:
@@ -52,7 +73,9 @@ def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
 
     return dict(
         ts=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-        strategy=strategy.name, mode=broker.mode, price=px, equity=pos.equity or equity,
+        strategy=strategy.name, mode=broker.mode, price=px,
+        equity=sizing_equity, configured_equity=equity,
+        bar_age_hours=_bar_age(panels),
         position=pos.qty, target=target, delta=delta, order=order, ladder=ladder,
         sleeves=[dict(label=s.label, qty=s.qty, stop=s.stop, tp=s.take_profit,
                       hold_bars=s.hold_bars, meta=s.meta) for s in d.sleeves],
