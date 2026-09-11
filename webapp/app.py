@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Local dashboard for the BTCUSDT books.  Binds to 127.0.0.1 only.
 
-    pip install fastapi uvicorn pandas numpy pyarrow
+    pip install fastapi uvicorn pandas numpy
     python -m webapp.app
 
 Then open http://127.0.0.1:8000
@@ -16,6 +16,8 @@ Keys come from the environment only.  This app never accepts a key through the
 browser, never writes one to disk and never logs one.
 """
 import os, sys, json, pathlib
+
+import panelstore
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -51,7 +53,7 @@ def make_broker():
             b.key, b.secret, b.base = k, sec, config.FAPI_TEST
             return b
         return BinanceFutures(config.MODE)
-    df = pd.read_parquet(config.STORE / "panel_12h.parquet")
+    df = panelstore.read(config.STORE, "panel_12h")
     return PaperBroker(lambda: float(df.close.iloc[-1]), STATE["equity"])
 
 

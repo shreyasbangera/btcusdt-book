@@ -8,4 +8,9 @@
 # requirements-research.txt.
 pandas>=2.2
 numpy>=1.26
-pyarrow>=14          # parquet panels
+
+# pyarrow is OPTIONAL. With it the panels are parquet; without it they are
+# pickle, which pandas reads and writes on its own. See panelstore.py. Leave the
+# line commented out on any machine where the wheel is unavailable or awkward -
+# Termux/Android has no build at all, and that is the machine this matters for.
+# pyarrow>=14

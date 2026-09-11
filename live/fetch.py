@@ -16,7 +16,9 @@ archive and topped up daily is the only way to have both depth and freshness.
 Nothing here needs an API key: every endpoint used is public.
 """
 import os, io, sys, json, zipfile, argparse, subprocess
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
 import numpy as np, pandas as pd
+import panelstore
 
 ARCHIVE = "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision"
 FAPI = "https://fapi.binance.com"
@@ -274,8 +276,8 @@ def _update_from_archive(a, g_old, m_old):
     g_new, _ = assemble(k12, cm12, hourly, funding_series("BTCUSDT", months), m)
     g = (pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last")
            .sort_values("dt").reset_index(drop=True))
-    g.to_parquet(f"{STORE}/panel_12h.parquet", index=False)
-    m.to_parquet(f"{STORE}/panel_4h.parquet", index=False)
+    panelstore.write(g, STORE, "panel_12h")
+    panelstore.write(m, STORE, "panel_4h")
     lag = (pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds() / 3600
     print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h behind now); "
           f"4h panel {len(m)} rows to {m.dt.max()}")
@@ -331,19 +333,19 @@ def main():
         print(f"positioning metrics: {len(mdays)} daily files", flush=True)
         metrics4 = archive_metrics("BTCUSDT", mdays)
         g, m4 = assemble(k12, cm12, hourly, funding, metrics4)
-        g.to_parquet(f"{STORE}/panel_12h.parquet", index=False)
-        m4.to_parquet(f"{STORE}/panel_4h.parquet", index=False)
+        panelstore.write(g, STORE, "panel_12h")
+        panelstore.write(m4, STORE, "panel_4h")
         print(f"wrote {len(g)} 12h rows and {len(m4)} 4h rows to {STORE}")
         print(f"\npositioning covers {(m4.dt.max() - m4.dt.min()).days} days, against the "
               f"80 the 480-bar z-scores need.")
     else:
-        if not (os.path.exists(f"{STORE}/panel_4h.parquet")
-                and os.path.exists(f"{STORE}/panel_12h.parquet")):
+        if not (panelstore.exists(STORE, "panel_4h")
+                and panelstore.exists(STORE, "panel_12h")):
             print(f"no panels in {STORE} yet - seeding first", flush=True)
             sys.argv = [sys.argv[0], "seed", "--months", str(a.months)]
             return main()
-        m_old = pd.read_parquet(f"{STORE}/panel_4h.parquet")
-        g_old = pd.read_parquet(f"{STORE}/panel_12h.parquet")
+        m_old = panelstore.read(STORE, "panel_4h")
+        g_old = panelstore.read(STORE, "panel_12h")
         try:
             m_new = rest_metrics()
         except RuntimeError as e:
@@ -355,7 +357,7 @@ def main():
             return _update_from_archive(a, g_old, m_old)
         m = pd.concat([m_old, m_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
-        m.to_parquet(f"{STORE}/panel_4h.parquet", index=False)
+        panelstore.write(m, STORE, "panel_4h")
         k12 = rest_klines("BTCUSDT","12h"); cm12 = rest_klines("BTCUSD_PERP","12h",
                                                                base=DAPI, path="/dapi/v1/klines")
         hourly = {"BTCUSDT": rest_klines("BTCUSDT","1h").set_index("dt")["quote_volume"]}
@@ -367,7 +369,7 @@ def main():
         g_new, _ = assemble(k12, cm12, hourly, rest_funding(), m)
         g = pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
-        g.to_parquet(f"{STORE}/panel_12h.parquet", index=False)
+        panelstore.write(g, STORE, "panel_12h")
         print(f"12h panel now {len(g)} rows to {g.dt.max()};  4h panel {len(m)} rows to {m.dt.max()}")
 
 if __name__ == "__main__":

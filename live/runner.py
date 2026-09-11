@@ -36,7 +36,9 @@ chance of a drawdown worse than 20% at the 8% risk setting, and 46% at 10%.
 Size accordingly, and paper-trade it first.
 """
 import os, sys, io, json, time, zipfile, argparse, subprocess
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
 import numpy as np, pandas as pd
+import panelstore
 
 FAPI = "https://fapi.binance.com"
 DAPI = "https://dapi.binance.com"
@@ -165,8 +167,8 @@ def main():
     ap.add_argument("--exponent", type=float, default=1.0,
                     help="conviction exponent currently in force (see `verify`)")
     ap.add_argument("--position", type=float, default=0.0, help="contracts currently held")
-    ap.add_argument("--panel", default=os.path.join(STORE, "panel_12h.parquet"))
-    ap.add_argument("--panel4", default=os.path.join(STORE, "panel_4h.parquet"))
+    ap.add_argument("--panel", default=None, help="default: whichever panel the store holds")
+    ap.add_argument("--panel4", default=None)
     a = ap.parse_args()
 
     if a.cmd in ("seed", "update"):
@@ -175,11 +177,11 @@ def main():
               "from the REST API, which only serves ~30 days of positioning data.")
         return
 
-    if not os.path.exists(a.panel):
-        print(f"no panel at {a.panel}; run `seed` first (see live/README.md)", file=sys.stderr)
+    if not (os.path.exists(a.panel) if a.panel else panelstore.exists(STORE, "panel_12h")):
+        print(f"no panel in {STORE}; run `seed` first (see live/README.md)", file=sys.stderr)
         sys.exit(1)
-    df = pd.read_parquet(a.panel)
-    df4 = pd.read_parquet(a.panel4)
+    df = pd.read_parquet(a.panel) if a.panel else panelstore.read(STORE, "panel_12h")
+    df4 = pd.read_parquet(a.panel4) if a.panel4 else panelstore.read(STORE, "panel_4h")
     s, atr14 = build_signals(df, df4)
     v = net_signal(s, a.exponent)
     i = len(df) - 1

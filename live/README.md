@@ -46,7 +46,7 @@ to 240 and drops sign agreement to 69%.
 ## Setup
 
 ```bash
-pip install pandas numpy pyarrow
+pip install pandas numpy
 export BOOK_STORE=~/quant/data/live
 
 python live/fetch.py seed --months 36     # bootstrap from the public archive

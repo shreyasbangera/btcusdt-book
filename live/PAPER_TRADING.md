@@ -50,7 +50,7 @@ broker tells you whether the strategy works.
 ## Part 1 — Get the data working (do this first)
 
 ```bash
-pip install pandas numpy pyarrow
+pip install pandas numpy
 export BOOK_STORE=~/quant/data/live          # put this in your shell profile
 
 python live/fetch.py seed --months 36        # pulls years of history, takes a while

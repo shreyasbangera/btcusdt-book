@@ -26,6 +26,7 @@ before they were right. `REPORT.html` is the readable version.
 | `live/` | data collection, the live runner, the paper broker |
 | `webapp/` | the dashboard and the strategy plug-in interface |
 | `.github/workflows/` | the twice-daily decision |
+| `deploy/` | where to run it always-on, and what refuses to |
 | `RESEARCH_LOG.md` | every attempt and why it died |
 
 ## Running it
@@ -37,6 +38,16 @@ scratch. Then:
 * `webapp/DEPLOY.md` — putting the dashboard on a URL
 * `live/PAPER_TRADING.md` — judging the strategy before risking anything
 * `live/V7.md` — how the three-sleeve book works in one account
+* `deploy/FREE_HOSTING.md` — **where this can actually run for free**, and the
+  one `curl` that decides it. Binance refuses most datacentre ranges, GitHub's
+  runners included, which rules out nearly every free tier before specs come
+  into it
+* `deploy/ANDROID.md` — the phone-in-a-drawer route, which is the one I would
+  pick
+
+The bot itself needs **pandas and numpy and nothing else** — not numba, not
+pyarrow. `tests/no_heavy_deps.py` blocks both and then makes a real decision, so
+the claim stays true rather than becoming folklore.
 
 ```bash
 pip install -r requirements.txt

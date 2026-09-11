@@ -27,6 +27,7 @@ mis-fired cron job cannot trade.
 """
 import argparse, json, os, sys
 import webapp  # noqa: F401  - puts the project root on sys.path
+import panelstore
 
 from webapp import config, engine
 from webapp.strategies.registry import get
@@ -38,7 +39,7 @@ def make_broker(equity):
     if config.MODE in ("test", "live"):
         from webapp.broker.binance import BinanceFutures
         return BinanceFutures(config.MODE)
-    df = pd.read_parquet(config.STORE / "panel_12h.parquet")
+    df = panelstore.read(config.STORE, "panel_12h")
     return PaperBroker(lambda: float(df.close.iloc[-1]), equity)
 
 

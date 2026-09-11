@@ -1,5 +1,2 @@
-fastapi>=0.110
-uvicorn>=0.27
-pandas>=2.0
-numpy>=1.24
-pyarrow>=14
+# Superseded by ../requirements-web.txt; kept because older notes point here.
+-r ../requirements-web.txt

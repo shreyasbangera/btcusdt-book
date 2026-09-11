@@ -7,6 +7,7 @@ adding one a matter of answering a single question.
 import os, sys, json, datetime as dt
 import webapp  # noqa: F401  - puts the project root on sys.path
 import pandas as pd
+import panelstore
 
 from .config import STORE, MODE
 from .strategies.registry import get, discover
@@ -27,13 +28,7 @@ def _bar_age(panels):
 
 
 def load_panels(names):
-    out = {}
-    for n in names:
-        p = STORE / f"{n}.parquet"
-        if not p.exists():
-            raise FileNotFoundError(f"missing {p} — run `python live/fetch.py seed` first")
-        out[n] = pd.read_parquet(p)
-    return out
+    return {n: panelstore.read(STORE, n) for n in names}
 
 
 def plan_orders(strategy, broker, equity, risk, min_notional=100.0):

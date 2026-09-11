@@ -39,9 +39,9 @@ realised −19.99% in the backtest is a favourable draw, not the expectation.
 Size to the bootstrap, not to the backtest.
 """
 import os, sys, json, argparse
-import numpy as np, pandas as pd
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import numpy as np, pandas as pd
+import panelstore
 from live.runner import build_signals, unit, THR, CAP, STORE
 
 STATE = os.path.join(STORE, "v7_state.json")
@@ -112,8 +112,8 @@ def main():
     ap.add_argument("--equity", type=float, default=10_000.0)
     ap.add_argument("--risk", type=float, default=0.08,
                     help="TOTAL risk budget; each sleeve gets risk/3")
-    ap.add_argument("--panel", default=os.path.join(STORE, "panel_12h.parquet"))
-    ap.add_argument("--panel4", default=os.path.join(STORE, "panel_4h.parquet"))
+    ap.add_argument("--panel", default=None, help="default: whichever panel the store holds")
+    ap.add_argument("--panel4", default=None)
     ap.add_argument("--plan", default=PLAN)
     a = ap.parse_args()
 
@@ -126,8 +126,8 @@ def main():
         sys.exit(1)
     cfgs = [tuple(c) for c in plan["configs"]]
 
-    df = pd.read_parquet(a.panel)
-    df4 = pd.read_parquet(a.panel4)
+    df = pd.read_parquet(a.panel) if a.panel else panelstore.read(STORE, "panel_12h")
+    df4 = pd.read_parquet(a.panel4) if a.panel4 else panelstore.read(STORE, "panel_4h")
     s, atr14 = build_signals(df, df4)
     v = shaped_all = {}
     base = composite(s)

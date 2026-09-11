@@ -68,13 +68,20 @@ jobs:
         run: |
           python - <<'EOF'
           import importlib
-          for m in ("pandas", "numpy", "pyarrow", "numba",
+          for m in ("pandas", "numpy", "pyarrow", "numba", "panelstore",
                     "engine.core", "research.harness", "live.runner",
                     "live.fetch", "strategies.s87_combined", "webapp.once"):
               importlib.import_module(m)
               print(f"  ok  {m}")
           print("preflight passed")
           EOF
+
+      - name: The bot still runs without numba or pyarrow
+        # Where this bot can live is decided by its dependency list, and one
+        # stray import at the top of a module the decision path touches would
+        # take away every small machine it can run on - silently, until
+        # deployment. Four seconds here keeps that honest.
+        run: python tests/no_heavy_deps.py
 
       # The panels are under a megabyte and change every run, so the cache key is
       # unique (always a miss, always a save) and restore-keys picks up the most

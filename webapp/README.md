@@ -20,7 +20,7 @@ you can tell which key is loaded.
 ## Install and run
 
 ```bash
-pip install fastapi uvicorn pandas numpy pyarrow
+pip install fastapi uvicorn pandas numpy
 export BOOK_STORE=~/quant/data/live
 python live/fetch.py seed --months 36      # once; the app needs the panels
 python -m webapp.app

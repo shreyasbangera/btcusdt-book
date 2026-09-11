@@ -3,3 +3,4 @@
 # strategies/. Only needed on the machine that re-selects each quarter.
 -r requirements.txt
 numba>=0.60          # must support the numpy above; keep the two in step
+pyarrow>=14          # the 1.7 GB research cache IS parquet; not optional here
