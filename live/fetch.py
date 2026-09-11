@@ -26,10 +26,21 @@ ALTS = ["ETHUSDT","SOLUSDT","XRPUSDT","BNBUSDT","DOGEUSDT","ADAUSDT","LINKUSDT",
         "DOTUSDT","LTCUSDT","BCHUSDT","ATOMUSDT","FILUSDT","NEARUSDT","TRXUSDT"]
 
 def curl(url, timeout=30):
-    r = subprocess.run(["curl","-sS","--max-time",str(timeout),url],
+    r = subprocess.run(["curl", "-sS", "--max-time", str(timeout), url],
                        capture_output=True, text=True)
     if r.returncode or not r.stdout.strip():
         raise RuntimeError(f"failed: {url}\n{r.stderr[:200]}")
+    body = r.stdout.lstrip()
+    if body.startswith("{"):
+        # A LIST is data; an OBJECT is an error. Binance answers restricted
+        # locations with {"code":0,"msg":"Service unavailable from a restricted
+        # location..."}, and handing that to pandas fails somewhere unhelpful.
+        try:
+            j = json.loads(body)
+            if isinstance(j, dict) and ("msg" in j or "code" in j):
+                raise RuntimeError(f"Binance refused {url}\n  {j}")
+        except json.JSONDecodeError:
+            pass
     return r.stdout
 
 def curl_bin(url, timeout=90):
@@ -103,6 +114,90 @@ def archive_klines(sym, tf, months, market="futures/um", days=None):
     return (d[["dt","open","high","low","close","volume","quote_volume","taker_buy_base"]]
             .drop_duplicates("dt").sort_values("dt").reset_index(drop=True))
 
+def archive_funding(sym, months):
+    """Funding settlements from the archive.
+
+    The REST endpoint is the obvious source and it is not always reachable -
+    GitHub's runners sit in datacentre ranges that Binance restricts, and the
+    reply is then a JSON error OBJECT rather than a list, which fails far away as
+    "If using all scalar values, you must pass an index". The archive has the
+    same data, needs no key, and is reachable from anywhere.
+    """
+    out = []
+    for ym in months:
+        blob = curl_bin(f"{ARCHIVE}/data/futures/um/monthly/fundingRate/{sym}/{sym}-fundingRate-{ym}.zip")
+        if blob is None: continue
+        z = zipfile.ZipFile(io.BytesIO(blob))
+        raw = z.read(z.namelist()[0]).decode("utf-8", "replace")
+        hdr = 0 if raw.split("\n", 1)[0].lower().startswith("calc_time") else None
+        d = pd.read_csv(io.StringIO(raw), header=hdr,
+                        names=None if hdr == 0 else ["calc_time", "funding_interval_hours",
+                                                     "last_funding_rate"])
+        out.append(d)
+    if not out:
+        raise RuntimeError(f"no funding history in the archive for {sym}")
+    d = pd.concat(out, ignore_index=True)
+    d["dt"] = pd.to_datetime(pd.to_numeric(d.calc_time), unit="ms", utc=True)
+    d["rate"] = pd.to_numeric(d.last_funding_rate, errors="coerce")
+    return (d[["dt", "rate"]].dropna().drop_duplicates("dt")
+            .sort_values("dt").reset_index(drop=True))
+
+
+def funding_series(sym, months):
+    """Funding, archive first and REST for the tail.
+
+    Funding is the one series the archive cannot finish: there are no daily
+    files, and the current month's monthly file does not exist until the month
+    ends. So the archive always stops at the end of last month and only REST
+    reaches today. When REST is unreachable the run continues on archive data
+    and says how stale it is, because `s_fundz` is a 240-bar (120-day) z-score
+    and a month of carried-forward constant quietly distorts it.
+    """
+    f = archive_funding(sym, months)
+    try:
+        f = (pd.concat([f, rest_funding(sym)]).drop_duplicates("dt", keep="last")
+               .sort_values("dt").reset_index(drop=True))
+    except RuntimeError as e:
+        lag = (pd.Timestamp.now("UTC") - pd.Timestamp(f.dt.max())).days
+        print(f"funding: REST unavailable, archive only (last settlement "
+              f"{f.dt.max()}, {lag} days ago)\n  {e}", flush=True)
+        if lag > 2:
+            print(f"  WARNING: s_fundz z-scores over 120 days, so {lag} days of "
+                  f"carried-forward funding degrades that signal.", flush=True)
+    return f
+
+
+def archive_metrics(sym, days):
+    """Positioning metrics from the archive, at 5-minute resolution.
+
+    This is the fix for the study's longest-standing operational weakness. The
+    REST endpoints serve about 30 days, while `s_posn` needs 480 four-hour bars -
+    80 days - so a REST-seeded store left that signal quietly wrong rather than
+    missing. The archive carries the full history.
+    """
+    out = []
+    for ymd in days:
+        blob = curl_bin(f"{ARCHIVE}/data/futures/um/daily/metrics/{sym}/{sym}-metrics-{ymd}.zip")
+        if blob is None: continue
+        z = zipfile.ZipFile(io.BytesIO(blob))
+        raw = z.read(z.namelist()[0]).decode("utf-8", "replace")
+        out.append(pd.read_csv(io.StringIO(raw)))
+    if not out:
+        raise RuntimeError(f"no positioning metrics in the archive for {sym}")
+    d = pd.concat(out, ignore_index=True)
+    d["dt"] = pd.to_datetime(d.create_time, utc=True)
+    ren = {"sum_toptrader_long_short_ratio": "tt_pos",
+           "count_toptrader_long_short_ratio": "tt_acct",
+           "count_long_short_ratio": "retail_acct"}
+    d = d.rename(columns=ren)
+    for c in ren.values():
+        d[c] = pd.to_numeric(d[c], errors="coerce")
+    # the book reads the LAST 5-minute observation inside each 4h bar
+    d = (d.set_index("dt")[list(ren.values())].resample("4h").last()
+          .dropna().reset_index())
+    return d[["dt", "tt_pos", "tt_acct", "retail_acct"]]
+
+
 def rest_klines(sym, tf, limit=1500, base=FAPI, path="/fapi/v1/klines"):
     j = json.loads(curl(f"{base}{path}?symbol={sym}&interval={tf}&limit={limit}"))
     d = pd.DataFrame(j, columns=KL[:len(j[0])])
@@ -146,11 +241,59 @@ def assemble(k12, cm12, alt_hourly, funding, metrics4):
     g["fund"] = np.where(i >= 0, rt[np.maximum(i, 0)], np.nan)
     return g, metrics4
 
+def _update_from_archive(a, g_old, m_old):
+    """Extend both panels from the archive, which lags by about a day.
+
+    A day-old panel is worse than a live one and far better than no decision at
+    all; the run prints how stale it is so the gap is visible rather than
+    implied.
+    """
+    end = pd.Timestamp.now("UTC").normalize()
+    start = min(pd.Timestamp(g_old.dt.max()), pd.Timestamp(m_old.dt.max())) - pd.Timedelta(days=2)
+    days = pd.date_range(start.normalize(), end - pd.Timedelta(days=1),
+                         freq="D").strftime("%Y-%m-%d").tolist()
+    # Funding has no daily files, so reach back far enough to find at least one
+    # complete monthly file - days inside the current month alone would find none.
+    months = pd.date_range(end - pd.DateOffset(months=3), end,
+                           freq="MS").strftime("%Y-%m").tolist()
+    print(f"archive top-up: {len(days)} days", flush=True)
+    k12 = archive_klines("BTCUSDT", "12h", [], days=days)
+    cm12 = archive_klines("BTCUSD_PERP", "12h", [], market="futures/cm", days=days)
+    hourly = {"BTCUSDT": archive_klines("BTCUSDT", "1h", [], days=days).set_index("dt")["quote_volume"]}
+    alt = None
+    for sym in ALTS:
+        try:
+            q = archive_klines(sym, "1h", [], days=days)
+        except RuntimeError:
+            continue
+        v = q.set_index("dt")["quote_volume"]
+        alt = v if alt is None else alt.add(v, fill_value=0)
+    hourly["ALTSUM"] = alt
+    m = (pd.concat([m_old, archive_metrics("BTCUSDT", days)])
+           .drop_duplicates("dt", keep="last").sort_values("dt").reset_index(drop=True))
+    g_new, _ = assemble(k12, cm12, hourly, funding_series("BTCUSDT", months), m)
+    g = (pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last")
+           .sort_values("dt").reset_index(drop=True))
+    g.to_parquet(f"{STORE}/panel_12h.parquet", index=False)
+    m.to_parquet(f"{STORE}/panel_4h.parquet", index=False)
+    lag = (pd.Timestamp.now("UTC") - pd.Timestamp(g.dt.max())).total_seconds() / 3600
+    print(f"12h panel now {len(g)} rows to {g.dt.max()} ({lag:.0f}h behind now); "
+          f"4h panel {len(m)} rows to {m.dt.max()}")
+    if lag > 30:
+        print("WARNING: the panel is more than a day old. The archive publishes "
+              "yesterday's file each morning; if this keeps growing, the data "
+              "source is stale and the decisions are not current.")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("mode", choices=["seed","update"])
-    ap.add_argument("--months", type=int, default=36, help="history to seed")
+    ap.add_argument("--months", type=int, default=36, help="price history to seed")
+    ap.add_argument("--metrics-months", type=int, default=15,
+                    help="positioning history: the 12-month selection window plus "
+                         "its 80-day warm-up")
     a = ap.parse_args()
     os.makedirs(STORE, exist_ok=True)
     if a.mode == "seed":
@@ -178,15 +321,21 @@ def main():
             alt = v if alt is None else alt.add(v, fill_value=0)
             print(f"  {s} ok", flush=True)
         hourly["ALTSUM"] = alt
-        print("archive done; funding and positioning come from REST")
-        funding = rest_funding(); metrics4 = rest_metrics()
+        print("archive klines done; funding and positioning from the archive too",
+              flush=True)
+        funding = funding_series("BTCUSDT", months)
+        # positioning only needs to cover the selection window plus its own
+        # 480-bar (80-day) warm-up, not the whole price history
+        mdays = pd.date_range(end - pd.DateOffset(months=a.metrics_months),
+                              end - pd.Timedelta(days=1), freq="D").strftime("%Y-%m-%d").tolist()
+        print(f"positioning metrics: {len(mdays)} daily files", flush=True)
+        metrics4 = archive_metrics("BTCUSDT", mdays)
         g, m4 = assemble(k12, cm12, hourly, funding, metrics4)
         g.to_parquet(f"{STORE}/panel_12h.parquet", index=False)
         m4.to_parquet(f"{STORE}/panel_4h.parquet", index=False)
         print(f"wrote {len(g)} 12h rows and {len(m4)} 4h rows to {STORE}")
-        print("\nNOTE: the REST positioning endpoints only return ~30 days. The 4h panel\n"
-              "will be too short for the 480-bar z-scores until you have run `update`\n"
-              "daily for a few months, OR you backfill it from your own records.")
+        print(f"\npositioning covers {(m4.dt.max() - m4.dt.min()).days} days, against the "
+              f"80 the 480-bar z-scores need.")
     else:
         if not (os.path.exists(f"{STORE}/panel_4h.parquet")
                 and os.path.exists(f"{STORE}/panel_12h.parquet")):
@@ -194,7 +343,16 @@ def main():
             sys.argv = [sys.argv[0], "seed", "--months", str(a.months)]
             return main()
         m_old = pd.read_parquet(f"{STORE}/panel_4h.parquet")
-        m_new = rest_metrics()
+        g_old = pd.read_parquet(f"{STORE}/panel_12h.parquet")
+        try:
+            m_new = rest_metrics()
+        except RuntimeError as e:
+            # REST is not reachable everywhere - Binance restricts some datacentre
+            # ranges, and GitHub's runners live in them. The archive has the same
+            # data up to yesterday, so carry on a day behind rather than stopping.
+            print(f"REST unavailable, extending from the archive instead:\n  {e}",
+                  flush=True)
+            return _update_from_archive(a, g_old, m_old)
         m = pd.concat([m_old, m_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
         m.to_parquet(f"{STORE}/panel_4h.parquet", index=False)
@@ -207,7 +365,6 @@ def main():
             alt = v if alt is None else alt.add(v, fill_value=0)
         hourly["ALTSUM"] = alt
         g_new, _ = assemble(k12, cm12, hourly, rest_funding(), m)
-        g_old = pd.read_parquet(f"{STORE}/panel_12h.parquet")
         g = pd.concat([g_old, g_new]).drop_duplicates("dt", keep="last") \
               .sort_values("dt").reset_index(drop=True)
         g.to_parquet(f"{STORE}/panel_12h.parquet", index=False)
