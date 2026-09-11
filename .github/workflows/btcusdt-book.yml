@@ -34,7 +34,11 @@ permissions:
 
 jobs:
   decide:
-    runs-on: ubuntu-latest
+    # Switch runners without editing this file: set a repository variable
+    # RUNNER_LABEL to "self-hosted" (Settings -> Secrets and variables ->
+    # Actions -> Variables). GitHub's own runners are refused by Binance, so a
+    # machine in a served location is the only way this bot can actually trade.
+    runs-on: ${{ vars.RUNNER_LABEL || 'ubuntu-latest' }}
     timeout-minutes: 45
     env:
       BOOK_STORE: ${{ github.workspace }}/data/live
