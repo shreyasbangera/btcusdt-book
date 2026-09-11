@@ -38,7 +38,8 @@ Size accordingly, and paper-trade it first.
 import os, sys, io, json, time, zipfile, argparse, subprocess
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
 import numpy as np, pandas as pd
-import panelstore
+import panelstore, consoleio
+consoleio.relax()
 
 FAPI = "https://fapi.binance.com"
 DAPI = "https://dapi.binance.com"

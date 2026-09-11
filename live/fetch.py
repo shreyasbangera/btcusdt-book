@@ -18,7 +18,8 @@ Nothing here needs an API key: every endpoint used is public.
 import os, io, sys, json, zipfile, argparse, subprocess
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
 import numpy as np, pandas as pd
-import panelstore
+import panelstore, consoleio
+consoleio.relax()         # see consoleio.py: Windows, redirected output
 
 ARCHIVE = "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision"
 FAPI = "https://fapi.binance.com"

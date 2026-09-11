@@ -41,7 +41,8 @@ Size to the bootstrap, not to the backtest.
 import os, sys, json, argparse
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np, pandas as pd
-import panelstore
+import panelstore, consoleio
+consoleio.relax()
 from live.runner import build_signals, unit, THR, CAP, STORE
 
 STATE = os.path.join(STORE, "v7_state.json")

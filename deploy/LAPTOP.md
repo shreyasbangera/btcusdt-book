@@ -79,94 +79,76 @@ Then jump to [**Your testnet keys**](#your-testnet-keys).
 
 # Windows
 
-No script — the steps are short and Task Scheduler is easier to get right by
-hand than to generate.
-
-### 1. Python
-
-Install Python 3.11 or newer from [python.org](https://www.python.org/downloads/).
-**Tick "Add python.exe to PATH"** on the first screen of the installer. Then, in
-PowerShell:
-
-```powershell
-py -V
-```
-
-### 2. The code
-
-Install [Git for Windows](https://git-scm.com/download/win) if you do not have
-it, then:
-
 ```powershell
 cd $HOME
 git clone https://github.com/shreyasbangera/btcusdt-book
 cd btcusdt-book
+.\deploy\laptop-setup.ps1
 ```
 
-### 3. The environment
+That is the whole thing. The script checks Binance first and stops there if the
+answer is no, then installs Python dependencies into a virtualenv, runs the
+tests, seeds 36 months of market data (~650 archive downloads, 10–20 minutes),
+and **registers the hourly scheduled task for you** — as a dry run, with no
+`--arm`. Read it before running it; it is about 190 lines.
+
+If PowerShell refuses to run it ("running scripts is disabled on this system"):
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+That lasts for the current window only and does not change anything permanently.
+
+If registering the task fails, it needs elevation — the script says so and tells
+you exactly what to re-run in an administrator PowerShell. Everything before
+that step is already done, so the second run is quick.
+
+### Prerequisites
+
+* **Python 3.11+** from [python.org](https://www.python.org/downloads/). **Tick
+  "Add python.exe to PATH"** on the first installer screen — everything else is
+  default.
+* **[Git for Windows](https://git-scm.com/download/win)**, all defaults.
+* `curl.exe`, which ships with Windows 10 1803 and later. Nothing to install.
+
+### What the scheduled task is set to, and why
+
+You do not have to touch Task Scheduler, but it is worth knowing what was
+registered, because three of these settings are the difference between a bot
+that runs and one that dies silently:
+
+| setting | value | why |
+|---|---|---|
+| Trigger | every **1 hour**, indefinitely | a laptop cannot be relied on to be awake at 05:35 and 17:35 IST. `--once-per-bar` makes all but one run a no-op |
+| Start if on batteries | **allowed** | Windows defaults this to *disallowed*. On a laptop that default stops the bot the moment you unplug, with no error anywhere |
+| Stop if going on batteries | **off** | same trap, other half |
+| Run a missed occurrence | **on** | catches up after sleep or a reboot |
+| Two at once | **ignore the new one** | never two decisions overlapping |
+| Window | hidden | otherwise a console flashes on your screen every hour for a year, and you will disable the task |
+
+To look at it later: `Get-ScheduledTask -TaskName 'BTCUSDT book'`.
+To stop it entirely: `Unregister-ScheduledTask -TaskName 'BTCUSDT book'`.
+
+### Doing it by hand instead
+
+If you would rather not run a script, `deploy\run.bat` is the same job as a
+batch file and the Task Scheduler GUI works fine:
 
 ```powershell
 py -m venv .venv
-.venv\Scripts\python.exe -m pip install --upgrade pip
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 .venv\Scripts\python.exe tests\all.py
-```
-
-The last line should end `all 3 test files passed`. If it does not, stop and
-send me the output rather than carrying on.
-
-### 4. Configuration and data
-
-Create `.env` in the `btcusdt-book` folder (Notepad is fine — save as
-"All files" so it does not become `.env.txt`):
-
-```
-BINANCE_TEST_KEY=
-BINANCE_TEST_SECRET=
-BOT_MODE=test
-BOT_STRATEGY=v7
-BOT_EQUITY=10000
-BOT_RISK=0.08
-```
-
-Then seed the market data:
-
-```powershell
-$env:BOOK_STORE = "$PWD\data\live"
-$env:PYTHONPATH = "$PWD"
-mkdir data\live -Force
-copy plans\v7_plan.json data\live\
+# create .env (see below), then:
+$env:BOOK_STORE = "$PWD\data\live"; $env:PYTHONPATH = "$PWD"
+mkdir data\live -Force; copy plans\v7_plan.json data\live\
 .venv\Scripts\python.exe live\fetch.py seed --months 36
-.venv\Scripts\python.exe panelstore.py
 ```
 
-The seed takes 10–20 minutes. The last command should print two panels with row
-counts and a recent timestamp.
-
-### 5. The schedule
-
-`deploy\run.bat` is the thing Task Scheduler runs. Test it once by hand first:
-
-```powershell
-deploy\run.bat
-type book.log
-```
-
-Then: **Task Scheduler → Create Task** (not "Basic Task" — you need the
-settings tab).
-
-* **General** → Name: `BTCUSDT book`. Tick **Run whether user is logged on or
-  not**, and **Run with highest privileges**.
-* **Triggers** → New → Daily, recur every 1 day. Tick **Repeat task every
-  1 hour** for a duration of **Indefinitely**.
-* **Actions** → New → Start a program → Program:
-  `C:\Users\<you>\btcusdt-book\deploy\run.bat`
-  Start in: `C:\Users\<you>\btcusdt-book`
-* **Conditions** → **untick "Start the task only if the computer is on AC
-  power"**. This one is the trap: it is ticked by default, and on a laptop it
-  will silently stop the bot the moment you unplug it.
-* **Settings** → tick **Run task as soon as possible after a scheduled start is
-  missed**.
+Then **Task Scheduler → Create Task** (not "Basic Task" — you need the
+Conditions tab), Action = `deploy\run.bat`, Trigger = daily repeating every
+1 hour indefinitely, and **untick "Start the task only if the computer is on AC
+power"** under Conditions.
 
 ---
 
@@ -193,10 +175,16 @@ awkward. Do not make it less awkward.
 
 # Watch one decision before arming anything
 
+**Windows:**
+```powershell
+.\deploy\run.ps1
+Get-Content .\book.log -Tail 30
+```
+
+**macOS / Linux:**
 ```bash
-./run.sh              # macOS / Linux
-deploy\run.bat        # Windows
-tail -30 book.log     # or:  type book.log
+./run.sh
+tail -30 book.log
 ```
 
 You should see something like:
@@ -231,9 +219,13 @@ schedule safe.
 
 Only after you have watched a few dry runs and they look sane.
 
+* **Windows:** re-run the setup script with `-Arm`. It re-registers the same
+  task pointing at the armed command and changes nothing else:
+  ```powershell
+  .\deploy\laptop-setup.ps1 -Arm
+  ```
+  To go back to a dry run, run it again without `-Arm`.
 * **macOS / Linux:** `crontab -e`, and append ` --arm` to the `run.sh` line.
-* **Windows:** Task Scheduler → your task → Actions → Edit → **Add arguments:**
-  `--arm`.
 
 Start at `BOT_RISK=0.08`, which is what the `.env` already says. At that setting
 the book's own bootstrap puts a drawdown worse than 20% at **34% probability**,
@@ -295,7 +287,9 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 | `data is N h old (limit 13h)` | the laptop was shut through a bar, or the fetch is failing. The bar is lost; the journal records it |
 | `Service unavailable from a restricted location` | a VPN is on, or your network is not served. Nothing here can fix it |
 | `REST unavailable, extending from the archive` | fine. The archive lags about a day, so if this persists the decisions go stale and get refused |
-| nothing in `book.log` for hours | the schedule is not firing. Windows: check the AC-power condition. macOS: cron needs Full Disk Access (System Settings → Privacy & Security → Full Disk Access → add `/usr/sbin/cron`) |
+| nothing in `book.log` for hours | the schedule is not firing. Windows: `Get-ScheduledTask -TaskName 'BTCUSDT book' \| Get-ScheduledTaskInfo` shows the last run and its result; check the AC-power condition first. macOS: cron needs Full Disk Access (System Settings → Privacy & Security → Full Disk Access → add `/usr/sbin/cron`) |
+| `running scripts is disabled on this system` | PowerShell's execution policy. `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` — that window only |
+| `UnicodeEncodeError` in `book.log` | should be impossible now (see `consoleio.py`), but if you see one, send it to me — it means an output path was missed |
 | `sleeves disagree on side` | should be impossible for V7. Stop and send me the output |
 
 # The honest summary

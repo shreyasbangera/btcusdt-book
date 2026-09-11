@@ -18,6 +18,11 @@ if exist "%ROOT%\.env" (
 
 set "BOOK_STORE=%ROOT%\data\live"
 set "PYTHONPATH=%ROOT%"
+REM Force UTF-8. Redirected output on Windows uses the ANSI codepage with
+REM strict errors, so one non-ASCII character in a sleeve label crashes the run
+REM - but only when writing to the log, never when you watch it in a console.
+set "PYTHONUTF8=1"
+set "PYTHONIOENCODING=utf-8"
 set "PY=%ROOT%\.venv\Scripts\python.exe"
 
 echo --- %DATE% %TIME% >> "%ROOT%\book.log"

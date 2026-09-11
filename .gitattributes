@@ -1,0 +1,10 @@
+# Windows shells need CRLF. A .bat file with LF-only line endings misbehaves in
+# cmd.exe - labels and multi-line blocks in particular - and the failures are
+# obscure, so force the checkout regardless of the cloner's core.autocrlf.
+*.bat  text eol=crlf
+*.ps1  text eol=crlf
+
+# Everything a POSIX shell runs must stay LF, or bash reports
+# "/usr/bin/env: 'bash\r': No such file or directory".
+*.sh   text eol=lf
+*.py   text eol=lf
