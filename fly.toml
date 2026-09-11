@@ -1,0 +1,27 @@
+# Fly.io.  Machines stop when idle and start on the next request, so a dashboard
+# nobody is looking at costs nothing.
+app = "btcusdt-book"
+primary_region = "fra"
+
+[build]
+  dockerfile = "webapp/Dockerfile"
+
+[env]
+  BOT_MODE = "test"
+  BOOK_STORE = "/data"
+  APP_USER = "trader"
+  HOST = "0.0.0.0"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[mounts]
+  source = "data"
+  destination = "/data"
+
+# Secrets are set out of band, never in this file:
+#   fly secrets set APP_PASSWORD=... BINANCE_TEST_KEY=... BINANCE_TEST_SECRET=...

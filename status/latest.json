@@ -1,0 +1,12 @@
+{
+  "_placeholder": true,
+  "note": "GitHub Actions overwrites this file with a real decision on its first scheduled run. Until then the dashboard shows this and marks itself as having no data yet.",
+  "ts": null,
+  "strategy": "v7",
+  "mode": "test",
+  "sleeves": [],
+  "ladder": [],
+  "diagnostics": {},
+  "order": null,
+  "conflict": false
+}

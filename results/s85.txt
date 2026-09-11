@@ -1,0 +1,39 @@
+120 configurations, 12-month lookback, quarterly
+
+    2022-03  exp 1.5  2.5ATR x3.0R  21d  gate    none
+    2022-06  exp 2.0  2.5ATR x3.0R  14d  gate  EMA100
+    2022-09  exp 1.5  3.0ATR x2.0R  21d  gate    none
+    2022-12  exp 3.0  3.0ATR x2.0R  14d  gate  EMA100
+    2023-03  exp 3.0  3.0ATR x2.0R  14d  gate  EMA100
+    2023-06  exp 3.0  2.5ATR x3.0R  14d  gate    none
+    2023-09  exp 3.0  3.0ATR x2.0R  21d  gate  EMA100
+    2023-12  exp 3.0  3.0ATR x3.0R  21d  gate  EMA100
+    2024-03  exp 1.5  2.5ATR x3.0R  14d  gate    none
+    2024-06  exp 3.0  2.5ATR x3.0R  14d  gate  EMA100
+    2024-09  exp 3.0  2.5ATR x3.0R  14d  gate    none
+    2024-12  exp 2.5  2.5ATR x2.0R  14d  gate  EMA200
+    2025-03  exp 3.0  2.5ATR x2.0R  14d  gate  EMA200
+    2025-06  exp 3.0  2.5ATR x2.0R  14d  gate  EMA200
+    2025-09  exp 3.0  2.5ATR x3.0R  14d  gate  EMA200
+    2025-12  exp 3.0  3.0ATR x3.0R  14d  gate    none
+    2026-03  exp 3.0  3.0ATR x2.0R  14d  gate    none
+    2026-06  exp 1.0  2.5ATR x2.0R  14d  gate    none
+
+gate chosen in 10 of 18 quarters
+
+           40-config control    8% | CAGR    73.2%  DD  -14.8%  PF  2.64  N  771  Shp  2.12  Clm  4.94 | med  -16.4%  P>20%  22%
+        2022-03-01 -> 2026-08-31   yearly 2022:-6% 2023:+188% 2024:+101% 2025:+44% 2026:+51%
+           40-config control   10% | CAGR    93.7%  DD  -18.3%  PF  2.64  N  775  Shp  2.10  Clm  5.13 | med  -20.2%  P>20%  52%
+        2022-03-01 -> 2026-08-31   yearly 2022:-8% 2023:+250% 2024:+134% 2025:+56% 2026:+66%
+           40-config control   12% | CAGR   117.2%  DD  -21.6%  PF  2.65  N  780  Shp  2.10  Clm  5.42 | med  -23.8%  P>20%  76%
+        2022-03-01 -> 2026-08-31   yearly 2022:-9% 2023:+337% 2024:+170% 2025:+69% 2026:+81%
+
+        120-config with gate    8% | CAGR    80.6%  DD  -13.7%  PF  3.25  N  602  Shp  2.07  Clm  5.87 | med  -17.9%  P>20%  32%
+        2022-03-01 -> 2026-08-31   yearly 2022:+1% 2023:+160% 2024:+124% 2025:+62% 2026:+51%
+        120-config with gate   10% | CAGR   106.8%  DD  -16.8%  PF  3.30  N  604  Shp  2.09  Clm  6.34 | med  -21.6%  P>20%  63%
+        2022-03-01 -> 2026-08-31   yearly 2022:+0% 2023:+223% 2024:+165% 2025:+85% 2026:+66%
+        120-config with gate   12% | CAGR   134.5%  DD  -20.0%  PF  3.33  N  607  Shp  2.10  Clm  6.72 | med  -25.3%  P>20%  84%
+        2022-03-01 -> 2026-08-31   yearly 2022:+0% 2023:+298% 2024:+211% 2025:+106% 2026:+81%
+
+done: gate grid
+EXIT=0

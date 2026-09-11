@@ -1,0 +1,21 @@
+exponent 2.5, 2.5 ATR x 3.0R, 14d hold, risk 8%, full window
+
+--- |net| cap
+                           cap 2.0 | CAGR    75.8%  DD  -18.3%  PF  2.66  N  938  Shp  2.17  Clm  4.14 | med  -17.8%  P>20%  33%
+                           cap 3.0 | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | med  -18.1%  P>20%  35%
+                           cap 4.0 | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | med  -18.1%  P>20%  35%
+                           cap 6.0 | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | med  -18.1%  P>20%  35%
+
+--- flat-exit threshold (exit when |net| <= x)
+              exit at |net| <= 0.0 | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | med  -18.1%  P>20%  35%
+             exit at |net| <= 0.05 | CAGR    70.6%  DD  -23.6%  PF  2.18  N 1539  Shp  1.63  Clm  2.99 | med  -21.5%  P>20%  61%
+              exit at |net| <= 0.1 | CAGR    51.4%  DD  -48.8%  PF  1.63  N 1905  Shp  1.19  Clm  1.05 | med  -31.1%  P>20%  96%
+              exit at |net| <= 0.2 | CAGR    77.9%  DD  -35.9%  PF  1.82  N 2270  Shp  1.44  Clm  2.17 | med  -26.5%  P>20%  89%
+             exit at |net| <= 0.35 | CAGR    51.7%  DD  -38.1%  PF  1.56  N 2575  Shp  1.14  Clm  1.36 | med  -35.1%  P>20%  99%
+
+--- per-signal threshold scale
+                    threshold x0.7 | CAGR    72.3%  DD  -22.1%  PF  2.11  N  942  Shp  1.76  Clm  3.27 | med  -26.0%  P>20%  85%
+                   threshold x0.85 | CAGR    64.6%  DD  -19.3%  PF  2.54  N  914  Shp  1.93  Clm  3.34 | med  -20.9%  P>20%  57%
+                    threshold x1.0 | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | med  -18.1%  P>20%  35%
+                    threshold x1.2 | CAGR    41.2%  DD  -26.0%  PF  2.10  N  891  Shp  1.51  Clm  1.58 | med  -20.0%  P>20%  50%
+                    threshold x1.5 | CAGR    17.1%  DD  -22.7%  PF  1.57  N  787  Shp  1.00  Clm  0.76 | med  -22.3%  P>20%  63%

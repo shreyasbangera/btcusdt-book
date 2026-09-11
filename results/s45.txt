@@ -1,0 +1,37 @@
+
+===== BVOL window 2023-06 -> 2026-08, 7 signals   2336 decision bars
+--- each signal on its own, one account, same rules
+                          strategy |     CAGR      DD    PF     N   Shp   Clm |     IS    OOS OOSPF
+                        flow alone |    16.1%  -14.2%  1.68   125  1.18  1.13 |    4.8%   22.7%  1.70
+                        ivol alone |    29.8%  -13.0%  1.71   201  1.58  2.30 |   47.7%   22.0%  1.57
+                        cmpx alone |    24.8%  -20.2%  1.68   214  1.33  1.23 |    8.2%   33.6%  1.96
+                      ethrel alone |    11.9%  -13.7%  1.34   155  0.82  0.87 |   10.0%   12.8%  1.38
+                      btcdom alone |    17.5%  -15.6%  1.35   329  0.97  1.12 |   24.3%   13.8%  1.28
+                       fundz alone |     3.6%  -20.3%  1.09   161  0.32  0.18 |    3.6%    3.6%  1.09
+                        posn alone |    15.2%  -15.7%  1.35   166  0.82  0.97 |   21.2%   12.0%  1.30
+--- the net position: all signals summed into one
+                      net, risk 2% |    11.3%   -3.4%  2.09   494  2.28  3.28 |   16.1%    9.0%  1.89
+                      net, risk 5% |    29.2%   -8.4%  2.07   506  2.24  3.47 |   44.6%   22.4%  1.90 | med  -7.4% P>20%   0%
+                      net, risk 8% |    49.4%  -13.1%  2.08   511  2.24  3.76 |   78.9%   37.6%  1.95
+--- net, with a dead band so weak agreement is not traded
+               net, dead band 0.15 |    25.4%   -9.1%  1.81   351  1.80  2.77 |   36.8%   20.2%  1.70 | med -10.5% P>20%   2%
+                net, dead band 0.3 |    15.3%  -21.2%  1.45   212  0.98  0.72 |   24.9%   11.1%  1.35 | med -16.5% P>20%  29%
+               net, dead band 0.45 |    18.0%  -21.6%  1.45   162  1.05  0.83 |   33.1%   11.4%  1.30 | med -17.8% P>20%  37%
+
+===== FULL window 2021-03 -> 2026-08, 6 signals   4020 decision bars
+--- each signal on its own, one account, same rules
+                          strategy |     CAGR      DD    PF     N   Shp   Clm |     IS    OOS OOSPF
+                        flow alone |    18.7%  -14.6%  1.69   229  1.26  1.28 |   16.6%   22.7%  1.70
+                        cmpx alone |    21.0%  -23.1%  1.61   369  1.21  0.91 |   13.4%   33.6%  1.96
+                      ethrel alone |     7.2%  -29.8%  1.23   263  0.56  0.24 |    3.8%   12.8%  1.38
+                      btcdom alone |    20.6%  -15.6%  1.40   536  1.13  1.32 |   24.9%   13.8%  1.28
+                       fundz alone |     4.0%  -20.3%  1.11   235  0.36  0.20 |    4.3%    3.6%  1.09
+                        posn alone |    12.8%  -15.7%  1.36   232  0.82  0.81 |   13.0%   12.0%  1.30
+--- the net position: all signals summed into one
+                      net, risk 2% |     7.6%   -6.8%  1.68   822  1.62  1.11 |    8.0%    7.7%  1.67
+                      net, risk 5% |    20.9%  -13.1%  1.75   853  1.74  1.59 |   21.6%   19.6%  1.70 | med -10.6% P>20%   1%
+                      net, risk 8% |    34.6%  -20.0%  1.76   861  1.74  1.73 |   35.9%   33.2%  1.73
+--- net, with a dead band so weak agreement is not traded
+               net, dead band 0.15 |    22.3%  -15.7%  1.72   638  1.64  1.43 |   22.1%   22.6%  1.72 | med -12.5% P>20%   4%
+                net, dead band 0.3 |    22.9%  -17.7%  1.63   391  1.42  1.30 |   27.6%   16.0%  1.45 | med -16.4% P>20%  25%
+               net, dead band 0.45 |    18.8%  -18.4%  1.51   275  1.13  1.02 |   21.2%   15.1%  1.39 | med -19.7% P>20%  48%

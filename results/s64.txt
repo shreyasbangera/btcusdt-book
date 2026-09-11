@@ -1,0 +1,11 @@
+learner: lightgbm
+purged walk-forward from 2023-03-01, 24m train / 3m test, purge 2 bars
+
+                     variant  risk |     CAGR      DD    PF     N   Shp   Clm |   medDDP>20%
+            LEARNED combiner    6% |   -20.5%  -77.3%  0.94   520 -0.47 -0.27 |  -68.2%  100%
+            LEARNED combiner    8% |   -28.4%  -87.0%  0.94   520 -0.47 -0.33 |  -79.6%  100%
+            LEARNED combiner   10% |   -36.3%  -92.7%  0.94   520 -0.48 -0.39 |  -87.4%  100%
+        LINEAR sum (control)    6% |    50.7%  -11.4%  2.17   612  2.49  4.44 |  -10.9%    1%
+        LINEAR sum (control)    8% |    71.3%  -14.9%  2.16   614  2.49  4.78 |  -14.2%   10%
+      SHUFFLED labels seed 0    8% |     0.3%  -48.2%  1.08   543  0.23  0.01 |  -59.7%  100%
+      SHUFFLED labels seed 1    8% |   -56.0%  -96.9%  0.66   545 -1.72 -0.58 |  -95.3%  100%

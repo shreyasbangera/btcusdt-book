@@ -1,0 +1,19 @@
+/home/user/quant/strategies/s53_altpos.py:57: RuntimeWarning: divide by zero encountered in log
+  g["a_alt_oi"] = zs(pd.Series(np.log(g.oi.to_numpy(float))).diff(45).to_numpy(), W)
+3468 bars  2021-12-02 -> 2026-08-31
+five-signal book on this window: CAGR 55.5%  DD -14.9%  PF 2.03  N 888  Sharpe 2.19
+
+    alt signal  sgn   corr |     CAGR      DD    PF    N   Shp |  IS PF OOS PF OOS CAGR
+        alt_tt    1   0.17 |    11.1%  -39.3%  1.49  149  0.57 |   1.22   1.67    21.3%
+    alt_retail   -1   0.36 |    14.3%  -23.4%  1.29  371  0.70 |   1.26   1.31    15.0%
+        alt_oi   -1  -0.24 |   -11.5%  -53.9%  0.84  226 -0.40 |   0.95   0.73   -20.5%
+     alt_taker   -1  -0.01 |   -15.5%  -69.4%  0.87  694 -0.93 |   1.00   0.74   -26.3%
+    alt_vs_btc    1   0.17 |    -9.4%  -56.8%  0.93  446 -0.35 |   1.17   0.73   -23.9%
+
+survivors: [('alt_tt', 1), ('alt_retail', -1)]
+
+                              book  risk |     CAGR      DD    PF     N   Shp   Clm |     IS    OOS
+               5 signals (control)    8% |    55.5%  -14.9%  2.03   888  2.19  3.72 |   55.1%   55.7%
+                          + alt_tt    8% |    36.2%  -17.1%  1.87   857  1.75  2.12 |   30.5%   43.1%
+                      + alt_retail    8% |    46.9%  -16.8%  2.07   837  2.04  2.80 |   43.2%   51.3%
+                   + all survivors    8% |    32.4%  -16.6%  1.88   801  1.67  1.95 |   23.5%   42.2%

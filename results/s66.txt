@@ -1,0 +1,20 @@
+--- how do the two sides actually perform on their own?
+                         variant  risk |     CAGR      DD    PF     N   Shp   Clm |     IS    OOS |   medDDP>20%
+  both sides, exp2.0 (reference)    8% |    63.5%  -15.6%  2.78   956  2.16  4.07 |   52.7%   83.5% |  -15.2%   14%
+                       LONG only    8% |    38.8%  -14.6%  3.59   468  1.80  2.66 |   34.5%   45.5% |  -11.8%    3%
+                      SHORT only    8% |    18.4%  -11.9%  1.90   474  1.22  1.55 |   13.5%   25.9% |  -14.4%   13%
+
+--- asymmetric conviction: harder on longs than shorts
+      long exp2.5 / short exp1.0    8% |    63.0%  -16.5%  2.62   959  2.12  3.83 |   51.8%   81.4% |  -14.7%   12%
+      long exp3.0 / short exp1.0    8% |    62.6%  -16.6%  2.74   945  2.09  3.77 |   49.2%   85.4% |  -14.2%    9%
+      long exp2.0 / short exp1.0    8% |    61.0%  -16.0%  2.42   977  2.18  3.81 |   53.1%   73.1% |  -15.1%   14%
+      long exp1.0 / short exp2.5    8% |    56.9%  -15.0%  2.32   971  2.16  3.79 |   51.5%   63.5% |  -15.7%   17%
+
+--- asymmetric size: shorts at a fraction of long size
+                 short size x0.5    8% |    51.8%  -12.6%  3.03   944  2.13  4.12 |   44.1%   63.6% |  -12.0%    3%
+                short size x0.75    8% |    58.0%  -14.0%  2.91   952  2.17  4.14 |   48.2%   73.6% |  -13.3%    6%
+                 short size x1.5    8% |    75.5%  -18.7%  2.62   962  2.09  4.05 |   61.8%  103.2% |  -19.4%   44%
+
+--- asymmetric stops
+       long stop 3.0 / short 2.0    8% |    77.2%  -17.6%  2.67   980  2.11  4.40
+       long stop 2.5 / short 3.5    8% |    61.3%  -16.1%  2.71   956  2.02  3.81

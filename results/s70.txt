@@ -1,0 +1,25 @@
+grid 32 configs x 6 risk levels, ranked on trailing Calmar
+
+    2023-03  exp 1.0  2.5ATRx3.0R 21d  risk 16%
+    2023-06  exp 1.0  3.0ATRx3.0R 21d  risk 16%
+    2023-09  exp 1.0  2.5ATRx3.0R 21d  risk 16%
+    2023-12  exp 2.5  3.0ATRx3.0R 14d  risk 16%
+    2024-03  exp 2.5  2.5ATRx3.0R 14d  risk 16%
+    2024-06  exp 2.5  2.5ATRx3.0R 14d  risk 16%
+    2024-09  exp 2.5  2.5ATRx3.0R 14d  risk 16%
+    2024-12  exp 2.5  2.5ATRx3.0R 14d  risk 16%
+    2025-03  exp 3.0  2.5ATRx3.0R 21d  risk 16%
+    2025-06  exp 3.0  3.0ATRx3.0R 14d  risk 16%
+    2025-09  exp 3.0  3.0ATRx3.0R 14d  risk 16%
+    2025-12  exp 3.0  3.0ATRx3.0R 14d  risk 16%
+    2026-03  exp 3.0  3.0ATRx3.0R 14d  risk 16%
+    2026-06  exp 3.0  3.0ATRx3.0R 14d  risk 16%
+
+        ADAPTIVE risk x1.0    0% | CAGR   246.0%  DD  -30.5%  PF  3.24  N  558  Sharpe  2.47  Calmar  8.06 | med  -26.1%  P>20%  88%
+        yearly 2023:+528% 2024:+277% 2025:+86% 2026:+75%
+       ADAPTIVE risk x1.25    0% | CAGR   345.2%  DD  -37.0%  PF  3.24  N  559  Sharpe  2.48  Calmar  9.34 | med  -31.7%  P>20%  99%
+        yearly 2023:+826% 2024:+384% 2025:+110% 2026:+99%
+        ADAPTIVE risk x1.5    0% | CAGR   463.2%  DD  -43.0%  PF  3.23  N  564  Sharpe  2.48  Calmar 10.77 | med  -36.9%  P>20% 100%
+        yearly 2023:+1234% 2024:+509% 2025:+133% 2026:+124%
+
+risk chosen per quarter: [('16%', 14)]

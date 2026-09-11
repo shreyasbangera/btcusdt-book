@@ -1,0 +1,14 @@
+/home/user/quant/strategies/s47_slow.py:51: RuntimeWarning: divide by zero encountered in log
+  g["v_slow_oi"]   = zl(pd.Series(np.log(g.oi.to_numpy(float))).diff(45 * BD), 180 * BD)
+fast net (reference): CAGR 51.3%  DD -17.1%  PF 2.09  Sharpe 2.13
+
+     slow signal  sgn   corr |     CAGR      DD    PF    N   Shp |  IS CAGR    PF |  OOS CAGR    PF
+       slow_flow    -      - | too few trades
+       slow_cmpx   -1  -0.12 |   -14.3%  -58.4%  0.54   65 -0.78 |    -9.6%  0.56 |    -21.1%  0.52
+        slow_dom   -1  -0.06 |   -10.1%  -66.7%  0.43   42 -0.60 |   -22.8%  0.10 |     13.7%  2.12
+       slow_posn    -      - | too few trades
+           carry   -1  -0.12 |    -5.9%  -50.6%  0.70   40 -0.26 |   -14.1%  0.43 |      9.3%  1.86
+         slow_oi    -      - | too few trades
+      slow_trend    -      - | too few trades
+
+survivors (IS PF > 1.05, OOS PF > 1.05, |corr| < 0.35):

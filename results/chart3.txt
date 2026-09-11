@@ -1,0 +1,4 @@
+FLOW   CAGR  22.4%  DD  -19.6%  PF 1.60
+POSN   CAGR  22.9%  DD  -18.7%  PF 1.49
+PORT3  CAGR  38.6%  DD  -19.0%  PF 1.27  Shp 1.34
+finals: {'PORT3': 63252, 'FLOW': 31347, 'POSN': 32120, 'PERP': 24184}

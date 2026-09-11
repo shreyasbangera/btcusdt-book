@@ -1,0 +1,40 @@
+
+===== S7 SMRD 4h =====
+  thr0.4 3d 2.5x2.0 L0 [ALL]             CAGR     7.0% DD -19.4% PF 1.16 N  708 WR47.7% Shp 0.64 Clm  0.36 | OOS CAGR   -1.3% PF 1.02 N 317
+  thr0.4 3d 2.5x2.0 L1 [ALL]             CAGR     5.9% DD -11.6% PF 1.31 N  355 WR51.3% Shp 0.71 Clm  0.51 | OOS CAGR    3.8% PF 1.20 N 157
+  thr0.4 5d 3.0x2.0 L0 [ALL]             CAGR     8.3% DD -14.6% PF 1.24 N  520 WR47.9% Shp 0.85 Clm  0.57 | OOS CAGR    3.6% PF 1.11 N 238
+  thr0.4 5d 3.0x2.0 L1 [ALL]             CAGR     4.8% DD -13.1% PF 1.30 N  258 WR48.8% Shp 0.66 Clm  0.36 | OOS CAGR    0.7% PF 1.08 N 119
+  thr0.4 10d 3.5x2.5 L0 [ALL]            CAGR     9.1% DD -13.7% PF 1.39 N  339 WR41.9% Shp 1.05 Clm  0.67 | OOS CAGR    4.8% PF 1.20 N 153
+  thr0.4 10d 3.5x2.5 L1 [ALL]            CAGR     5.5% DD -10.2% PF 1.56 N  152 WR49.3% Shp 0.83 Clm  0.54 | OOS CAGR    3.7% PF 1.32 N  67
+  thr0.7 3d 2.5x2.0 L0 [ALL]             CAGR     8.1% DD -13.2% PF 1.26 N  513 WR49.7% Shp 0.84 Clm  0.62 | OOS CAGR    6.9% PF 1.20 N 240
+  thr0.7 3d 2.5x2.0 L1 [ALL]             CAGR     6.3% DD  -7.5% PF 1.49 N  248 WR53.6% Shp 0.93 Clm  0.84 | OOS CAGR    6.6% PF 1.39 N 122
+  thr0.7 5d 3.0x2.0 L0 [ALL]             CAGR     9.2% DD  -8.2% PF 1.33 N  374 WR49.5% Shp 1.05 Clm  1.12 | OOS CAGR    7.4% PF 1.23 N 183
+  thr0.7 5d 3.0x2.0 L1 [ALL]             CAGR     6.7% DD  -6.8% PF 1.61 N  179 WR54.7% Shp 1.07 Clm  0.99 | OOS CAGR    4.3% PF 1.29 N  93
+  thr0.7 10d 3.5x2.5 L0 [ALL]            CAGR     9.1% DD  -7.8% PF 1.54 N  229 WR46.3% Shp 1.13 Clm  1.17 | OOS CAGR    9.7% PF 1.49 N 108
+  thr0.7 10d 3.5x2.5 L1 [ALL]            CAGR     5.8% DD  -7.5% PF 1.85 N  109 WR51.4% Shp 1.03 Clm  0.78 | OOS CAGR    6.0% PF 1.65 N  54
+  thr1.0 3d 2.5x2.0 L0 [ALL]             CAGR     6.4% DD -10.1% PF 1.24 N  411 WR50.9% Shp 0.75 Clm  0.63 | OOS CAGR    3.5% PF 1.12 N 201
+  thr1.0 3d 2.5x2.0 L1 [ALL]             CAGR     5.3% DD  -7.0% PF 1.46 N  204 WR56.9% Shp 0.87 Clm  0.76 | OOS CAGR    2.9% PF 1.20 N 105
+  thr1.0 5d 3.0x2.0 L0 [ALL]             CAGR     8.2% DD  -7.3% PF 1.39 N  297 WR50.8% Shp 1.07 Clm  1.13 | OOS CAGR    3.5% PF 1.14 N 149
+  thr1.0 5d 3.0x2.0 L1 [ALL]             CAGR     5.7% DD  -7.1% PF 1.68 N  144 WR55.6% Shp 1.03 Clm  0.80 | OOS CAGR    1.9% PF 1.19 N  75
+  thr1.0 10d 3.5x2.5 L0 [ALL]            CAGR     6.3% DD -10.0% PF 1.40 N  193 WR47.7% Shp 0.88 Clm  0.63 | OOS CAGR    2.8% PF 1.16 N  95
+  thr1.0 10d 3.5x2.5 L1 [ALL]            CAGR     4.5% DD  -6.7% PF 1.74 N   92 WR53.3% Shp 0.90 Clm  0.68 | OOS CAGR    2.7% PF 1.33 N  47
+
+===== S7 SMRD 12h =====
+  thr0.4 3d 2.5x2.0 L0 [ALL]             CAGR     2.0% DD  -6.1% PF 1.15 N  414 WR47.3% Shp 0.38 Clm  0.33 | OOS CAGR    2.5% PF 1.14 N 235
+  thr0.4 3d 2.5x2.0 L1 [ALL]             CAGR     2.1% DD  -8.2% PF 1.31 N  212 WR50.5% Shp 0.51 Clm  0.25 | OOS CAGR    0.8% PF 1.13 N 124
+  thr0.4 5d 3.0x2.0 L0 [ALL]             CAGR     3.9% DD  -5.3% PF 1.37 N  293 WR48.5% Shp 0.80 Clm  0.73 | OOS CAGR    3.6% PF 1.26 N 162
+  thr0.4 5d 3.0x2.0 L1 [ALL]             CAGR     3.3% DD  -6.3% PF 1.68 N  148 WR51.4% Shp 0.87 Clm  0.52 | OOS CAGR    2.8% PF 1.42 N  83
+  thr0.4 10d 3.5x2.5 L0 [ALL]            CAGR     3.2% DD  -5.9% PF 1.38 N  201 WR46.3% Shp 0.72 Clm  0.54 | OOS CAGR    3.2% PF 1.28 N 111
+  thr0.4 10d 3.5x2.5 L1 [ALL]            CAGR     3.0% DD  -5.4% PF 1.76 N   93 WR57.0% Shp 0.81 Clm  0.54 | OOS CAGR    1.5% PF 1.30 N  50
+  thr0.7 3d 2.5x2.0 L0 [ALL]             CAGR     2.8% DD  -6.1% PF 1.27 N  297 WR46.8% Shp 0.60 Clm  0.46 | OOS CAGR    2.5% PF 1.17 N 188
+  thr0.7 3d 2.5x2.0 L1 [ALL]             CAGR     2.0% DD  -5.5% PF 1.45 N  150 WR48.7% Shp 0.59 Clm  0.36 | OOS CAGR    1.3% PF 1.22 N 100
+  thr0.7 5d 3.0x2.0 L0 [ALL]             CAGR     1.8% DD  -5.7% PF 1.21 N  213 WR48.8% Shp 0.43 Clm  0.31 | OOS CAGR    1.4% PF 1.12 N 136
+  thr0.7 5d 3.0x2.0 L1 [ALL]             CAGR     2.5% DD  -4.4% PF 1.71 N  104 WR54.8% Shp 0.80 Clm  0.57 | OOS CAGR    2.1% PF 1.38 N  70
+  thr0.7 10d 3.5x2.5 L0 [ALL]            CAGR     1.7% DD  -5.9% PF 1.24 N  138 WR47.8% Shp 0.43 Clm  0.29 | OOS CAGR    1.1% PF 1.12 N  88
+  thr0.7 10d 3.5x2.5 L1 [ALL]            CAGR     1.2% DD  -6.5% PF 1.41 N   66 WR51.5% Shp 0.41 Clm  0.19 | OOS CAGR    0.7% PF 1.18 N  43
+  thr1.0 3d 2.5x2.0 L0 [ALL]             CAGR     1.6% DD  -7.6% PF 1.21 N  221 WR48.0% Shp 0.40 Clm  0.22 | OOS CAGR   -1.1% PF 0.97 N 137
+  thr1.0 3d 2.5x2.0 L1 [ALL]             CAGR     1.4% DD  -4.0% PF 1.41 N  111 WR52.3% Shp 0.47 Clm  0.35 | OOS CAGR    0.2% PF 1.10 N  73
+  thr1.0 5d 3.0x2.0 L0 [ALL]             CAGR     1.2% DD  -6.2% PF 1.18 N  164 WR50.0% Shp 0.33 Clm  0.19 | OOS CAGR    0.4% PF 1.06 N 105
+  thr1.0 5d 3.0x2.0 L1 [ALL]             CAGR     1.1% DD  -4.7% PF 1.37 N   82 WR52.4% Shp 0.41 Clm  0.23 | OOS CAGR    0.4% PF 1.12 N  57
+  thr1.0 10d 3.5x2.5 L0 [ALL]            CAGR     2.2% DD  -5.8% PF 1.36 N  107 WR51.4% Shp 0.60 Clm  0.38 | OOS CAGR    0.4% PF 1.06 N  69
+  thr1.0 10d 3.5x2.5 L1 [ALL]            CAGR     1.1% DD  -6.0% PF 1.42 N   55 WR52.7% Shp 0.43 Clm  0.19 | OOS CAGR   -0.8% PF 0.94 N  38

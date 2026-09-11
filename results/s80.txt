@@ -1,0 +1,14 @@
+                             variant  risk |     CAGR      DD    PF     N   Shp   Clm |   medDD P>20%
+                 flat risk (control)    6% | CAGR    56.0%  DD  -14.0%  PF  2.76  N  925  Shp  2.17  Clm  3.99 | med  -13.9%  P>20%   9%
+                 flat risk (control)    8% | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | med  -18.1%  P>20%  35%
+                 flat risk (control)   10% | CAGR   100.8%  DD  -22.3%  PF  2.65  N  945  Shp  2.16  Clm  4.51 | med  -22.2%  P>20%  67%
+
+    INVERSE trend size 60d [0.6,1.7]    8% | CAGR    96.0%  DD  -25.3%  PF  3.12  N  895  Shp  2.01  Clm  3.80 | med  -23.5%  P>20%  74%
+    INVERSE trend size 60d [0.5,2.0]    8% | CAGR   103.3%  DD  -28.8%  PF  3.22  N  896  Shp  1.94  Clm  3.59 | med  -25.3%  P>20%  85%
+    INVERSE trend size 90d [0.6,1.7]    8% | CAGR    99.6%  DD  -28.2%  PF  2.98  N  898  Shp  2.01  Clm  3.53 | med  -21.2%  P>20%  60%
+    INVERSE trend size 90d [0.5,2.0]    8% | CAGR   109.2%  DD  -30.7%  PF  3.03  N  899  Shp  1.97  Clm  3.56 | med  -22.9%  P>20%  71%
+   INVERSE trend size 180d [0.6,1.7]    8% | CAGR    83.2%  DD  -24.2%  PF  2.92  N  905  Shp  1.99  Clm  3.44 | med  -18.6%  P>20%  39%
+   INVERSE trend size 180d [0.5,2.0]    8% | CAGR    88.9%  DD  -26.3%  PF  2.93  N  906  Shp  1.96  Clm  3.38 | med  -19.9%  P>20%  49%
+
+          INVERSE trend exponent 90d    8% | CAGR     0.0%  DD    0.0%  PF  0.00  N    0  Shp  0.00  Clm   inf | med    0.0%  P>20%   0%
+         INVERSE trend exponent 180d    8% | CAGR     0.0%  DD    0.0%  PF  0.00  N    0  Shp  0.00  Clm   inf | med    0.0%  P>20%   0%

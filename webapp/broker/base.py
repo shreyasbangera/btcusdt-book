@@ -1,0 +1,19 @@
+"""What the engine needs from any venue."""
+from dataclasses import dataclass
+
+
+@dataclass
+class Position:
+    qty: float = 0.0          # signed, base asset
+    entry: float = 0.0
+    equity: float = 0.0
+
+
+class Broker:
+    mode = "abstract"
+    def position(self) -> Position: ...
+    def price(self) -> float: ...
+    def market(self, side: str, qty: float, note: str = "") -> dict: ...
+    def place_stop(self, side: str, qty: float, stop: float, kind="STOP_MARKET") -> dict: ...
+    def cancel_all(self) -> dict: ...
+    def open_orders(self) -> list: ...

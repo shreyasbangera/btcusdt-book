@@ -1,0 +1,33 @@
+120 configurations, gates ['none', 'net', 'fundz']
+
+    2022-03  exp 2.0 2.5ATR x3.0R 21d  gate fundz   Calmar 12.27
+    2022-06  exp 2.5 2.5ATR x3.0R 21d  gate fundz   Calmar 15.72
+    2022-09  exp 1.5 2.5ATR x3.0R 21d  gate fundz   Calmar 14.48
+    2022-12  exp 2.5 2.5ATR x2.0R 14d  gate   net   Calmar 3.08
+    2023-03  exp 2.5 3.0ATR x3.0R 14d  gate   net   Calmar 1.06
+    2023-06  exp 3.0 2.5ATR x3.0R 14d  gate fundz   Calmar 4.15
+    2023-09  exp 2.5 3.0ATR x3.0R 14d  gate   net   Calmar 6.66
+    2023-12  exp 1.5 3.0ATR x3.0R 14d  gate fundz   Calmar 17.97
+    2024-03  exp 1.5 2.5ATR x3.0R 14d  gate  none   Calmar 39.18
+    2024-06  exp 2.5 2.5ATR x3.0R 14d  gate   net   Calmar 34.79
+    2024-09  exp 3.0 2.5ATR x3.0R 14d  gate fundz   Calmar 40.23
+    2024-12  exp 3.0 2.5ATR x3.0R 21d  gate fundz   Calmar 31.04
+    2025-03  exp 3.0 3.0ATR x3.0R 14d  gate fundz   Calmar 12.84
+    2025-06  exp 3.0 3.0ATR x3.0R 14d  gate fundz   Calmar 19.06
+    2025-09  exp 2.5 3.0ATR x3.0R 14d  gate fundz   Calmar 5.67
+    2025-12  exp 2.5 2.5ATR x2.0R 14d  gate   net   Calmar 3.72
+    2026-03  exp 3.0 3.0ATR x2.0R 14d  gate  none   Calmar 5.70
+    2026-06  exp 1.0 2.5ATR x2.0R 14d  gate  none   Calmar 3.14
+
+top-1 gate : {'fundz': 10, 'net': 5, 'none': 3}
+top-3 gate : {'fundz': 32, 'net': 13, 'none': 9}  (of 54)
+
+              fundgate top-1    8% | CAGR    77.0%  DD  -11.3%  PF  2.81  N  727  Shp  2.11  Clm  6.79 | med  -16.5%  P>20%  24%
+        2022-03-01 -> 2026-08-31   yearly 2022:-6% 2023:+173% 2024:+134% 2025:+41% 2026:+55%
+              fundgate top-3    8% | CAGR    81.5%  DD  -12.3%  PF  2.90  N 2025  Shp  2.18  Clm  6.63 | med  -15.8%  P>20%  18%
+        2022-03-01 -> 2026-08-31   yearly 2022:-7% 2023:+195% 2024:+135% 2025:+36% 2026:+67%
+              fundgate top-5    8% | CAGR    81.8%  DD  -13.9%  PF  2.67  N 3205  Shp  2.14  Clm  5.90 | med  -18.1%  P>20%  37%
+        2022-03-01 -> 2026-08-31   yearly 2022:-5% 2023:+200% 2024:+114% 2025:+39% 2026:+73%
+
+done: fundgate
+EXIT=0

@@ -1,0 +1,54 @@
+
+### LONG WINDOW, 5 signals, risk 8%, NO flat exit (control)
+  CAGR 51.3%   MaxDD -17.1%   PF 2.09   N 787   WR 48.7%   Sharpe 2.13   Calmar 3.01
+  IS 54.1% / PF 2.13    OOS 46.5% / PF 2.06 / N 323
+  bootstrap  median DD -15.4%   5th pct -23.6%   P(DD>20%) 15%
+  yearly 2021:+65% 2022:+6% 2023:+79% 2024:+55% 2025:+20% 2026:+68%
+
+### LONG WINDOW 2021-03 -> 2026-08, 5 signals, risk 6%
+  CAGR 39.6%   MaxDD -11.4%   PF 2.02   N 1001   WR 48.1%   Sharpe 2.20   Calmar 3.47
+  IS 39.2% / PF 2.02    OOS 40.3% / PF 2.02 / N 382
+  bootstrap  median DD -12.1%   5th pct -18.6%   P(DD>20%) 3%
+  yearly 2021:+39% 2022:+4% 2023:+79% 2024:+41% 2025:+19% 2026:+45%
+
+### LONG WINDOW 2021-03 -> 2026-08, 5 signals, risk 8%  [HEADLINE]
+  CAGR 54.9%   MaxDD -14.9%   PF 2.03   N 1005   WR 48.1%   Sharpe 2.20   Calmar 3.68
+  IS 54.1% / PF 2.01    OOS 55.7% / PF 2.04 / N 383
+  bootstrap  median DD -15.8%   5th pct -24.2%   P(DD>20%) 17%
+  yearly 2021:+54% 2022:+5% 2023:+116% 2024:+57% 2025:+25% 2026:+63%
+
+### LONG WINDOW 2021-03 -> 2026-08, 5 signals, risk 10%
+  CAGR 69.2%   MaxDD -19.6%   PF 2.02   N 1009   WR 48.0%   Sharpe 2.15   Calmar 3.54
+  IS 67.6% / PF 1.95    OOS 72.2% / PF 2.06 / N 383
+  bootstrap  median DD -19.6%   5th pct -29.9%   P(DD>20%) 47%
+  yearly 2021:+70% 2022:+6% 2023:+159% 2024:+65% 2025:+29% 2026:+82%
+
+### SHORT WINDOW 2023-06 -> 2026-08, 6 signals, risk 9%
+  CAGR 56.2%   MaxDD -13.1%   PF 2.08   N 580   WR 46.4%   Sharpe 2.05   Calmar 4.30
+  IS 64.6% / PF 2.06    OOS 52.2% / PF 2.09 / N 381
+  bootstrap  median DD -14.7%   5th pct -23.4%   P(DD>20%) 14%
+  yearly 2023:+26% 2024:+57% 2025:+30% 2026:+61%
+
+### SHORT WINDOW 2023-06 -> 2026-08, 6 signals, risk 15%
+  CAGR 103.4%   MaxDD -20.7%   PF 2.15   N 582   WR 46.6%   Sharpe 2.05   Calmar 5.00
+  IS 121.2% / PF 2.03    OOS 95.5% / PF 2.18 / N 382
+  bootstrap  median DD -23.3%   5th pct -36.3%   P(DD>20%) 74%
+  yearly 2023:+44% 2024:+106% 2025:+53% 2026:+114%
+
+### robustness of the headline configuration
+  look-ahead audit
+                         as traded  CAGR    54.9%  PF  2.03  Sharpe  2.20
+      shifted 1 bar earlier (peek)  CAGR   141.4%  PF  4.04  Sharpe  4.62
+                     delayed 1 bar  CAGR    33.6%  PF  1.54  Sharpe  1.55
+  cost ladder
+                              zero  CAGR    69.0%  PF  2.29  Sharpe  2.61
+                       base 16 bps  CAGR    54.9%  PF  2.03  Sharpe  2.20
+                     double 32 bps  CAGR    41.7%  PF  1.81  Sharpe  1.77
+                     triple 48 bps  CAGR    29.8%  PF  1.63  Sharpe  1.35
+                  quadruple 64 bps  CAGR    19.0%  PF  1.47  Sharpe  0.93
+  leave one signal out
+                      without flow  CAGR    54.4%  DD  -18.9%  PF  1.94  Sharpe  2.00
+                      without cmpx  CAGR    36.2%  DD  -19.8%  PF  1.53  Sharpe  1.50
+                    without btcdom  CAGR    55.7%  DD  -18.8%  PF  1.97  Sharpe  1.95
+                     without fundz  CAGR    56.7%  DD  -17.2%  PF  1.94  Sharpe  1.96
+                      without posn  CAGR    34.7%  DD  -30.7%  PF  1.57  Sharpe  1.51

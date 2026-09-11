@@ -1,0 +1,28 @@
+7 signal constructions x 4 exponents, walk-forward every 3 months on the trailing 18
+
+    2022-09  con (480, 6, 60)  exp 1.0
+    2022-12  con (240, 6, 120)  exp 1.0
+    2023-03  con (240, 6, 120)  exp 1.0
+    2023-06  con (240, 6, 120)  exp 1.0
+    2023-09  con (240, 6, 120)  exp 1.0
+    2023-12  con (480, 6, 120)  exp 3.0
+    2024-03  con (480, 6, 120)  exp 2.5
+    2024-06  con (480, 6, 120)  exp 2.0
+    2024-09  con (480, 6, 60)  exp 2.0
+    2024-12  con (480, 6, 60)  exp 2.0
+    2025-03  con (480, 6, 60)  exp 2.0
+    2025-06  con (480, 6, 120)  exp 2.0
+    2025-09  con (480, 6, 120)  exp 3.0
+    2025-12  con (480, 6, 120)  exp 3.0
+    2026-03  con (240, 6, 120)  exp 2.0
+    2026-06  con (240, 6, 120)  exp 3.0
+
+    construction ALSO searched    6% | CAGR    57.6%  DD   -9.9%  Sharpe  2.22  Calmar  5.81 | boot med  -11.5%  P>20%   2%
+    construction ALSO searched    8% | CAGR    81.1%  DD  -13.2%  Sharpe  2.23  Calmar  6.15 | boot med  -15.0%  P>20%  14%
+    construction ALSO searched   10% | CAGR   107.0%  DD  -16.4%  Sharpe  2.24  Calmar  6.51 | boot med  -18.4%  P>20%  37%
+
+        published construction    6% | CAGR    56.3%  DD  -10.8%  Sharpe  2.22  Calmar  5.19 | boot med  -10.9%  P>20%   1%
+        published construction    8% | CAGR    79.2%  DD  -14.3%  Sharpe  2.22  Calmar  5.54 | boot med  -14.3%  P>20%  11%
+        published construction   10% | CAGR   104.2%  DD  -17.7%  Sharpe  2.23  Calmar  5.89 | boot med  -17.5%  P>20%  31%
+
+constructions chosen: [('(240, 6, 120)', 6), ('(480, 6, 120)', 6), ('(480, 6, 60)', 4)]

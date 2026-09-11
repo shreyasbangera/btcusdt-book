@@ -1,0 +1,34 @@
+adaptive exponent: 18-month lookback, re-chosen every 3 months, 40 configurations
+
+    2022-09 -> 2022-12  exponent 1.0 2.5ATR x3.0R 21d   N  62
+    2022-12 -> 2023-03  exponent 1.5 3.0ATR x3.0R 21d   N  45
+    2023-03 -> 2023-06  exponent 1.0 2.5ATR x3.0R 21d   N  39
+    2023-06 -> 2023-09  exponent 1.0 3.0ATR x3.0R 14d   N  42
+    2023-09 -> 2023-12  exponent 1.0 2.5ATR x3.0R 14d   N  49
+    2023-12 -> 2024-03  exponent 3.0 3.0ATR x2.0R 14d   N  32
+    2024-03 -> 2024-06  exponent 2.5 3.0ATR x2.0R 14d   N  41
+    2024-06 -> 2024-09  exponent 2.0 3.0ATR x2.0R 14d   N  38
+    2024-09 -> 2024-12  exponent 1.5 2.5ATR x3.0R 14d   N  34
+    2024-12 -> 2025-03  exponent 2.0 2.5ATR x3.0R 14d   N  41
+    2025-03 -> 2025-06  exponent 2.0 2.5ATR x3.0R 14d   N  47
+    2025-06 -> 2025-09  exponent 2.5 2.5ATR x3.0R 14d   N  37
+    2025-09 -> 2025-12  exponent 3.0 3.0ATR x2.0R 14d   N  48
+    2025-12 -> 2026-03  exponent 2.0 3.0ATR x3.0R 14d   N  47
+    2026-03 -> 2026-06  exponent 2.5 3.0ATR x2.0R 14d   N  31
+    2026-06 -> 2026-09  exponent 3.0 3.0ATR x2.0R 14d   N  39
+
+         ADAPTIVE exponent    6% | CAGR    64.9%  DD  -11.2%  Sharpe  2.27  Calmar  5.78 | boot med  -12.3%  P>20%   4%
+        yearly 2022:-6% 2023:+129% 2024:+57% 2025:+30% 2026:+68%
+         ADAPTIVE exponent    8% | CAGR    84.6%  DD  -14.8%  Sharpe  2.21  Calmar  5.71 | boot med  -16.0%  P>20%  21%
+        yearly 2022:-10% 2023:+180% 2024:+68% 2025:+40% 2026:+95%
+         ADAPTIVE exponent   10% | CAGR   119.9%  DD  -18.9%  Sharpe  2.25  Calmar  6.34 | boot med  -19.7%  P>20%  48%
+        yearly 2022:-11% 2023:+272% 2024:+95% 2025:+63% 2026:+122%
+         ADAPTIVE exponent   12% | CAGR   154.6%  DD  -21.4%  Sharpe  2.28  Calmar  7.23 | boot med  -22.9%  P>20%  71%
+        yearly 2022:-16% 2023:+395% 2024:+121% 2025:+73% 2026:+162%
+         ADAPTIVE exponent   14% | CAGR   191.5%  DD  -25.8%  Sharpe  2.26  Calmar  7.42 | boot med  -26.4%  P>20%  89%
+        yearly 2022:-17% 2023:+493% 2024:+166% 2025:+89% 2026:+191%
+
+    FIXED linear (control)    8% | CAGR    57.5%  DD  -12.9%  Sharpe  2.19  Calmar  4.44 | boot med  -15.7%  P>20%  18%
+        yearly 2022:-11% 2023:+116% 2024:+56% 2025:+25% 2026:+63%
+    FIXED linear (control)   10% | CAGR    75.0%  DD  -16.0%  Sharpe  2.20  Calmar  4.70 | boot med  -19.2%  P>20%  44%
+        yearly 2022:-13% 2023:+159% 2024:+74% 2025:+31% 2026:+82%

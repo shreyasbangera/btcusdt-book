@@ -1,0 +1,15 @@
+does each signal carry momentum contamination, and does removing it raise its IC?
+
+    signal  corr to past ret    raw IC  resid IC
+      cmpx             0.187    0.0380    0.0408
+    btcdom            -0.010    0.0481    0.0518
+     fundz            -0.172    0.0030    0.0033
+      posn             0.443    0.0290    0.0281
+
+                       variant  risk |     CAGR      DD    PF     N   Shp   Clm |    OOS  P>20%
+             all raw (control)    8% | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | OOS   85.2%  P>20%  35%
+          orthogonalised: cmpx    8% | CAGR    60.4%  DD  -18.2%  PF  2.45  N  927  Shp  1.94  Clm  3.32 | OOS   74.9%  P>20%  36%
+        orthogonalised: btcdom    8% | CAGR    70.2%  DD  -19.1%  PF  2.91  N  912  Shp  1.99  Clm  3.67 | OOS   91.5%  P>20%  43%
+         orthogonalised: fundz    8% | CAGR    69.3%  DD  -18.1%  PF  2.38  N  943  Shp  1.94  Clm  3.84 | OOS   74.8%  P>20%  46%
+          orthogonalised: posn    8% | CAGR    69.1%  DD  -31.9%  PF  3.53  N  919  Shp  1.84  Clm  2.17 | OOS  136.6%  P>20%  87%
+      orthogonalised: all four    8% | CAGR    25.1%  DD  -30.7%  PF  1.69  N  727  Shp  0.87  Clm  0.82 | OOS   34.9%  P>20%  94%

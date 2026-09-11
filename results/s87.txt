@@ -1,0 +1,48 @@
+200 configurations, gate menu [0, 100, 150, 200, 300]
+
+    2022-03  exp 1.5 2.5ATR x3.0R 21d  gate    none  Calmar 7.14
+    2022-06  exp 2.0 2.5ATR x3.0R 14d  gate  EMA100  Calmar 12.55
+    2022-09  exp 1.5 3.0ATR x2.0R 21d  gate    none  Calmar 8.43
+    2022-12  exp 3.0 3.0ATR x2.0R 14d  gate  EMA100  Calmar 3.08
+    2023-03  exp 3.0 3.0ATR x2.0R 14d  gate  EMA100  Calmar 1.08
+    2023-06  exp 3.0 2.5ATR x3.0R 14d  gate    none  Calmar 3.31
+    2023-09  exp 3.0 3.0ATR x2.0R 21d  gate  EMA100  Calmar 7.30
+    2023-12  exp 3.0 3.0ATR x3.0R 21d  gate  EMA100  Calmar 17.96
+    2024-03  exp 1.5 2.5ATR x3.0R 14d  gate    none  Calmar 39.18
+    2024-06  exp 3.0 2.5ATR x3.0R 14d  gate  EMA100  Calmar 42.06
+    2024-09  exp 3.0 2.5ATR x3.0R 14d  gate    none  Calmar 34.64
+    2024-12  exp 2.5 2.5ATR x2.0R 14d  gate  EMA200  Calmar 24.97
+    2025-03  exp 3.0 2.5ATR x2.0R 14d  gate  EMA200  Calmar 11.42
+    2025-06  exp 3.0 2.5ATR x2.0R 14d  gate  EMA200  Calmar 19.21
+    2025-09  exp 3.0 2.5ATR x3.0R 14d  gate  EMA200  Calmar 8.12
+    2025-12  exp 3.0 2.5ATR x3.0R 14d  gate  EMA300  Calmar 4.10
+    2026-03  exp 3.0 3.0ATR x2.0R 14d  gate    none  Calmar 5.70
+    2026-06  exp 1.0 2.5ATR x2.0R 14d  gate    none  Calmar 3.14
+
+top-1 gate choices : {0: 7, 100: 6, 200: 4, 300: 1}
+top-5 gate choices : {0: 30, 100: 31, 150: 4, 200: 16, 300: 9}  (of 90)
+
+                 gated top-1    8% | CAGR    81.3%  DD  -13.7%  PF  3.24  N  602  Shp  2.07  Clm  5.92 | med  -18.0%  P>20%  33%
+        2022-03-01 -> 2026-08-31   yearly 2022:+1% 2023:+160% 2024:+124% 2025:+62% 2026:+54%
+                 gated top-3    8% | CAGR    86.2%  DD  -12.3%  PF  3.17  N 1697  Shp  2.15  Clm  7.01 | med  -18.0%  P>20%  34%
+        2022-03-01 -> 2026-08-31   yearly 2022:+3% 2023:+151% 2024:+137% 2025:+56% 2026:+72%
+                 gated top-5    8% | CAGR    85.4%  DD  -14.1%  PF  3.01  N 2643  Shp  2.14  Clm  6.08 | med  -19.4%  P>20%  45%
+        2022-03-01 -> 2026-08-31   yearly 2022:+1% 2023:+163% 2024:+126% 2025:+58% 2026:+69%
+                 gated top-8    8% | CAGR    86.1%  DD  -14.0%  PF  2.99  N 3855  Shp  2.11  Clm  6.13 | med  -19.6%  P>20%  46%
+        2022-03-01 -> 2026-08-31   yearly 2022:-3% 2023:+180% 2024:+119% 2025:+59% 2026:+73%
+                gated top-12    8% | CAGR    87.2%  DD  -14.2%  PF  2.92  N 5126  Shp  2.10  Clm  6.15 | med  -19.8%  P>20%  49%
+        2022-03-01 -> 2026-08-31   yearly 2022:-5% 2023:+180% 2024:+119% 2025:+56% 2026:+86%
+
+risk ladder on the top-5 gated blend
+
+                 gated top-5   10% | CAGR   105.2%  DD  -17.4%  PF  2.92  N 2747  Shp  2.08  Clm  6.04 | med  -23.6%  P>20%  77%
+        2022-03-01 -> 2026-08-31   yearly 2022:+1% 2023:+207% 2024:+171% 2025:+61% 2026:+87%
+                 gated top-5   12% | CAGR   132.2%  DD  -21.1%  PF  2.96  N 2811  Shp  2.08  Clm  6.27 | med  -27.6%  P>20%  91%
+        2022-03-01 -> 2026-08-31   yearly 2022:+0% 2023:+283% 2024:+224% 2025:+75% 2026:+104%
+                 gated top-5   14% | CAGR   164.4%  DD  -24.4%  PF  3.00  N 2840  Shp  2.10  Clm  6.73 | med  -31.3%  P>20%  98%
+        2022-03-01 -> 2026-08-31   yearly 2022:+1% 2023:+376% 2024:+285% 2025:+88% 2026:+128%
+                 gated top-5   16% | CAGR   197.1%  DD  -27.6%  PF  3.01  N 2880  Shp  2.10  Clm  7.13 | med  -35.1%  P>20% 100%
+        2022-03-01 -> 2026-08-31   yearly 2022:-1% 2023:+486% 2024:+353% 2025:+102% 2026:+153%
+
+done: combined
+EXIT=0

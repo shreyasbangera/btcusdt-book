@@ -1,0 +1,26 @@
+grid size 480  (in-sample 2021-01 → 2024-06)
+
+DD budget  15% -> best IS CAGR   19.3%  DD  -14.6%  PF 1.77  N 139  Calmar 1.32
+     risk 2%  pyr 2  trail 2.0xATR  throttle soft 5% hard 16% floor 0.40
+     OOS  CAGR    9.9%  DD  -20.0%  PF 1.32  N 165
+     FULL CAGR   14.1%  DD  -20.0%  PF 1.47  N 304  Sharpe 0.74  Calmar 0.71
+
+DD budget  20% -> best IS CAGR   31.1%  DD  -17.9%  PF 1.86  N 139  Calmar 1.74
+     risk 2%  pyr 2  trail 2.0xATR  throttle soft 10% hard 22% floor 0.45
+     OOS  CAGR   11.0%  DD  -23.0%  PF 1.29  N 164
+     FULL CAGR   22.1%  DD  -23.0%  PF 1.50  N 303  Sharpe 0.84  Calmar 0.96
+
+DD budget  25% -> best IS CAGR   37.8%  DD  -22.1%  PF 1.90  N 139  Calmar 1.71
+     risk 2%  pyr 2  trail 2.0xATR  throttle soft 100% hard 100% floor 0.00
+     OOS  CAGR   14.7%  DD  -31.7%  PF 1.24  N 163
+     FULL CAGR   28.3%  DD  -31.7%  PF 1.43  N 302  Sharpe 0.88  Calmar 0.89
+
+DD budget  30% -> best IS CAGR   42.6%  DD  -28.1%  PF 1.88  N 141  Calmar 1.52
+     risk 6%  pyr 2  trail 2.0xATR  throttle soft 4% hard 14% floor 0.35
+     OOS  CAGR   21.8%  DD  -37.4%  PF 1.28  N 163
+     FULL CAGR   29.3%  DD  -37.4%  PF 1.40  N 304  Sharpe 0.81  Calmar 0.78
+
+DD budget  40% -> best IS CAGR   73.3%  DD  -38.5%  PF 1.72  N 139  Calmar 1.90
+     risk 4%  pyr 2  trail 2.0xATR  throttle soft 100% hard 100% floor 0.00
+     OOS  CAGR   20.2%  DD  -54.2%  PF 1.18  N 164
+     FULL CAGR   50.3%  DD  -54.2%  PF 1.30  N 303  Sharpe 0.88  Calmar 0.93

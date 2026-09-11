@@ -1,0 +1,13 @@
+screening 116 features x 2 signs on 4020 bars, IS 2021-03-01..2024-07-01, OOS 2024-07-01..2026-09-01
+
+/usr/local/lib/python3.11/dist-packages/numpy/lib/_nanfunctions_impl.py:1845: RuntimeWarning: invalid value encountered in subtract
+  np.subtract(arr, avg, out=arr, casting='unsafe', where=where)
+/usr/local/lib/python3.11/dist-packages/numpy/lib/_nanfunctions_impl.py:1845: RuntimeWarning: invalid value encountered in subtract
+  np.subtract(arr, avg, out=arr, casting='unsafe', where=where)
+/usr/local/lib/python3.11/dist-packages/numpy/lib/_nanfunctions_impl.py:1845: RuntimeWarning: invalid value encountered in subtract
+  np.subtract(arr, avg, out=arr, casting='unsafe', where=where)
+Traceback (most recent call last):
+  File "/home/user/quant/strategies/s40_screen.py", line 80, in <module>
+    surv = df[(df.oos_pf > 1.10) & (df.is_pf > 1.05) & (df.corr < 0.45)].sort_values("shp", ascending=False)
+                                                        ^^^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'method' and 'float'

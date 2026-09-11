@@ -1,0 +1,27 @@
+trades 771   in the worst drawdown window 50
+
+--- WORST DD 2024-10 -> 2025-02:  n 50   total P&L -1,516   mean -30.3   win 48%
+            long n   long pnl  short n   short pnl
+      long      21       -165
+     short      29     -1,351
+    signal  agree n   agree pnl  oppose n  oppose pnl
+      flow        9        -805         2          -7
+      ivol       11        -415        10         154
+      cmpx       13         271         8          11
+    btcdom       11        -396        13        -433
+     fundz        7        -291         8          -5
+      posn       23        -209         9        -596
+
+--- everywhere else:  n 721   total P&L 32,865   mean 45.6   win 47%
+            long n   long pnl  short n   short pnl
+      long     355     20,718
+     short     366     12,148
+    signal  agree n   agree pnl  oppose n  oppose pnl
+      flow      124      14,443        50        -593
+      ivol       76       8,869        77       3,915
+      cmpx      117      15,430        65        -351
+    btcdom      138       5,408       115       7,523
+     fundz      114       4,568        89       4,480
+      posn      174      29,441        73        -965
+
+done: dd attribution

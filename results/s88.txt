@@ -1,0 +1,33 @@
+360 configurations, gate menu ['ema100', 'ema200', 'mom100', 'mom200', 'slope100', 'slope200', 'er100', 'er200']
+
+    2022-03  exp 1.5 2.5ATR x3.0R 21d  gate     none  Calmar 7.14
+    2022-06  exp 2.0 2.5ATR x3.0R 14d  gate   ema100  Calmar 12.55
+    2022-09  exp 1.5 3.0ATR x2.0R 21d  gate     none  Calmar 8.43
+    2022-12  exp 3.0 3.0ATR x2.0R 14d  gate   ema100  Calmar 3.08
+    2023-03  exp 3.0 3.0ATR x2.0R 14d  gate   ema100  Calmar 1.08
+    2023-06  exp 3.0 2.5ATR x3.0R 14d  gate     none  Calmar 3.31
+    2023-09  exp 3.0 3.0ATR x2.0R 21d  gate   ema100  Calmar 7.30
+    2023-12  exp 3.0 3.0ATR x3.0R 21d  gate   ema100  Calmar 17.96
+    2024-03  exp 1.5 2.5ATR x3.0R 14d  gate     none  Calmar 39.18
+    2024-06  exp 3.0 2.5ATR x3.0R 14d  gate   ema100  Calmar 42.06
+    2024-09  exp 3.0 2.5ATR x3.0R 14d  gate   mom200  Calmar 37.04
+    2024-12  exp 2.0 2.5ATR x3.0R 14d  gate   mom200  Calmar 25.64
+    2025-03  exp 3.0 2.5ATR x2.0R 14d  gate   ema200  Calmar 11.42
+    2025-06  exp 3.0 2.5ATR x2.0R 14d  gate   ema200  Calmar 19.21
+    2025-09  exp 3.0 2.5ATR x2.0R 14d  gate slope100  Calmar 8.68
+    2025-12  exp 3.0 2.5ATR x3.0R 14d  gate slope200  Calmar 3.93
+    2026-03  exp 2.5 2.5ATR x3.0R 14d  gate slope200  Calmar 5.92
+    2026-06  exp 1.0 2.5ATR x2.0R 14d  gate     none  Calmar 3.14
+
+top-1 gate kind : {'none': 5, 'ema': 8, 'mom': 2, 'slope': 3}
+top-5 gate kind : {'none': 16, 'er': 18, 'ema': 37, 'mom': 11, 'slope': 8}  (of 90)
+
+              whatgate top-1    8% | CAGR    77.8%  DD  -23.2%  PF  2.99  N  588  Shp  1.93  Clm  3.35 | med  -23.3%  P>20%  67%
+        2022-03-01 -> 2026-08-31   yearly 2022:+1% 2023:+160% 2024:+137% 2025:+43% 2026:+51%
+              whatgate top-3    8% | CAGR    81.0%  DD  -15.2%  PF  2.89  N 1713  Shp  2.10  Clm  5.34 | med  -19.1%  P>20%  44%
+        2022-03-01 -> 2026-08-31   yearly 2022:+3% 2023:+162% 2024:+139% 2025:+37% 2026:+64%
+              whatgate top-5    8% | CAGR    84.1%  DD  -13.2%  PF  2.89  N 2674  Shp  2.16  Clm  6.36 | med  -18.3%  P>20%  37%
+        2022-03-01 -> 2026-08-31   yearly 2022:+2% 2023:+168% 2024:+135% 2025:+44% 2026:+69%
+
+done: whatgate
+EXIT=0

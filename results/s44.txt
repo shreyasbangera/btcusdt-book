@@ -1,0 +1,37 @@
+
+BVOL 8-sleeve, flat sizing (control)   weights FLOW 10% POSN 7% CONVEX 4% IVOL 14% CMPX 16% ETHREL 17% BTCDOM 14% FUNDZ 18%
+ knob |     CAGR      DD    PF   Shp   Clm     N |      IS     OOS |   medDD  P>20%
+  2.5 |    41.4%   -9.6%  1.52  2.27  4.32  1581 |   44.1%   40.4% |  -10.2%     1%
+        yearly 2023:+17% 2024:+39% 2025:+40% 2026:+34%
+  3.5 |    61.2%  -13.2%  1.51  2.27  4.63  1582 |   65.1%   59.5% |  -14.0%     9%
+        yearly 2023:+23% 2024:+59% 2025:+59% 2026:+48%
+  4.5 |    81.7%  -16.7%  1.50  2.27  4.90  1580 |   87.1%   79.6% |  -17.7%    33%
+        yearly 2023:+27% 2024:+81% 2025:+82% 2026:+62%
+
+BVOL 8-sleeve, CONVICTION sizing   weights FLOW 11% POSN 6% CONVEX 6% IVOL 13% CMPX 14% ETHREL 19% BTCDOM 12% FUNDZ 18%
+ knob |     CAGR      DD    PF   Shp   Clm     N |      IS     OOS |   medDD  P>20%
+  2.5 |    66.3%  -13.3%  1.54  2.32  4.98  1581 |   70.0%   65.0% |  -14.0%     9%
+        yearly 2023:+27% 2024:+60% 2025:+63% 2026:+54%
+  3.5 |   101.0%  -18.2%  1.53  2.33  5.55  1582 |  107.2%   98.8% |  -19.2%    44%
+        yearly 2023:+36% 2024:+93% 2025:+98% 2026:+79%
+  4.5 |   139.3%  -22.9%  1.53  2.33  6.10  1580 |  148.3%  136.1% |  -23.9%    79%
+        yearly 2023:+44% 2024:+132% 2025:+140% 2026:+102%
+
+BVOL 8-sleeve, conviction + 14d dominance hold   weights FLOW 11% POSN 6% CONVEX 6% IVOL 13% CMPX 14% ETHREL 19% BTCDOM 12% FUNDZ 18%
+ knob |     CAGR      DD    PF   Shp   Clm     N |      IS     OOS |   medDD  P>20%
+  3.5 |   101.5%  -17.8%  1.55  2.34  5.72  1556 |  103.7%  102.1% |  -19.0%    43%
+        yearly 2023:+35% 2024:+92% 2025:+99% 2026:+81%
+
+FULL 7-sleeve, flat sizing (control)   weights FLOW 10% POSN 9% CONVEX 6% CMPX 17% ETHREL 19% BTCDOM 15% FUNDZ 22%
+ knob |     CAGR      DD    PF   Shp   Clm     N |      IS     OOS |   medDD  P>20%
+  2.0 |    25.9%  -12.6%  1.42  1.84  2.06  2124 |   21.4%   33.3% |  -11.1%     2%
+        yearly 2021:+22% 2022:-6% 2023:+45% 2024:+28% 2025:+26% 2026:+32%
+  3.0 |    40.2%  -18.5%  1.42  1.84  2.18  2127 |   32.6%   52.9% |  -16.3%    22%
+        yearly 2021:+33% 2022:-8% 2023:+71% 2024:+45% 2025:+41% 2026:+50%
+
+FULL 7-sleeve, CONVICTION sizing   weights FLOW 11% POSN 9% CONVEX 9% CMPX 16% ETHREL 20% BTCDOM 14% FUNDZ 22%
+ knob |     CAGR      DD    PF   Shp   Clm     N |      IS     OOS |   medDD  P>20%
+  2.0 |    39.2%  -17.4%  1.44  1.88  2.26  2124 |   33.1%   49.4% |  -15.3%    15%
+        yearly 2021:+36% 2022:-8% 2023:+73% 2024:+41% 2025:+35% 2026:+50%
+  3.0 |    61.8%  -25.2%  1.45  1.88  2.45  2127 |   51.2%   80.2% |  -22.3%    67%
+        yearly 2021:+56% 2022:-12% 2023:+119% 2024:+67% 2025:+56% 2026:+80%

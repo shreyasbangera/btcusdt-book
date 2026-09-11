@@ -1,0 +1,39 @@
+
+===== BVOL window, 7 signals
+--- look-ahead audit (oracle control at the bottom)
+                           as traded | CAGR   92.3% DD -19.1% PF 2.48 N  490 Shp 2.52
+    net shifted 1 bar EARLIER (peek) | CAGR  187.3% DD -12.5% PF 3.32 N  493 Shp 4.13
+                   net delayed 1 bar | CAGR   53.7% DD -16.3% PF 1.78 N  491 Shp 1.86
+             oracle: next-bar return | CAGR662446257451.5% DD -16.3% PF90.99 N 1239 Shp19.88
+--- cost sensitivity (base is 5.0 bps fee + 3.0 bps slip per side)
+                           zero cost | CAGR  111.7% DD -17.1% PF 2.79 N  490 Shp 2.87
+              base 16 bps round turn | CAGR   92.3% DD -19.1% PF 2.48 N  490 Shp 2.52
+                 double cost, 32 bps | CAGR   75.6% DD -21.0% PF 2.24 N  490 Shp 2.18
+                 triple cost, 48 bps | CAGR   59.4% DD -22.8% PF 2.01 N  489 Shp 1.82
+--- leave-one-signal-out
+                        without flow | CAGR   92.6% DD -18.4% PF 2.09 N  503 Shp 2.35
+                        without ivol | CAGR   65.5% DD -22.3% PF 1.91 N  484 Shp 2.02
+                        without cmpx | CAGR   85.3% DD -19.1% PF 2.32 N  434 Shp 2.31
+                      without ethrel | CAGR   92.7% DD -15.7% PF 2.42 N  497 Shp 2.26
+                      without btcdom | CAGR   79.8% DD -16.3% PF 2.25 N  422 Shp 2.10
+                       without fundz | CAGR   86.6% DD -20.4% PF 2.15 N  453 Shp 2.18
+                        without posn | CAGR   48.0% DD -26.2% PF 1.65 N  515 Shp 1.66
+
+===== FULL window, 6 signals
+--- look-ahead audit (oracle control at the bottom)
+                           as traded | CAGR   39.0% DD -20.8% PF 1.91 N  822 Shp 1.97
+    net shifted 1 bar EARLIER (peek) | CAGR   88.4% DD -19.8% PF 3.52 N  826 Shp 3.70
+                   net delayed 1 bar | CAGR   21.8% DD -18.7% PF 1.48 N  825 Shp 1.23
+             oracle: next-bar return | CAGR563165213.1% DD -12.1% PF81.81 N 2129 Shp20.26
+--- cost sensitivity (base is 5.0 bps fee + 3.0 bps slip per side)
+                           zero cost | CAGR   47.3% DD -18.4% PF 2.10 N  822 Shp 2.30
+              base 16 bps round turn | CAGR   39.0% DD -20.8% PF 1.91 N  822 Shp 1.97
+                 double cost, 32 bps | CAGR   31.0% DD -23.0% PF 1.74 N  823 Shp 1.63
+                 triple cost, 48 bps | CAGR   23.6% DD -25.2% PF 1.60 N  822 Shp 1.29
+--- leave-one-signal-out
+                        without flow | CAGR   41.0% DD -25.4% PF 1.87 N  824 Shp 1.83
+                        without cmpx | CAGR   44.4% DD -24.7% PF 1.96 N  722 Shp 1.95
+                      without ethrel | CAGR   51.3% DD -17.1% PF 2.09 N  787 Shp 2.13
+                      without btcdom | CAGR   39.8% DD -20.8% PF 1.89 N  624 Shp 1.81
+                       without fundz | CAGR   37.3% DD -23.9% PF 1.83 N  747 Shp 1.73
+                        without posn | CAGR   26.1% DD -27.9% PF 1.51 N  864 Shp 1.41

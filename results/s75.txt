@@ -1,0 +1,36 @@
+quarterly selection, 24m lookback, Calmar-ranked, window 2022-01-01 ->
+
+    2024-01  BTC:exp2.5  ETH:exp1.0  ZEC:exp2.5  XRP:exp1.5
+    2024-04  BTC:exp2.0  ETH:exp1.0  ZEC:exp2.5  XRP:exp3.0
+    2024-07  BTC:exp2.0  ETH:exp1.0  ZEC:exp2.5
+    2024-10  BTC:exp2.5  ETH:exp2.5  ZEC:exp2.5  XRP:exp1.0
+    2025-01  BTC:exp2.5  ETH:exp1.0  SOL:exp1.0  ZEC:exp1.5  XRP:exp3.0
+    2025-04  BTC:exp3.0  ETH:exp2.5  SOL:exp1.0  ZEC:exp1.5  XRP:exp3.0
+    2025-07  BTC:exp3.0  ETH:exp1.0  SOL:exp1.0  ZEC:exp1.0  XRP:exp3.0
+    2025-10  BTC:exp3.0  ETH:exp2.5  SOL:exp1.5  ZEC:exp1.0  XRP:exp3.0
+    2026-01  BTC:exp1.5  ETH:exp2.5  SOL:exp2.0  ZEC:exp1.0  XRP:exp3.0
+    2026-04  BTC:exp3.0  ETH:exp1.0  SOL:exp2.0  ZEC:exp1.0  XRP:exp2.0
+    2026-07  BTC:exp3.0  ETH:exp2.5  SOL:exp1.5  ZEC:exp2.0  XRP:exp3.0
+
+         selected instruments x1.0 | CAGR    53.9%  DD  -13.4%  Shp  2.47  Clm  4.04 | med  -10.6%  P>20%   2%
+        yearly 2024:+71% 2025:+56% 2026:+18%
+         selected instruments x1.5 | CAGR    85.5%  DD  -19.4%  Shp  2.45  Clm  4.42 | med  -15.5%  P>20%  18%
+        yearly 2024:+116% 2025:+89% 2026:+27%
+         selected instruments x2.0 | CAGR   119.0%  DD  -25.0%  Shp  2.41  Clm  4.76 | med  -20.2%  P>20%  52%
+        yearly 2024:+168% 2025:+128% 2026:+32%
+         selected instruments x2.5 | CAGR   155.4%  DD  -30.2%  Shp  2.38  Clm  5.14 | med  -24.9%  P>20%  80%
+        yearly 2024:+224% 2025:+170% 2026:+39%
+
+              all five always x1.0 | CAGR    47.8%  DD  -10.1%  Shp  2.40  Clm  4.72 | med  -10.1%  P>20%   1%
+        yearly 2024:+54% 2025:+56% 2026:+18%
+              all five always x1.5 | CAGR    75.6%  DD  -14.8%  Shp  2.38  Clm  5.11 | med  -14.8%  P>20%  14%
+        yearly 2024:+87% 2025:+89% 2026:+27%
+              all five always x2.0 | CAGR   104.9%  DD  -19.2%  Shp  2.34  Clm  5.45 | med  -19.3%  P>20%  45%
+        yearly 2024:+124% 2025:+128% 2026:+32%
+
+                    BTC alone x1.0 | CAGR    52.8%  DD  -18.9%  Shp  1.67  Clm  2.80 | med  -20.8%  P>20%  54%
+        yearly 2024:+87% 2025:+41% 2026:+17%
+                   BTC alone x1.25 | CAGR    66.7%  DD  -24.0%  Shp  1.65  Clm  2.78 | med  -25.9%  P>20%  73%
+        yearly 2024:+114% 2025:+52% 2026:+20%
+                    BTC alone x1.5 | CAGR    81.3%  DD  -29.3%  Shp  1.64  Clm  2.77 | med  -30.9%  P>20%  84%
+        yearly 2024:+142% 2025:+63% 2026:+23%

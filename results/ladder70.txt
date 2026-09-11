@@ -1,0 +1,14 @@
+fine risk ladder on the Calmar-selected book, honest per-block
+
+           CALMAR-selected    9% | CAGR   105.1%  DD  -16.6%  PF  3.26  N  541  Sharpe  2.44  Calmar  6.35 | med  -14.6%  P>20%  12%
+        yearly 2023:+195% 2024:+116% 2025:+40% 2026:+39%
+           CALMAR-selected   10% | CAGR   120.3%  DD  -18.3%  PF  3.26  N  543  Sharpe  2.44  Calmar  6.58 | med  -16.0%  P>20%  22%
+        yearly 2023:+229% 2024:+133% 2025:+44% 2026:+44%
+           CALMAR-selected   11% | CAGR   136.2%  DD  -20.0%  PF  3.26  N  546  Sharpe  2.44  Calmar  6.82 | med  -17.5%  P>20%  31%
+        yearly 2023:+266% 2024:+150% 2025:+49% 2026:+49%
+           CALMAR-selected   12% | CAGR   154.6%  DD  -21.6%  PF  3.31  N  549  Sharpe  2.46  Calmar  7.14 | med  -18.8%  P>20%  41%
+        yearly 2023:+307% 2024:+174% 2025:+54% 2026:+54%
+           CALMAR-selected   14% | CAGR   190.9%  DD  -25.0%  PF  3.31  N  552  Sharpe  2.46  Calmar  7.63 | med  -21.6%  P>20%  62%
+        yearly 2023:+400% 2024:+214% 2025:+63% 2026:+64%
+           CALMAR-selected   16% | CAGR   231.0%  DD  -28.2%  PF  3.31  N  555  Sharpe  2.46  Calmar  8.19 | med  -24.3%  P>20%  80%
+        yearly 2023:+511% 2024:+258% 2025:+73% 2026:+75%

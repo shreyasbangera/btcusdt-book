@@ -1,0 +1,14 @@
+8 folds, 18-month train / 6-month test, rolled forward
+
+  test 2022-09 -> 2023-03   picked thr x1.0 3.0ATR x1.5R 21d   walk-fwd   -14.6%   fixed    -8.3%   N 111
+  test 2023-03 -> 2023-09   picked thr x1.0 2.5ATR x3.0R 21d   walk-fwd   153.1%   fixed   105.0%   N  81
+  test 2023-09 -> 2024-03   picked thr x1.0 2.5ATR x3.0R 14d   walk-fwd   360.9%   fixed   203.0%   N  89
+  test 2024-03 -> 2024-09   picked thr x1.0 2.5ATR x3.0R 14d   walk-fwd    58.4%   fixed    36.3%   N  82
+  test 2024-09 -> 2025-03   picked thr x1.0 2.5ATR x3.0R 14d   walk-fwd    19.7%   fixed    11.2%   N  78
+  test 2025-03 -> 2025-09   picked thr x1.0 2.5ATR x3.0R 14d   walk-fwd    33.2%   fixed    31.3%   N  91
+  test 2025-09 -> 2026-03   picked thr x1.0 3.0ATR x3.0R 14d   walk-fwd    51.8%   fixed    49.5%   N 107
+  test 2026-03 -> 2026-09   picked thr x0.8 2.5ATR x1.5R 14d   walk-fwd   125.0%   fixed   114.0%   N  79
+
+        WALK-FORWARD (re-selected) | CAGR    76.3%  DD  -13.8%  Sharpe  2.28  Calmar  5.53  | boot med  -17.7%  P>20%  32%
+            FIXED published config | CAGR    58.0%  DD  -12.9%  Sharpe  2.21  Calmar  4.48  | boot med  -15.6%  P>20%  18%
+            RANDOM config per fold | CAGR    42.9%  DD   -8.7%  Sharpe  2.03  Calmar  4.90  | boot med  -13.7%  P>20%   9%

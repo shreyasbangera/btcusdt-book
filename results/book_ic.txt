@@ -1,0 +1,23 @@
+minutes: 34547   blocks: 4   2023-06-05 -> 2024-02-10
+mean spread 0.034 bps   mean top-of-book depth $582,481   quotes/min 11,744
+
+feature            E h=1     L h=1     E h=5     L h=5    E h=15    L h=15    E h=60    L h=60
+obi              +0.0250   +0.0095   -0.0183   -0.0076   -0.0174   +0.0065   -0.0182   +0.0188
+obi_last         +0.1079   +0.0811   +0.0413   +0.0344   +0.0268   +0.0236   +0.0067   +0.0249
+obi_vol          +0.0014   +0.0091   -0.0052   +0.0206   +0.0152   +0.0356   +0.0262   +0.0145
+micro_dev        +0.0250   +0.0030   -0.0171   -0.0161   -0.0176   -0.0052   -0.0183   +0.0060
+spread_bps       +0.0111   +0.0004   +0.0239   +0.0060   +0.0499   +0.0089   +0.1274   +0.0166
+depth_usd        +0.0036   -0.0060   -0.0069   -0.0105   -0.0325   -0.0210   -0.0621   -0.0242
+n_quotes         -0.0083   +0.0131   -0.0117   +0.0234   +0.0005   +0.0317   +0.0252   +0.0513
+kline_imb        -0.0161   -0.0108   -0.0623   -0.0353   -0.0371   -0.0132   -0.0224   -0.0058
+  (E = first two month-blocks, L = last two)
+
+=== economic significance: top/bottom decile forward move vs a 16 bps round turn ===
+  obi        h=  1m | D1   -0.08(t -1.3) D10   +0.08(t +1.2) | spread   +0.16bps vs 16.0 cost
+  obi        h=  5m | D1   +0.09(t +0.7) D10   -0.33(t -2.4) | spread   -0.42bps vs 16.0 cost
+  obi        h= 15m | D1   -0.01(t -0.1) D10   -0.04(t -0.2) | spread   -0.03bps vs 16.0 cost
+  obi        h= 60m | D1   +0.35(t +0.7) D10   +1.58(t +3.0) | spread   +1.23bps vs 16.0 cost
+  micro_dev  h=  1m | D1   -0.11(t -1.7) D10   +0.02(t +0.3) | spread   +0.13bps vs 16.0 cost
+  micro_dev  h=  5m | D1   -0.01(t -0.0) D10   -0.59(t -3.0) | spread   -0.58bps vs 16.0 cost
+  micro_dev  h= 15m | D1   -0.35(t -1.4) D10   -0.53(t -2.1) | spread   -0.19bps vs 16.0 cost
+  micro_dev  h= 60m | D1   -0.57(t -1.1) D10   -0.76(t -1.3) | spread   -0.19bps vs 16.0 cost

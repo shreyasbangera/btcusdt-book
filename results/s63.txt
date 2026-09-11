@@ -1,0 +1,11 @@
+9 quarters, 6 signals incl. implied vol, 12-month lookback
+         ADAPTIVE 6-signal    6% | CAGR    34.0%  DD  -17.3%  Sharpe  1.48  Calmar  1.97 | boot med  -14.1%  P>20%  16%
+        yearly 2024:+38% 2025:+14% 2026:+21%
+         ADAPTIVE 6-signal    8% | CAGR    46.0%  DD  -22.6%  Sharpe  1.47  Calmar  2.04 | boot med  -18.5%  P>20%  40%
+        yearly 2024:+52% 2025:+17% 2026:+29%
+         ADAPTIVE 6-signal   10% | CAGR    58.6%  DD  -27.8%  Sharpe  1.47  Calmar  2.11 | boot med  -22.7%  P>20%  67%
+        yearly 2024:+67% 2025:+20% 2026:+37%
+         ADAPTIVE 6-signal   12% | CAGR    74.4%  DD  -31.9%  Sharpe  1.52  Calmar  2.33 | boot med  -26.4%  P>20%  83%
+        yearly 2024:+87% 2025:+24% 2026:+46%
+
+exponents: [2.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.5, 3.0, 1.0]

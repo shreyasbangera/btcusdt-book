@@ -1,0 +1,28 @@
+CALMAR-selected, 24m lookback / 3m interval, 40 configs
+
+    2023-03  exp 1.0  3.0ATR x3.0R  21d
+    2023-06  exp 1.0  3.0ATR x3.0R  21d
+    2023-09  exp 1.0  3.0ATR x3.0R  21d
+    2023-12  exp 2.5  3.0ATR x3.0R  14d
+    2024-03  exp 2.5  3.0ATR x3.0R  14d
+    2024-06  exp 2.5  3.0ATR x3.0R  14d
+    2024-09  exp 3.0  2.5ATR x3.0R  14d
+    2024-12  exp 3.0  2.5ATR x3.0R  14d
+    2025-03  exp 2.5  2.5ATR x3.0R  21d
+    2025-06  exp 3.0  3.0ATR x3.0R  14d
+    2025-09  exp 3.0  3.0ATR x3.0R  14d
+    2025-12  exp 3.0  3.0ATR x3.0R  14d
+    2026-03  exp 3.0  3.0ATR x3.0R  14d
+    2026-06  exp 3.0  3.0ATR x3.0R  14d
+
+           CALMAR-selected    6% | CAGR    64.0%  DD  -11.3%  PF  3.26  N  537  Sharpe  2.43  Calmar  5.68 | med   -9.9%  P>20%   1%
+        yearly 2023:+110% 2024:+71% 2025:+26% 2026:+25%
+           CALMAR-selected    8% | CAGR    90.7%  DD  -14.8%  PF  3.26  N  538  Sharpe  2.43  Calmar  6.12 | med  -13.0%  P>20%   6%
+        yearly 2023:+163% 2024:+100% 2025:+35% 2026:+34%
+           CALMAR-selected   10% | CAGR   120.3%  DD  -18.3%  PF  3.26  N  543  Sharpe  2.44  Calmar  6.58 | med  -16.0%  P>20%  22%
+        yearly 2023:+229% 2024:+133% 2025:+44% 2026:+44%
+           CALMAR-selected   12% | CAGR   154.6%  DD  -21.6%  PF  3.31  N  549  Sharpe  2.46  Calmar  7.14 | med  -18.8%  P>20%  41%
+        yearly 2023:+307% 2024:+174% 2025:+54% 2026:+54%
+
+ SHARPE-selected (control)   10% | CAGR   116.9%  DD  -22.1%  PF  2.71  N  572  Sharpe  2.39  Calmar  5.30 | med  -19.5%  P>20%  46%
+        yearly 2023:+244% 2024:+100% 2025:+39% 2026:+58%

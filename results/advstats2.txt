@@ -1,0 +1,5 @@
+risk    6%  CAGR    60.1%  DD  -11.2%  PF  2.76  N   667  WR 45.7%  Sharpe  2.20  Calmar  5.34  medDD  -12.2%  P>20%   4%
+risk    8%  CAGR    84.6%  DD  -14.8%  PF  2.78  N   672  WR 46.1%  Sharpe  2.21  Calmar  5.71  medDD  -16.0%  P>20%  21%
+risk   10%  CAGR   111.4%  DD  -18.9%  PF  2.80  N   673  WR 46.1%  Sharpe  2.21  Calmar  5.89  medDD  -19.6%  P>20%  46%
+risk   12%  CAGR   140.8%  DD  -22.4%  PF  2.82  N   677  WR 46.1%  Sharpe  2.21  Calmar  6.28  medDD  -23.0%  P>20%  72%
+cols: ['entry_dt', 'exit_dt', 'side', 'entry', 'exit', 'qty', 'pnl', 'reason', 'bars']

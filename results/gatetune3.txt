@@ -1,0 +1,11 @@
+V8 fund-gate top-3   risk 12.00%  CAGR   137.4%  DD -16.71%  OK   PF  2.93  N  2113  Shp  2.19  Clm  8.22  P>20  69%
+      yearly 2022:-10%  2023:+376%  2024:+248%  2025:+56%  2026:+112%
+V8 fund-gate top-3   risk 13.00%  CAGR   153.0%  DD -18.03%  OK   PF  2.93  N  2122  Shp  2.19  Clm  8.48  P>20  81%
+      yearly 2022:-11%  2023:+435%  2024:+281%  2025:+61%  2026:+124%
+V8 fund-gate top-3   risk 14.00%  CAGR   172.0%  DD -19.18%  OK   PF  2.97  N  2133  Shp  2.21  Clm  8.96  P>20  86%
+      yearly 2022:-10%  2023:+501%  2024:+317%  2025:+70%  2026:+136%
+V8 fund-gate top-3   risk 15.00%  CAGR   185.9%  DD -20.43%  over  PF  2.96  N  2142  Shp  2.19  Clm  9.10  P>20  92%
+V7 wide gate top-3   risk 14.40%  CAGR   179.0%  DD -19.99%  OK   PF  3.18  N  1769  Shp  2.13  Clm  8.95  P>20  98%
+      yearly 2022:+3%  2023:+392%  2024:+326%  2025:+108%  2026:+126%
+done: gate tune
+EXIT=0

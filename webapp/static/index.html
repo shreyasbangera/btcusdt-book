@@ -1,0 +1,296 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTCUSDT book</title>
+<style>
+:root{
+  --bg:#F2F4F6; --card:#fff; --sunk:#E9ECF0; --ink:#12151B; --ash:#59636F;
+  --faint:#8A939F; --line:#D9DEE4; --hair:#E7EBEF;
+  --sig:#B67818; --ok:#26795A; --bad:#B33C33;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0C0F14; --card:#141920; --sunk:#0F141A; --ink:#E6EAEF; --ash:#939DA9;
+  --faint:#6B7683; --line:#242C36; --hair:#1C232C;
+  --sig:#E0AD53; --ok:#4FB287; --bad:#E0736A;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:14.5px;line-height:1.55;padding:0 16px}
+.wrap{max-width:1000px;margin:0 auto;padding-block:26px 60px;
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:1.3rem;margin:0;letter-spacing:-.01em}
+h2{font-size:.72rem;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 10px;font-weight:500}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.grow{flex:1 1 auto}
+.mono,.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kv .k{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--faint)}
+.kv .v{font-family:var(--mono);font-size:1.22rem;font-weight:600;
+  font-variant-numeric:tabular-nums;margin-top:2px}
+button{font:inherit;font-family:var(--mono);font-size:.8rem;padding:7px 14px;
+  border:1px solid var(--line);border-radius:3px;background:var(--sunk);
+  color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--ash)}
+button.primary{background:var(--sig);border-color:var(--sig);color:#fff;font-weight:600}
+button.danger{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select{font:inherit;font-family:var(--mono);font-size:.85rem;padding:6px 9px;
+  border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink)}
+table{border-collapse:collapse;width:100%;font-size:.82rem}
+th,td{text-align:right;padding:7px 9px;border-bottom:1px solid var(--hair);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-family:var(--mono);font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);font-weight:500}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pill{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:3px;border:1px solid currentColor;font-weight:600}
+.pill.paper{color:var(--ok)} .pill.test{color:var(--sig)} .pill.live{color:var(--bad)}
+.pill.armed{color:#fff;background:var(--bad);border-color:var(--bad)}
+.pill.safe{color:var(--ok)}
+.warn{background:var(--sunk);border-left:3px solid var(--bad);padding:11px 14px;
+  border-radius:3px;font-size:.85rem;color:var(--ash)}
+.muted{color:var(--faint);font-size:.82rem}
+.pos{color:var(--ok)} .neg{color:var(--bad)}
+pre{font-family:var(--mono);font-size:.76rem;background:var(--sunk);padding:11px;
+  border-radius:3px;overflow-x:auto;margin:0;color:var(--ash)}
+</style>
+<div class="wrap">
+
+<div class="row">
+  <h1 class="grow">BTCUSDT book</h1>
+  <span id="mode" class="pill">…</span>
+  <span id="armpill" class="pill safe">disarmed</span>
+</div>
+
+<div class="card">
+  <h2>Settings</h2>
+  <div class="row">
+    <label>Strategy <select id="strategy"></select></label>
+    <label>Equity <input id="equity" type="number" step="100" style="width:110px"></label>
+    <label>Risk <input id="risk" type="number" step="0.01" min="0" max="0.25" style="width:80px"></label>
+    <span class="grow"></span>
+    <button onclick="saveSettings()">Save</button>
+  </div>
+  <p id="stratdesc" class="muted" style="margin:10px 0 0"></p>
+  <p class="muted" style="margin:6px 0 0">API key in use: <span id="key" class="mono">…</span>
+    — read from the environment. This page never sends a key anywhere.</p>
+</div>
+
+<div class="card">
+  <h2>Now</h2>
+  <div class="kv">
+    <div><div class="k">Price</div><div class="v" id="price">—</div></div>
+    <div><div class="k">Equity</div><div class="v" id="eq">—</div></div>
+    <div><div class="k">Position</div><div class="v" id="pos">—</div></div>
+    <div><div class="k">Target</div><div class="v" id="tgt">—</div></div>
+    <div><div class="k">Order</div><div class="v" id="ord">—</div></div>
+  </div>
+  <p id="note" class="muted" style="margin:12px 0 0"></p>
+  <div id="conflict"></div>
+</div>
+
+<div class="card">
+  <h2>Sleeves</h2>
+  <table><thead><tr><th>Sleeve</th><th>Qty</th><th>Conviction</th><th>Stop</th>
+    <th>Take profit</th></tr></thead><tbody id="sleeves"></tbody></table>
+</div>
+
+<div class="card">
+  <h2>Stop ladder to place</h2>
+  <table><thead><tr><th>For</th><th>Type</th><th>Side</th><th>Qty</th><th>Trigger</th>
+    </tr></thead><tbody id="ladder"></tbody></table>
+  <p class="muted" style="margin:10px 0 0">Each sleeve gets its own reduce-only order
+    against the single netted position. Cancel the previous ladder before placing
+    a new one.</p>
+</div>
+
+<div class="card">
+  <h2>Signals</h2>
+  <pre id="diag">—</pre>
+</div>
+
+<div class="card" id="keycard" hidden>
+  <h2>Testnet credentials</h2>
+  <div class="row">
+    <input id="apikey" placeholder="testnet API key" style="flex:1 1 260px">
+    <input id="apisec" type="password" placeholder="testnet API secret" style="flex:1 1 260px">
+    <button onclick="saveKeys()">Verify &amp; use</button>
+    <button onclick="clearKeys()">Forget</button>
+  </div>
+  <p class="muted" style="margin:10px 0 0">Accepted only while <b>BOT_MODE=test</b>, verified
+    against testnet before it is used, and held in memory — nothing is written to disk and a
+    restart forgets it. A production key fails that verification and is rejected rather than used.
+    <b>Live credentials are never entered here</b>; they come from the environment.</p>
+  <p id="keymsg" class="muted" style="margin:6px 0 0"></p>
+</div>
+
+<div class="card">
+  <h2>Autopilot</h2>
+  <div class="row">
+    <button id="schedbtn" onclick="toggleSched()">Start</button>
+    <span class="muted">Next decision <span id="nextdec" class="mono">—</span></span>
+    <span class="grow"></span>
+    <span id="schedpill" class="pill safe">stopped</span>
+  </div>
+  <p class="muted" style="margin:10px 0 0">Decides at each 12h close (00:05 / 12:05 UTC). While
+    <b>disarmed it still computes and logs but sends nothing</b>, so you can watch a full week of
+    decisions before letting it touch anything.</p>
+  <pre id="runlog" style="margin-top:12px;max-height:220px;overflow:auto">—</pre>
+</div>
+
+<div class="card">
+  <h2>Actions</h2>
+  <div class="row">
+    <button class="primary" onclick="refresh()">Recompute</button>
+    <button id="armbtn" onclick="toggleArm()">Arm</button>
+    <button onclick="execute()">Send order + ladder</button>
+    <span class="grow"></span>
+    <button class="danger" onclick="flatten()">Kill switch — flatten &amp; disarm</button>
+  </div>
+  <div id="warn" class="warn" style="margin-top:12px">Disarmed. Nothing is sent to any
+    venue until you arm, and in <b>live</b> mode arming also needs a typed confirmation.</div>
+</div>
+
+<div class="card">
+  <h2>Fills</h2>
+  <table><thead><tr><th>Time</th><th>Side</th><th>Qty</th><th>Fill</th><th>Fee</th>
+    <th>Realised</th><th>Equity</th><th>Note</th></tr></thead><tbody id="ledger"></tbody></table>
+</div>
+
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const fmt = (x, d=2) => x==null ? "—" : Number(x).toLocaleString(undefined,
+  {minimumFractionDigits:d, maximumFractionDigits:d});
+let ST = {};
+
+async function api(path, opts){
+  const r = await fetch(path, opts);
+  if(!r.ok){ const t = await r.text(); alert(t); throw new Error(t); }
+  return r.json();
+}
+
+async function loadStatus(){
+  ST = await api("/api/status");
+  $("mode").textContent = ST.mode;
+  $("mode").className = "pill " + ST.mode;
+  $("key").textContent = ST.key;
+  $("equity").value = ST.equity;
+  $("risk").value = ST.risk;
+  const sel = $("strategy");
+  sel.innerHTML = "";
+  for(const [n, d] of Object.entries(ST.strategies)){
+    const o = document.createElement("option");
+    o.value = n; o.textContent = n; sel.appendChild(o);
+  }
+  sel.value = ST.strategy;
+  $("stratdesc").textContent = ST.strategies[ST.strategy] || "";
+  $("keycard").hidden = !ST.can_enter_keys;
+  $("nextdec").textContent = (ST.next_decision||"").replace("T"," ").replace("+00:00","Z");
+  $("schedpill").textContent = ST.scheduler ? "running" : "stopped";
+  $("schedpill").className = "pill " + (ST.scheduler ? "test" : "safe");
+  $("schedbtn").textContent = ST.scheduler ? "Stop" : "Start";
+  $("armpill").textContent = ST.armed ? "ARMED" : "disarmed";
+  $("armpill").className = "pill " + (ST.armed ? "armed" : "safe");
+  $("armbtn").textContent = ST.armed ? "Disarm" : "Arm";
+  $("warn").innerHTML = ST.armed
+    ? "<b>Armed.</b> The next “Send” places real orders in <b>" + ST.mode + "</b> mode."
+    : "Disarmed. Nothing is sent to any venue until you arm, and in <b>live</b> mode arming also needs a typed confirmation.";
+}
+
+async function saveSettings(){
+  await api("/api/settings", {method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({strategy:$("strategy").value,
+      equity:parseFloat($("equity").value), risk:parseFloat($("risk").value)})});
+  await loadStatus(); refresh();
+}
+
+async function toggleArm(){
+  let confirmText = "";
+  if(!ST.armed && ST.mode === "live"){
+    confirmText = prompt("LIVE MODE — real money.\nType exactly: TRADE REAL MONEY") || "";
+  }
+  await api("/api/arm", {method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({armed: !ST.armed, confirm: confirmText})});
+  loadStatus();
+}
+
+async function refresh(){
+  const p = await api("/api/plan");
+  $("price").textContent = fmt(p.price, 1);
+  $("eq").textContent = fmt(p.equity);
+  $("pos").textContent = fmt(p.position, 4);
+  $("tgt").textContent = fmt(p.target, 4);
+  $("ord").textContent = p.order ? p.order.side + " " + fmt(p.order.qty, 4) : "none";
+  $("ord").className = "v " + (p.order ? (p.order.side === "BUY" ? "pos" : "neg") : "");
+  $("note").textContent = p.note || "";
+  $("conflict").innerHTML = p.conflict
+    ? '<div class="warn" style="margin-top:12px">' + p.conflict_note + '</div>' : "";
+  $("sleeves").innerHTML = p.sleeves.map(s => `<tr>
+      <td>${s.label}</td>
+      <td class="n ${s.qty>0?'pos':s.qty<0?'neg':''}">${s.qty ? fmt(s.qty,4) : "flat"}</td>
+      <td class="n">${s.meta && s.meta.conviction != null ? fmt(s.meta.conviction,3) : "—"}</td>
+      <td class="n">${s.stop ? fmt(s.stop,1) : "—"}</td>
+      <td class="n">${s.tp ? fmt(s.tp,1) : "—"}</td></tr>`).join("")
+    || '<tr><td colspan="5" class="muted">no sleeves</td></tr>';
+  $("ladder").innerHTML = p.ladder.map(l => `<tr>
+      <td>${l.label}</td><td class="n">${l.kind}</td><td class="n">${l.side}</td>
+      <td class="n">${fmt(l.qty,4)}</td><td class="n">${fmt(l.stop,1)}</td></tr>`).join("")
+    || '<tr><td colspan="5" class="muted">nothing to place</td></tr>';
+  $("diag").textContent = JSON.stringify(p.diagnostics, null, 1);
+  loadLedger();
+}
+
+async function execute(){
+  const r = await api("/api/execute", {method:"POST"});
+  alert(r.sent ? "Sent." : "Not sent — " + r.reason);
+  refresh();
+}
+
+async function flatten(){
+  if(!confirm("Cancel all orders, close the position at market, and disarm?")) return;
+  await api("/api/flatten", {method:"POST"});
+  loadStatus(); refresh();
+}
+
+async function saveKeys(){
+  try{
+    const r = await api("/api/keys", {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({key:$("apikey").value, secret:$("apisec").value})});
+    $("keymsg").textContent = r.detail;
+    $("apikey").value = ""; $("apisec").value = "";
+  }catch(e){ $("keymsg").textContent = "rejected"; }
+  loadStatus();
+}
+async function clearKeys(){
+  await fetch("/api/keys", {method:"DELETE"});
+  $("keymsg").textContent = "forgotten"; loadStatus();
+}
+async function toggleSched(){
+  await api("/api/scheduler/" + (ST.scheduler ? "stop" : "start"), {method:"POST"});
+  loadStatus(); loadLog();
+}
+async function loadLog(){
+  const l = await api("/api/log");
+  $("runlog").textContent = l.slice().reverse().map(x =>
+    `${x.t.replace("T"," ").replace("+00:00","")}  ${x.kind.padEnd(9)} ${x.msg}`).join("\n") || "—";
+}
+
+async function loadLedger(){
+  const l = await api("/api/ledger");
+  $("ledger").innerHTML = l.slice().reverse().map(x => `<tr>
+      <td class="n">${(x.t||"").replace("T"," ").replace("+00:00","")}</td>
+      <td class="n">${x.side}</td><td class="n">${fmt(x.qty,4)}</td>
+      <td class="n">${fmt(x.fill,1)}</td><td class="n">${fmt(x.fee)}</td>
+      <td class="n ${x.realised>0?'pos':x.realised<0?'neg':''}">${x.realised?fmt(x.realised):"—"}</td>
+      <td class="n">${fmt(x.equity)}</td><td class="muted">${x.note||""}</td></tr>`).join("")
+    || '<tr><td colspan="8" class="muted">no fills yet</td></tr>';
+}
+
+loadStatus().then(refresh).catch(e => console.error(e));
+setInterval(() => { loadStatus().catch(()=>{}); loadLog().catch(()=>{}); }, 15000);
+loadLog().catch(()=>{});
+</script>

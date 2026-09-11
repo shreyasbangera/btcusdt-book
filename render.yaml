@@ -1,0 +1,24 @@
+# Render free tier. No disk: the dashboard reads the decision GitHub Actions
+# publishes rather than carrying market-data panels, so it needs no storage.
+# Trading happens in Actions; this is the viewer.
+services:
+  - type: web
+    name: btcusdt-book
+    runtime: docker
+    dockerfilePath: ./webapp/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /healthz     # unauthenticated; a health check cannot log in
+    envVars:
+      - key: BOT_MODE
+        value: paper              # the viewer never places orders
+      - key: BOOK_STORE
+        value: /tmp/book
+      - key: HOST
+        value: 0.0.0.0
+      - key: STATUS_URL
+        value: https://raw.githubusercontent.com/shreyasbangera/btcusdt-book/main/status/latest.json
+      - key: APP_USER
+        value: trader
+      - key: APP_PASSWORD
+        generateValue: true       # Render generates one; read it in the Environment tab

@@ -1,0 +1,36 @@
+
+===== S3 OFS 4h =====
+  ofi24_ thr0.75 5d trend1 [ALL]         CAGR     3.9% DD  -9.0% PF 1.47 N  159 WR51.6% Shp 0.70 Clm  0.43 | OOS CAGR    2.3% PF 1.23
+  ofi24_ thr0.75 5d trend0 [ALL]         CAGR     4.7% DD -10.8% PF 1.37 N  258 WR50.4% Shp 0.71 Clm  0.44 | OOS CAGR    2.8% PF 1.19
+  ofi24_ thr0.75 10d trend1 [ALL]        CAGR     4.9% DD  -9.3% PF 1.75 N  113 WR48.7% Shp 0.88 Clm  0.53 | OOS CAGR    3.7% PF 1.43
+  ofi24_ thr0.75 10d trend0 [ALL]        CAGR     5.6% DD -11.6% PF 1.56 N  172 WR49.4% Shp 0.86 Clm  0.49 | OOS CAGR    2.9% PF 1.24
+  ofi24_ thr1.25 5d trend1 [ALL]         CAGR     2.6% DD  -7.4% PF 1.50 N   96 WR47.9% Shp 0.62 Clm  0.36 | OOS CAGR    1.6% PF 1.25
+  ofi24_ thr1.25 5d trend0 [ALL]         CAGR     2.8% DD -10.1% PF 1.36 N  155 WR47.1% Shp 0.55 Clm  0.28 | OOS CAGR    1.3% PF 1.17
+  ofi24_ thr1.25 10d trend1 [ALL]        CAGR     3.1% DD  -7.7% PF 1.72 N   71 WR47.9% Shp 0.74 Clm  0.40 | OOS CAGR    2.5% PF 1.43
+  ofi24_ thr1.25 10d trend0 [ALL]        CAGR     1.9% DD -10.3% PF 1.33 N  108 WR45.4% Shp 0.40 Clm  0.19 | OOS CAGR    1.7% PF 1.26
+  ofi96_ thr0.75 5d trend1 [ALL]         CAGR     1.1% DD  -9.1% PF 1.21 N  122 WR50.0% Shp 0.28 Clm  0.13 | OOS CAGR   -0.5% PF 1.01
+  ofi96_ thr0.75 5d trend0 [ALL]         CAGR     0.9% DD -11.8% PF 1.12 N  206 WR47.6% Shp 0.17 Clm  0.07 | OOS CAGR   -0.3% PF 1.03
+  ofi96_ thr0.75 10d trend1 [ALL]        CAGR     1.4% DD  -7.3% PF 1.36 N   74 WR52.7% Shp 0.37 Clm  0.20 | OOS CAGR    0.7% PF 1.14
+  ofi96_ thr0.75 10d trend0 [ALL]        CAGR     1.8% DD  -9.5% PF 1.26 N  126 WR48.4% Shp 0.36 Clm  0.19 | OOS CAGR    0.1% PF 1.06
+  ofi96_ thr1.25 5d trend1 [ALL]         CAGR     0.5% DD  -7.0% PF 1.16 N   74 WR41.9% Shp 0.15 Clm  0.06 | OOS CAGR    1.5% PF 1.25
+  ofi96_ thr1.25 5d trend0 [ALL]         CAGR     0.8% DD  -9.5% PF 1.17 N  119 WR46.2% Shp 0.21 Clm  0.09 | OOS CAGR    3.0% PF 1.36
+  ofi96_ thr1.25 10d trend1 [ALL]        CAGR     0.9% DD  -6.2% PF 1.36 N   47 WR44.7% Shp 0.29 Clm  0.14 | OOS CAGR    0.8% PF 1.21
+  ofi96_ thr1.25 10d trend0 [ALL]        CAGR     1.1% DD  -8.4% PF 1.27 N   79 WR44.3% Shp 0.28 Clm  0.13 | OOS CAGR    3.1% PF 1.47
+
+===== S3 OFS 12h =====
+  ofi24_ thr0.75 5d trend1 [ALL]         CAGR     0.6% DD  -6.4% PF 1.24 N   84 WR47.6% Shp 0.26 Clm  0.10 | OOS CAGR   -1.7% PF 0.77
+  ofi24_ thr0.75 5d trend0 [ALL]         CAGR     0.7% DD  -6.0% PF 1.18 N  155 WR51.6% Shp 0.24 Clm  0.12 | OOS CAGR   -1.1% PF 0.92
+  ofi24_ thr0.75 10d trend1 [ALL]        CAGR     1.7% DD  -6.3% PF 1.76 N   58 WR58.6% Shp 0.62 Clm  0.27 | OOS CAGR   -1.0% PF 0.84
+  ofi24_ thr0.75 10d trend0 [ALL]        CAGR     1.3% DD  -8.7% PF 1.35 N  102 WR54.9% Shp 0.40 Clm  0.14 | OOS CAGR   -2.2% PF 0.75
+  ofi24_ thr1.25 5d trend1 [ALL]         CAGR     0.6% DD  -3.1% PF 1.51 N   44 WR47.7% Shp 0.34 Clm  0.20 | OOS CAGR    0.2% PF 1.15
+  ofi24_ thr1.25 5d trend0 [ALL]         CAGR     0.9% DD  -4.2% PF 1.42 N   89 WR51.7% Shp 0.40 Clm  0.22 | OOS CAGR    1.1% PF 1.34
+  ofi24_ thr1.25 10d trend1 [ALL]        CAGR     0.8% DD  -3.0% PF 1.79 N   30 WR53.3% Shp 0.48 Clm  0.26 | OOS CAGR   -0.5% PF 0.82
+  ofi24_ thr1.25 10d trend0 [ALL]        CAGR     0.7% DD  -5.1% PF 1.36 N   61 WR52.5% Shp 0.33 Clm  0.14 | OOS CAGR    0.1% PF 1.08
+  ofi96_ thr0.75 5d trend1 [ALL]         CAGR     2.3% DD  -4.0% PF 2.16 N   76 WR53.9% Shp 0.90 Clm  0.58 | OOS CAGR    0.4% PF 1.17
+  ofi96_ thr0.75 5d trend0 [ALL]         CAGR     1.8% DD  -7.0% PF 1.37 N  145 WR52.4% Shp 0.55 Clm  0.25 | OOS CAGR   -1.6% PF 0.88
+  ofi96_ thr0.75 10d trend1 [ALL]        CAGR     2.5% DD  -4.2% PF 2.77 N   49 WR59.2% Shp 0.96 Clm  0.60 | OOS CAGR   -0.0% PF 1.05
+  ofi96_ thr0.75 10d trend0 [ALL]        CAGR     1.3% DD  -8.0% PF 1.38 N   93 WR52.7% Shp 0.43 Clm  0.16 | OOS CAGR   -2.0% PF 0.77
+  ofi96_ thr1.25 5d trend1 [ALL]         CAGR     0.9% DD  -4.8% PF 1.54 N   53 WR45.3% Shp 0.41 Clm  0.18 | OOS CAGR   -0.1% PF 1.03
+  ofi96_ thr1.25 5d trend0 [ALL]         CAGR     0.5% DD  -6.1% PF 1.17 N  101 WR48.5% Shp 0.18 Clm  0.08 | OOS CAGR   -0.9% PF 0.91
+  ofi96_ thr1.25 10d trend1 [ALL]        CAGR     1.0% DD  -4.2% PF 1.71 N   32 WR50.0% Shp 0.49 Clm  0.24 | OOS CAGR   -0.6% PF 0.85
+  ofi96_ thr1.25 10d trend0 [ALL]        CAGR     0.5% DD  -6.1% PF 1.22 N   63 WR54.0% Shp 0.23 Clm  0.09 | OOS CAGR   -1.4% PF 0.78

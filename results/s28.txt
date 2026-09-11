@@ -1,0 +1,28 @@
+
+===== S28 MWFB 4h =====
+  thr0.4 5d L0 [ALL]                     CAGR    -1.4% DD -42.7% PF 1.01 N  626 WR44.4% Shp 0.04 Clm -0.03 | IS    9.4% OOS  -16.7% PF 0.84
+  thr0.4 5d L1 [ALL]                     CAGR     2.4% DD -34.4% PF 1.10 N  311 WR47.3% Shp 0.22 Clm  0.07 | IS   13.0% OOS  -13.0% PF 0.80
+  thr0.4 10d L0 [ALL]                    CAGR    -0.3% DD -38.3% PF 1.01 N  449 WR41.2% Shp 0.07 Clm -0.01 | IS   10.3% OOS  -15.0% PF 0.81
+  thr0.4 10d L1 [ALL]                    CAGR    -0.0% DD -34.5% PF 1.06 N  200 WR41.5% Shp 0.07 Clm -0.00 | IS    6.3% OOS   -9.1% PF 0.82
+  thr0.7 5d L0 [ALL]                     CAGR    -4.5% DD -38.1% PF 0.96 N  480 WR42.9% Shp-0.15 Clm -0.12 | IS    2.0% OOS  -14.2% PF 0.81
+  thr0.7 5d L1 [ALL]                     CAGR     3.5% DD -25.3% PF 1.14 N  251 WR46.6% Shp 0.31 Clm  0.14 | IS   10.8% OOS   -7.3% PF 0.87
+  thr0.7 10d L0 [ALL]                    CAGR     1.1% DD -33.9% PF 1.03 N  339 WR41.6% Shp 0.15 Clm  0.03 | IS    9.2% OOS  -10.5% PF 0.81
+  thr0.7 10d L1 [ALL]                    CAGR    -0.1% DD -29.4% PF 1.05 N  169 WR42.6% Shp 0.06 Clm -0.00 | IS    3.5% OOS   -5.4% PF 0.87
+  thr1.0 5d L0 [ALL]                     CAGR     4.9% DD -30.5% PF 1.11 N  379 WR47.2% Shp 0.37 Clm  0.16 | IS   10.4% OOS   -3.4% PF 0.97
+  thr1.0 5d L1 [ALL]                     CAGR     7.1% DD -19.2% PF 1.32 N  195 WR51.8% Shp 0.61 Clm  0.37 | IS    9.7% OOS    3.0% PF 1.15
+  thr1.0 10d L0 [ALL]                    CAGR     5.4% DD -28.3% PF 1.13 N  260 WR45.8% Shp 0.41 Clm  0.19 | IS   12.0% OOS   -4.9% PF 0.91
+  thr1.0 10d L1 [ALL]                    CAGR     4.3% DD -19.7% PF 1.26 N  131 WR46.6% Shp 0.42 Clm  0.22 | IS    7.4% OOS   -1.1% PF 1.01
+
+===== S28 MWFB 12h =====
+  thr0.4 5d L0 [ALL]                     CAGR     4.9% DD -17.5% PF 1.18 N  348 WR50.0% Shp 0.52 Clm  0.28 | IS    7.9% OOS    0.5% PF 1.05
+  thr0.4 5d L1 [ALL]                     CAGR     2.9% DD -14.8% PF 1.22 N  187 WR49.7% Shp 0.38 Clm  0.19 | IS    6.3% OOS   -2.2% PF 0.93
+  thr0.4 10d L0 [ALL]                    CAGR     4.0% DD -17.4% PF 1.17 N  253 WR47.8% Shp 0.47 Clm  0.23 | IS    6.7% OOS   -0.3% PF 1.02
+  thr0.4 10d L1 [ALL]                    CAGR     1.7% DD -16.8% PF 1.20 N  117 WR54.7% Shp 0.26 Clm  0.10 | IS    2.5% OOS    0.8% PF 1.13
+  thr0.7 5d L0 [ALL]                     CAGR     5.5% DD -17.5% PF 1.24 N  265 WR51.7% Shp 0.62 Clm  0.31 | IS    8.4% OOS    1.3% PF 1.08
+  thr0.7 5d L1 [ALL]                     CAGR     1.5% DD -14.5% PF 1.15 N  156 WR50.0% Shp 0.24 Clm  0.10 | IS    4.8% OOS   -3.4% PF 0.84
+  thr0.7 10d L0 [ALL]                    CAGR     4.6% DD -14.5% PF 1.26 N  186 WR48.9% Shp 0.57 Clm  0.32 | IS    3.9% OOS    5.5% PF 1.34
+  thr0.7 10d L1 [ALL]                    CAGR     1.7% DD -12.5% PF 1.21 N  102 WR52.9% Shp 0.28 Clm  0.14 | IS    2.7% OOS   -0.7% PF 1.01
+  thr1.0 5d L0 [ALL]                     CAGR     1.4% DD -19.4% PF 1.09 N  204 WR52.5% Shp 0.21 Clm  0.07 | IS    1.8% OOS    0.8% PF 1.07
+  thr1.0 5d L1 [ALL]                     CAGR     1.4% DD -11.8% PF 1.19 N  122 WR51.6% Shp 0.25 Clm  0.12 | IS    2.6% OOS   -0.5% PF 1.01
+  thr1.0 10d L0 [ALL]                    CAGR     6.5% DD -13.5% PF 1.50 N  145 WR54.5% Shp 0.79 Clm  0.48 | IS    7.5% OOS    5.3% PF 1.41
+  thr1.0 10d L1 [ALL]                    CAGR     2.4% DD -14.5% PF 1.35 N   82 WR54.9% Shp 0.41 Clm  0.17 | IS    6.4% OOS   -3.3% PF 0.76

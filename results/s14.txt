@@ -1,0 +1,28 @@
+
+===== S14 VSE 1h =====
+  bw0.15 1.5x2.5 trend0 [ALL]            CAGR   -32.6% DD -94.0% PF 0.88 N  957 WR28.8% Shp-1.21 Clm -0.35 | OOS CAGR  -30.5% PF 0.92 N 295
+  bw0.15 1.5x2.5 trend1 [ALL]            CAGR   -23.3% DD -84.2% PF 0.88 N  745 WR29.4% Shp-0.88 Clm -0.28 | OOS CAGR  -11.2% PF 1.03 N 232
+  bw0.15 2.0x2.0 trend0 [ALL]            CAGR   -30.2% DD -92.5% PF 0.85 N  910 WR31.8% Shp-1.35 Clm -0.33 | OOS CAGR  -27.1% PF 0.88 N 284
+  bw0.15 2.0x2.0 trend1 [ALL]            CAGR   -20.1% DD -81.3% PF 0.87 N  704 WR33.0% Shp-0.91 Clm -0.25 | OOS CAGR   -6.3% PF 1.03 N 219
+  bw0.15 2.5x3.0 trend0 [ALL]            CAGR   -19.6% DD -81.8% PF 0.87 N  803 WR27.3% Shp-0.71 Clm -0.24 | OOS CAGR   -4.8% PF 1.03 N 241
+  bw0.15 2.5x3.0 trend1 [ALL]            CAGR    -9.2% DD -70.2% PF 0.95 N  599 WR28.0% Shp-0.28 Clm -0.13 | OOS CAGR   13.1% PF 1.20 N 177
+  bw0.3 1.5x2.5 trend0 [ALL]             CAGR   -36.8% DD -96.4% PF 0.95 N 1523 WR30.1% Shp-1.08 Clm -0.38 | OOS CAGR  -44.1% PF 0.91 N 494
+  bw0.3 1.5x2.5 trend1 [ALL]             CAGR   -29.9% DD -92.8% PF 0.94 N 1223 WR29.8% Shp-0.92 Clm -0.32 | OOS CAGR  -28.4% PF 0.97 N 403
+  bw0.3 2.0x2.0 trend0 [ALL]             CAGR   -32.3% DD -94.4% PF 0.92 N 1429 WR33.2% Shp-1.14 Clm -0.34 | OOS CAGR  -38.8% PF 0.88 N 461
+  bw0.3 2.0x2.0 trend1 [ALL]             CAGR   -25.5% DD -89.0% PF 0.92 N 1139 WR33.2% Shp-0.94 Clm -0.29 | OOS CAGR  -20.0% PF 0.96 N 365
+  bw0.3 2.5x3.0 trend0 [ALL]             CAGR   -21.6% DD -85.1% PF 0.92 N 1195 WR28.4% Shp-0.63 Clm -0.25 | OOS CAGR  -13.9% PF 0.99 N 374
+  bw0.3 2.5x3.0 trend1 [ALL]             CAGR    -9.6% DD -74.1% PF 0.98 N  919 WR27.4% Shp-0.21 Clm -0.13 | OOS CAGR   18.5% PF 1.19 N 278
+
+===== S14 VSE 4h =====
+  bw0.15 1.5x2.5 trend0 [ALL]            CAGR    -1.8% DD -32.2% PF 1.01 N  265 WR33.6% Shp-0.05 Clm -0.05 | OOS CAGR   -6.8% PF 0.88 N  90
+  bw0.15 1.5x2.5 trend1 [ALL]            CAGR    -0.4% DD -21.8% PF 1.04 N  214 WR33.6% Shp 0.04 Clm -0.02 | OOS CAGR   -1.8% PF 0.99 N  71
+  bw0.15 2.0x2.0 trend0 [ALL]            CAGR    -2.3% DD -32.1% PF 0.98 N  256 WR38.7% Shp-0.12 Clm -0.07 | OOS CAGR  -10.6% PF 0.75 N  87
+  bw0.15 2.0x2.0 trend1 [ALL]            CAGR    -3.2% DD -28.1% PF 0.94 N  208 WR36.5% Shp-0.23 Clm -0.11 | OOS CAGR   -6.0% PF 0.84 N  68
+  bw0.15 2.5x3.0 trend0 [ALL]            CAGR    -2.6% DD -33.8% PF 0.95 N  245 WR38.4% Shp-0.15 Clm -0.08 | OOS CAGR   -4.8% PF 0.87 N  83
+  bw0.15 2.5x3.0 trend1 [ALL]            CAGR    -2.8% DD -34.6% PF 0.94 N  197 WR36.5% Shp-0.20 Clm -0.08 | OOS CAGR   -4.1% PF 0.87 N  65
+  bw0.3 1.5x2.5 trend0 [ALL]             CAGR    -2.5% DD -37.4% PF 1.01 N  398 WR33.7% Shp-0.05 Clm -0.07 | OOS CAGR  -12.8% PF 0.85 N 138
+  bw0.3 1.5x2.5 trend1 [ALL]             CAGR    -0.9% DD -28.5% PF 1.03 N  322 WR33.9% Shp 0.03 Clm -0.03 | OOS CAGR  -11.1% PF 0.83 N 110
+  bw0.3 2.0x2.0 trend0 [ALL]             CAGR    -1.0% DD -31.7% PF 1.02 N  374 WR39.0% Shp 0.01 Clm -0.03 | OOS CAGR  -10.8% PF 0.84 N 127
+  bw0.3 2.0x2.0 trend1 [ALL]             CAGR    -0.7% DD -28.8% PF 1.03 N  306 WR39.2% Shp 0.02 Clm -0.02 | OOS CAGR   -7.3% PF 0.87 N  99
+  bw0.3 2.5x3.0 trend0 [ALL]             CAGR    -3.9% DD -39.2% PF 0.96 N  346 WR37.3% Shp-0.20 Clm -0.10 | OOS CAGR  -10.0% PF 0.82 N 116
+  bw0.3 2.5x3.0 trend1 [ALL]             CAGR    -2.1% DD -35.3% PF 0.99 N  277 WR38.3% Shp-0.09 Clm -0.06 | OOS CAGR   -6.8% PF 0.85 N  90

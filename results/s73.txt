@@ -1,0 +1,36 @@
+Is trendiness persistent?  (12h bars; 60 bars = 30 days)
+
+  lookback  horizon   corr(now, next)
+      30d      30d            -0.228
+      30d      60d             0.010
+      30d      90d            -0.099
+      60d      30d             0.268
+      60d      60d            -0.117
+      60d      90d            -0.125
+      90d      30d             0.389
+      90d      60d            -0.057
+      90d      90d            -0.211
+     180d      30d             0.620
+     180d      60d             0.268
+     180d      90d             0.029
+
+
+Sizing to trailing trendiness (exponent 2.5 book)
+
+                           variant  risk |     CAGR      DD    PF     N   Shp   Clm |   medDDP>20%
+               flat risk (control)  6.0% | CAGR    48.4%  DD  -11.9%  PF  3.21  N  914  Shp  2.12  Clm  4.05 | med  -11.0%  P>20%   1%
+               flat risk (control)  8.0% | CAGR    67.1%  DD  -15.6%  PF  3.30  N  926  Shp  2.12  Clm  4.29 | med  -14.4%  P>20%  10%
+               flat risk (control) 10.0% | CAGR    87.5%  DD  -19.1%  PF  3.39  N  939  Shp  2.13  Clm  4.57 | med  -17.7%  P>20%  31%
+
+        trend-scaled 60d [0.5,2.0]  6.0% | CAGR    43.9%  DD  -13.7%  PF  2.65  N  921  Shp  2.01  Clm  3.22 | med  -13.0%  P>20%   7%
+        trend-scaled 60d [0.5,2.0]  8.0% | CAGR    61.2%  DD  -16.7%  PF  2.66  N  930  Shp  2.04  Clm  3.67 | med  -16.6%  P>20%  25%
+        trend-scaled 60d [0.4,2.5]  6.0% | CAGR    44.3%  DD  -15.3%  PF  2.62  N  915  Shp  1.95  Clm  2.90 | med  -13.7%  P>20%   9%
+        trend-scaled 60d [0.4,2.5]  8.0% | CAGR    59.4%  DD  -17.9%  PF  2.60  N  929  Shp  1.95  Clm  3.32 | med  -17.5%  P>20%  31%
+        trend-scaled 90d [0.5,2.0]  6.0% | CAGR    41.2%  DD  -13.9%  PF  2.57  N  911  Shp  1.89  Clm  2.97 | med  -14.2%  P>20%  11%
+        trend-scaled 90d [0.5,2.0]  8.0% | CAGR    57.2%  DD  -18.0%  PF  2.60  N  923  Shp  1.90  Clm  3.18 | med  -18.5%  P>20%  38%
+        trend-scaled 90d [0.4,2.5]  6.0% | CAGR    42.6%  DD  -15.3%  PF  2.57  N  906  Shp  1.84  Clm  2.78 | med  -15.2%  P>20%  16%
+        trend-scaled 90d [0.4,2.5]  8.0% | CAGR    59.1%  DD  -19.7%  PF  2.60  N  926  Shp  1.87  Clm  3.00 | med  -19.4%  P>20%  45%
+       trend-scaled 180d [0.5,2.0]  6.0% | CAGR    44.0%  DD  -15.1%  PF  2.54  N  915  Shp  2.01  Clm  2.92 | med  -14.2%  P>20%  11%
+       trend-scaled 180d [0.5,2.0]  8.0% | CAGR    61.0%  DD  -19.4%  PF  2.53  N  929  Shp  2.01  Clm  3.14 | med  -18.5%  P>20%  39%
+       trend-scaled 180d [0.4,2.5]  6.0% | CAGR    42.5%  DD  -17.0%  PF  2.42  N  915  Shp  1.90  Clm  2.50 | med  -15.5%  P>20%  19%
+       trend-scaled 180d [0.4,2.5]  8.0% | CAGR    58.8%  DD  -19.4%  PF  2.43  N  928  Shp  1.93  Clm  3.03 | med  -19.6%  P>20%  47%

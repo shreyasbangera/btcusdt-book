@@ -1,0 +1,24 @@
+--- per-signal hysteresis (k = the fraction of threshold a signal must fall below)
+
+              hysteresis k=1.0    8% | CAGR    77.8%  DD  -18.3%  PF  2.69  N  938  Shp  2.16  Clm  4.25 | OOS   85.2%  med  -18.1%  P>20%  35%
+              hysteresis k=0.8    8% | CAGR    75.4%  DD  -19.4%  PF  2.89  N  889  Shp  2.08  Clm  3.89 | OOS   77.5%  med  -18.1%  P>20%  35%
+              hysteresis k=0.6    8% | CAGR    61.0%  DD  -17.6%  PF  3.22  N  824  Shp  1.84  Clm  3.48 | OOS   97.1%  med  -19.1%  P>20%  43%
+              hysteresis k=0.4    8% | CAGR    43.9%  DD  -21.8%  PF  2.56  N  750  Shp  1.47  Clm  2.01 | OOS   67.9%  med  -23.8%  P>20%  74%
+
+--- slower decision grids (12h is the incumbent)
+
+           decisions every 12h    8% | CAGR    79.5%  DD  -18.5%  PF  2.70  N  935  Shp  2.18  Clm  4.31 | OOS   86.3%  med  -18.1%  P>20%  35%
+/home/user/quant/strategies/s79_hyst.py:72: Pandas4Warning: 'd' is deprecated and will be removed in a future version. Please use 'D' instead of 'd'.
+  per_day = int(pd.Timedelta("1D") / pd.Timedelta(tf)) or 1
+/home/user/quant/strategies/s79_hyst.py:76: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+  f = f.merge(xf[["cm_px","btc_dom_z"]].resample(tf).last().reset_index(), on="dt", how="left")
+/home/user/quant/strategies/s79_hyst.py:79: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+  f = f.merge(po.resample(tf).last().reset_index(), on="dt", how="left")
+            decisions every 1d    8% | CAGR     7.7%  DD  -47.2%  PF  1.21  N  478  Shp  0.48  Clm  0.16 | OOS  -20.6%  med  -27.3%  P>20%  81%
+/home/user/quant/strategies/s79_hyst.py:72: Pandas4Warning: 'd' is deprecated and will be removed in a future version. Please use 'D' instead of 'd'.
+  per_day = int(pd.Timedelta("1D") / pd.Timedelta(tf)) or 1
+/home/user/quant/strategies/s79_hyst.py:76: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+  f = f.merge(xf[["cm_px","btc_dom_z"]].resample(tf).last().reset_index(), on="dt", how="left")
+/home/user/quant/strategies/s79_hyst.py:79: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+  f = f.merge(po.resample(tf).last().reset_index(), on="dt", how="left")
+            decisions every 2d    8% | CAGR    19.4%  DD  -14.3%  PF  2.77  N  246  Shp  1.29  Clm  1.36 | OOS   27.4%  med  -14.3%  P>20%  13%

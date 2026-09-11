@@ -1,0 +1,21 @@
+V7 top-3 gated   risk 13.20%  CAGR   162.6%  DD -18.47%  OK   PF  3.19  N  1755  Shp  2.16  Clm  8.80  P>20  94%
+      yearly 2022:+3%  2023:+334%  2024:+283%  2025:+100%  2026:+125%
+V7 top-3 gated   risk 13.60%  CAGR   169.3%  DD -18.97%  OK   PF  3.19  N  1760  Shp  2.16  Clm  8.93  P>20  95%
+      yearly 2022:+3%  2023:+352%  2024:+296%  2025:+104%  2026:+130%
+V7 top-3 gated   risk 14.00%  CAGR   176.0%  DD -19.48%  OK   PF  3.19  N  1765  Shp  2.16  Clm  9.04  P>20  97%
+      yearly 2022:+3%  2023:+371%  2024:+310%  2025:+107%  2026:+135%
+V7 top-3 gated   risk 14.40%  CAGR   179.0%  DD -19.99%  OK   PF  3.18  N  1769  Shp  2.13  Clm  8.95  P>20  98%
+      yearly 2022:+3%  2023:+392%  2024:+326%  2025:+108%  2026:+126%
+V4 gate top-1    risk 11.40%  CAGR   126.0%  DD -19.07%  OK   PF  3.33  N   605  Shp  2.10  Clm  6.61  P>20  78%
+      yearly 2022:+0%  2023:+274%  2024:+197%  2025:+100%  2026:+76%
+V4 gate top-1    risk 11.80%  CAGR   131.6%  DD -19.70%  OK   PF  3.33  N   606  Shp  2.10  Clm  6.68  P>20  82%
+      yearly 2022:+0%  2023:+290%  2024:+206%  2025:+104%  2026:+79%
+V4 gate top-1    risk 12.00%  CAGR   134.5%  DD -20.02%  over  PF  3.33  N   607  Shp  2.10  Clm  6.72  P>20  84%
+V2 24m no bear   risk 10.40%  CAGR   126.6%  DD -18.96%  OK   PF  3.26  N   544  Shp  2.44  Clm  6.68  P>20  25%
+      yearly 2023:+243%  2024:+139%  2025:+46%  2026:+46%
+V2 24m no bear   risk 10.80%  CAGR   133.0%  DD -19.63%  OK   PF  3.26  N   546  Shp  2.44  Clm  6.77  P>20  30%
+      yearly 2023:+258%  2024:+146%  2025:+48%  2026:+48%
+V2 24m no bear   risk 11.00%  CAGR   136.2%  DD -19.97%  OK   PF  3.26  N   546  Shp  2.44  Clm  6.82  P>20  32%
+      yearly 2023:+266%  2024:+150%  2025:+49%  2026:+49%
+done: gate tune
+EXIT=0

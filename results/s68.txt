@@ -1,0 +1,35 @@
+caching 40 full-period runs at risk 10%...
+done
+
+             sharpe · look 12m · step 3m | CAGR    79.9%  DD  -18.8%  Sharpe  2.05  Calmar  4.25 | med  -20.7%  P>20%  56%
+             sharpe · look 12m · step 6m | CAGR    85.0%  DD  -18.5%  Sharpe  1.99  Calmar  4.60 | med  -20.5%  P>20%  54%
+             sharpe · look 18m · step 3m | CAGR   112.1%  DD  -17.1%  Sharpe  2.21  Calmar  6.55 | med  -19.9%  P>20%  49%
+             sharpe · look 18m · step 6m | CAGR   124.4%  DD  -17.7%  Sharpe  2.26  Calmar  7.02 | med  -20.3%  P>20%  52%
+             sharpe · look 24m · step 3m | CAGR   114.1%  DD  -19.7%  Sharpe  2.39  Calmar  5.79 | med  -19.1%  P>20%  42%
+             sharpe · look 24m · step 6m | CAGR   116.8%  DD  -18.3%  Sharpe  2.43  Calmar  6.39 | med  -18.8%  P>20%  40%
+             calmar · look 12m · step 3m | CAGR    93.7%  DD  -16.5%  Sharpe  2.10  Calmar  5.68 | med  -19.8%  P>20%  49%
+             calmar · look 12m · step 6m | CAGR    96.8%  DD  -18.3%  Sharpe  2.04  Calmar  5.30 | med  -20.1%  P>20%  50%
+             calmar · look 18m · step 3m | CAGR   118.6%  DD  -17.6%  Sharpe  2.19  Calmar  6.74 | med  -18.4%  P>20%  37%
+             calmar · look 18m · step 6m | CAGR   125.0%  DD  -17.6%  Sharpe  2.21  Calmar  7.10 | med  -18.4%  P>20%  39%
+             calmar · look 24m · step 3m | CAGR   142.6%  DD  -17.6%  Sharpe  2.56  Calmar  8.11 | med  -16.4%  P>20%  22%
+             calmar · look 24m · step 6m | CAGR   142.7%  DD  -17.6%  Sharpe  2.56  Calmar  8.11 | med  -16.4%  P>20%  22%
+    sharpe_x_calmar · look 12m · step 3m | CAGR   101.0%  DD  -16.5%  Sharpe  2.18  Calmar  6.12 | med  -19.7%  P>20%  47%
+    sharpe_x_calmar · look 12m · step 6m | CAGR   105.5%  DD  -18.3%  Sharpe  2.13  Calmar  5.77 | med  -20.2%  P>20%  51%
+    sharpe_x_calmar · look 18m · step 3m | CAGR   114.3%  DD  -16.2%  Sharpe  2.19  Calmar  7.04 | med  -18.8%  P>20%  39%
+    sharpe_x_calmar · look 18m · step 6m | CAGR   115.6%  DD  -18.5%  Sharpe  2.15  Calmar  6.25 | med  -19.4%  P>20%  46%
+    sharpe_x_calmar · look 24m · step 3m | CAGR   131.0%  DD  -16.9%  Sharpe  2.46  Calmar  7.76 | med  -17.3%  P>20%  30%
+    sharpe_x_calmar · look 24m · step 6m | CAGR   123.7%  DD  -18.3%  Sharpe  2.41  Calmar  6.77 | med  -17.7%  P>20%  32%
+
+sharpe · look 18m · step 3m · blend top-2 | CAGR   112.3%  DD  -17.4%  Sharpe  2.21  Calmar  6.45 | med  -19.2%  P>20%  45%
+calmar · look 18m · step 3m · blend top-2 | CAGR   107.2%  DD  -17.0%  Sharpe  2.28  Calmar  6.29 | med  -18.2%  P>20%  36%
+sharpe · look 18m · step 3m · blend top-3 | CAGR   106.3%  DD  -17.7%  Sharpe  2.26  Calmar  6.02 | med  -19.5%  P>20%  46%
+calmar · look 18m · step 3m · blend top-3 | CAGR   108.6%  DD  -16.6%  Sharpe  2.26  Calmar  6.53 | med  -17.9%  P>20%  34%
+sharpe · look 18m · step 3m · blend top-5 | CAGR   104.0%  DD  -17.5%  Sharpe  2.30  Calmar  5.94 | med  -19.1%  P>20%  43%
+calmar · look 18m · step 3m · blend top-5 | CAGR   106.4%  DD  -16.5%  Sharpe  2.29  Calmar  6.44 | med  -17.7%  P>20%  33%
+
+top 5 rules by Calmar:
+  Calmar  8.11   calmar · 24m/6m
+  Calmar  8.11   calmar · 24m/3m
+  Calmar  7.76   sharpe_x_calmar · 24m/3m
+  Calmar  7.10   calmar · 18m/6m
+  Calmar  7.04   sharpe_x_calmar · 18m/3m

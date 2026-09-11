@@ -1,0 +1,7 @@
+16 quarters
+risk    6%  CAGR    60.1%  DD  -11.2%  PF  1.08  N   667  WR 45.7%  Sharpe  2.20  Calmar  5.34  medDD  -12.2%  P>20%   4%
+       window 2022-09-01 -> 2026-08-31
+risk    8%  CAGR    84.6%  DD  -14.8%  PF  1.08  N   672  WR 46.1%  Sharpe  2.21  Calmar  5.71  medDD  -16.0%  P>20%  21%
+       window 2022-09-01 -> 2026-08-31
+risk   10%  CAGR   111.4%  DD  -18.9%  PF  1.08  N   673  WR 46.1%  Sharpe  2.21  Calmar  5.89  medDD  -19.6%  P>20%  46%
+       window 2022-09-01 -> 2026-08-31

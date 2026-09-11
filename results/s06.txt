@@ -1,0 +1,15 @@
+
+=== 4h h=6 (24h horizon) | walk-forward preds n=11604 ===
+  2020-2024 (early WF)   IC +0.0130 (p=2.8e-01)  D1     -0.0bps  D10    +16.4bps  spread    +16.4bps
+  2024-07+ (late WF)     IC +0.0087 (p=5.5e-01)  D1     -3.5bps  D10    +25.4bps  spread    +28.9bps
+  all WF                 IC +0.0121 (p=1.9e-01)  D1     +5.5bps  D10    +25.8bps  spread    +20.4bps
+
+=== 4h h=12 (48h horizon) | walk-forward preds n=11598 ===
+  2020-2024 (early WF)   IC +0.0366 (p=2.5e-03)  D1    +14.3bps  D10    +95.5bps  spread    +81.2bps
+  2024-07+ (late WF)     IC -0.0328 (p=2.4e-02)  D1    +22.0bps  D10    +26.9bps  spread     +4.9bps
+  all WF                 IC +0.0154 (p=9.8e-02)  D1    +16.1bps  D10    +67.7bps  spread    +51.6bps
+
+=== 1h h=24 (24h horizon) | walk-forward preds n=47427 ===
+  2020-2024 (early WF)   IC +0.0034 (p=5.6e-01)  D1     -2.3bps  D10    -11.0bps  spread     -8.7bps
+  2024-07+ (late WF)     IC +0.0046 (p=5.3e-01)  D1    +15.7bps  D10    +37.8bps  spread    +22.1bps
+  all WF                 IC +0.0038 (p=4.1e-01)  D1     -0.0bps  D10     +1.5bps  spread     +1.5bps

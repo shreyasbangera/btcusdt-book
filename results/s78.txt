@@ -1,0 +1,7 @@
+exponents chosen with the grid extended to 6.0: [(3.0, 7), (4.0, 4), (6.0, 3)]
+    extended exponent grid    8% | CAGR    77.5%  DD  -15.5%  PF  3.72  N  447  Sharpe  2.11  Calmar  5.00 | med  -14.5%  P>20%  12%
+        yearly 2023:+80% 2024:+111% 2025:+46% 2026:+34%
+    extended exponent grid   10% | CAGR   100.1%  DD  -19.2%  PF  3.72  N  453  Sharpe  2.10  Calmar  5.22 | med  -17.8%  P>20%  33%
+        yearly 2023:+100% 2024:+148% 2025:+59% 2026:+44%
+    extended exponent grid   12% | CAGR   125.3%  DD  -22.8%  PF  3.73  N  464  Sharpe  2.10  Calmar  5.51 | med  -21.0%  P>20%  57%
+        yearly 2023:+125% 2024:+188% 2025:+72% 2026:+54%
