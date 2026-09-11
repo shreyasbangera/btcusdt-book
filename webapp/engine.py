@@ -86,12 +86,32 @@ def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
                        if conflict else ""))
 
 
-def execute(plan, broker, armed: bool):
-    """Send the planned order and replace the stop ladder.  Refuses unless armed."""
+# One 12h bar plus an hour of slack. In normal operation the run fires five
+# minutes after a bar closes, so the age is near zero; anything past 13h means a
+# whole decision bar was missed. 24h was the first value here and it was useless:
+# the archive fallback lags 22-23h, which sailed under it.
+MAX_BAR_AGE_HOURS = 13.0
+
+
+def execute(plan, broker, armed: bool, max_bar_age=MAX_BAR_AGE_HOURS):
+    """Send the planned order and replace the stop ladder.  Refuses unless armed.
+
+    Also refuses on STALE DATA. The backtest fills at the open of the bar after
+    the signal; acting on a bar that closed a day ago takes the same trades at
+    prices that have already moved through most of what the signal predicted.
+    A bot doing that twice a day forever is worse than one that stops, so a stale
+    feed is a refusal rather than a warning nobody reads.
+    """
     if not armed:
         return dict(sent=False, reason="not armed")
     if plan["conflict"]:
         return dict(sent=False, reason=plan["conflict_note"])
+    age = plan.get("bar_age_hours")
+    if age is not None and age > max_bar_age:
+        return dict(sent=False, reason=(
+            f"data is {age:.0f}h old (limit {max_bar_age:.0f}h). The decision bar "
+            f"closed too long ago to trade on. Fix the feed rather than raising "
+            f"the limit."))
     done = []
     if plan["order"]:
         done.append(broker.market(plan["order"]["side"], plan["order"]["qty"],

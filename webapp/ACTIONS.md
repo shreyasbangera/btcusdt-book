@@ -79,16 +79,61 @@ on a stateless runner would have to be cached or committed, and a cache eviction
 would silently reset your equity. If you want paper numbers, run
 `BOT_MODE=paper` somewhere with a disk.
 
-## If Binance REST is unreachable from the runner
+## GitHub Actions cannot run this bot for real — measured, not assumed
 
-Binance restricts some datacentre ranges, and GitHub's runners live in them. The
-decision itself does not need REST — every signal is built from the public
-archive — so the run continues and prints how stale the data is: how far behind
-now the panel sits, and how many days of carried-forward funding it is using.
-**Placing an order does need REST**, so if the runner cannot reach
-`fapi.binance.com` the bot will compute decisions it cannot execute. If that
-happens, run it somewhere else: the same container on a small VPS in a region
-Binance serves.
+Binance refuses GitHub-hosted runners outright:
+
+```
+{'code': 0, 'msg': "Service unavailable from a restricted location according to
+'b. Eligibility' in https://www.binance.com/en/terms..."}
+```
+
+That is the eligibility restriction, not a transient failure. GitHub's runners
+sit in Azure ranges Binance blocks. Measured from a real run:
+
+| host | from a GitHub runner |
+|---|---|
+| `data.binance.vision` (the archive) | works |
+| `testnet.binancefuture.com` | works |
+| `fapi.binance.com` (production) | **refused** |
+
+Two consequences, and the second is the one that matters:
+
+**The data goes stale.** Klines, funding and positioning all fall back to the
+archive, which publishes yesterday's file each morning — so decisions are made
+on a bar that closed 22–23 hours ago. The backtest fills at the open of the bar
+*after* the signal; acting a day late takes the same trades at prices that have
+already moved through most of what the signal predicted. The book is not being
+run, it is being impersonated.
+
+**Real money is impossible here.** Live orders go to `fapi.binance.com`, which
+is refused. Testnet works only because it is a different host.
+
+So the engine **refuses to send orders when the decision bar is more than 13
+hours old** — one bar period plus an hour of slack. A bot trading day-old data
+twice a day forever is worse than one that stops.
+
+### Where to run it instead
+
+Anywhere Binance serves. The container and the cron are the same:
+
+```cron
+5 0,12 * * *  cd /opt/btcusdt-book && BOOK_STORE=/opt/btcusdt-book/data/live \
+  BOT_MODE=test python live/fetch.py update && python -m webapp.once --arm \
+  >> /var/log/book.log 2>&1
+```
+
+A €4 Hetzner box in Germany, a Vultr or DigitalOcean instance in Singapore, or
+your own machine will all reach `fapi.binance.com`. Check your region against
+Binance's terms before paying for anything.
+
+If you want to keep the Actions interface, register that machine as a
+**self-hosted runner** and change `runs-on: ubuntu-latest` to
+`runs-on: self-hosted`. The workflow is then unchanged and only the network
+moves.
+
+Actions remains useful as a free dry-run harness: it can compute decisions and
+publish them to the dashboard. It just cannot trade.
 
 Testnet will tell you whether the plumbing works — orders at the right times,
 three reduce-only stops against one netted position, surviving a restart
