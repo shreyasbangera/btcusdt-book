@@ -119,13 +119,26 @@ The pattern is not that free tiers are stingy. It is that free tiers are
 *American*, and Binance does not serve there. This is why a phone beats all of
 them.
 
-## If none of these are available
+## If none of these are available — your own laptop
 
-Run it by hand when you are at your machine, and **record which decisions you
-missed**. A partial record honestly labelled is worth something. A partial
-record you later mistake for a complete one is worth less than nothing, because
-you will conclude something about the strategy from a sample that was really
-about your schedule.
+Not a fallback to be embarrassed about, and no longer a manual one. See
+[LAPTOP.md](LAPTOP.md).
 
-`webapp/once.py` prints every decision it makes and writes `plan.json`; keep
-them, and keep a note of the runs that never happened.
+The arrangement is an **hourly** schedule with `--once-per-bar`, rather than a
+twice-daily one: the first run of each 12h bar decides and the rest are no-ops,
+so a laptop that was shut at 05:35 catches the bar whenever it next opens. That
+removes both the sleeping-laptop problem and every time zone bug along with it.
+
+It still misses bars, and the point is that you can see which. Every run appends
+to `decisions.jsonl`, and `python -m webapp.journal` reports how many 12h bars
+actually got a decision and lists the ones that did not:
+
+```
+bars        29 expected, 24 ran, 22 decided
+coverage    75.9%
+```
+
+A partial record honestly labelled is worth something. A partial record you
+later mistake for a complete one is worth less than nothing, because you will
+conclude something about the strategy from a sample that was really about your
+week.

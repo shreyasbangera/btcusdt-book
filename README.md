@@ -44,6 +44,8 @@ scratch. Then:
   into it
 * `deploy/ANDROID.md` — the phone-in-a-drawer route, which is the one I would
   pick
+* `deploy/LAPTOP.md` — running it on your own laptop: an hourly schedule that
+  catches up, and a decision journal that tells you which bars you missed
 
 The bot itself needs **pandas and numpy and nothing else** — not numba, not
 pyarrow. `tests/no_heavy_deps.py` blocks both and then makes a real decision, so

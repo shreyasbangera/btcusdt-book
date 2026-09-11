@@ -63,26 +63,19 @@ def main():
         __import__(m)
         print(f"  ok  {m}")
 
-    # A synthetic panel with the columns the book reads. The NUMBERS are
-    # meaningless - a random walk has no signal - so this asserts that a
-    # decision comes out, never what it is.
-    n, rng = 900, np.random.default_rng(0)
-    px = 40_000 * np.exp(np.cumsum(rng.normal(0, .02, n)))
-    g = pd.DataFrame({
-        "dt": pd.date_range("2024-01-01", periods=n, freq="12h", tz="UTC"),
-        "open": px, "high": px * 1.01, "low": px * .99, "close": px,
-        "volume": rng.uniform(1e3, 1e4, n), "quote_volume": rng.uniform(1e7, 1e8, n),
-        "cm_px": px * 1.0001, "dom": rng.uniform(.3, .6, n),
-        "funding": rng.normal(0, 1e-4, n), "oi": rng.uniform(1e9, 2e9, n),
-        "ls_ratio": rng.uniform(.8, 1.3, n), "taker_ratio": rng.uniform(.8, 1.3, n),
-        "top_ratio": rng.uniform(.8, 1.3, n)})
-    m4 = pd.DataFrame({
-        "dt": pd.date_range("2024-01-01", periods=n * 3, freq="4h", tz="UTC"),
-        "oi": rng.uniform(1e9, 2e9, n * 3), "ls_ratio": rng.uniform(.8, 1.3, n * 3),
-        "taker_ratio": rng.uniform(.8, 1.3, n * 3), "top_ratio": rng.uniform(.8, 1.3, n * 3)})
+    # The real panel schema, from tests/synth.py. An earlier version of this
+    # test invented the column names, and because a store with no plan file
+    # sends V7 down a shorter path it passed anyway - so it was not testing the
+    # decision path it claimed to. The plan file below is what forces the long
+    # way through build_signals().
+    sys.path.insert(0, str(ROOT / "tests"))
+    import synth, datetime as dtm
+    bar = dtm.datetime.now(dtm.timezone.utc).replace(minute=0, second=0, microsecond=0)
+    bar = bar.replace(hour=0 if bar.hour < 12 else 12)
+    g, m4 = synth.write(store, bar)
+    (pathlib.Path(store) / "v7_plan.json").write_bytes(
+        (ROOT / "plans/v7_plan.json").read_bytes())
 
-    panelstore.write(g, store, "panel_12h")
-    panelstore.write(m4, store, "panel_4h")
     on_disk = panels_on_disk(store)
     assert on_disk == ["panel_12h.pkl", "panel_4h.pkl"], on_disk
     print(f"  ok  wrote {on_disk}")

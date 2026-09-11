@@ -13,6 +13,14 @@ from .config import STORE, MODE
 from .strategies.registry import get, discover
 
 
+def _decision_bar(panels):
+    """The last closed 12h bar - the one this decision is made on."""
+    df = panels.get("panel_12h")
+    if df is None or not len(df):
+        return None
+    return pd.Timestamp(df.dt.iloc[-1]).tz_convert("UTC")
+
+
 def _bar_age(panels):
     """Hours between the last decision bar and now.
 
@@ -20,11 +28,10 @@ def _bar_age(panels):
     is behind and the decision is being made on stale prices. Worth printing
     every run rather than discovering it in the P&L.
     """
-    df = panels.get("panel_12h")
-    if df is None or not len(df):
+    bar = _decision_bar(panels)
+    if bar is None:
         return None
-    last = pd.Timestamp(df.dt.iloc[-1])
-    return round((pd.Timestamp.now("UTC") - last).total_seconds() / 3600, 1)
+    return round((pd.Timestamp.now("UTC") - bar).total_seconds() / 3600, 1)
 
 
 def load_panels(names):
@@ -70,6 +77,7 @@ def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
         ts=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         strategy=strategy.name, mode=broker.mode, price=px,
         equity=sizing_equity, configured_equity=equity,
+        bar=(lambda b: b.isoformat() if b is not None else None)(_decision_bar(panels)),
         bar_age_hours=_bar_age(panels),
         position=pos.qty, target=target, delta=delta, order=order, ladder=ladder,
         sleeves=[dict(label=s.label, qty=s.qty, stop=s.stop, tp=s.take_profit,

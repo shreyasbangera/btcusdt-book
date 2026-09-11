@@ -1,7 +1,14 @@
 data/
 *.parquet
+*.pkl
 __pycache__/
 *.pyc
 .env
 plan.json
 run.txt
+
+# written by deploy/laptop-setup.sh and deploy/termux-setup.sh on the machine
+# that runs the bot; they embed absolute paths, so they are per-machine
+run.sh
+book.log
+.venv/

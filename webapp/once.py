@@ -25,11 +25,11 @@ backtest in a way a laptop that sleeps at 3am is not.
 `--arm` is required to place anything.  Without it this is a dry run, so a
 mis-fired cron job cannot trade.
 """
-import argparse, json, os, sys
+import argparse, json, os, sys, datetime as dt
 import webapp  # noqa: F401  - puts the project root on sys.path
 import panelstore
 
-from webapp import config, engine
+from webapp import config, engine, journal
 from webapp.strategies.registry import get
 from webapp.broker.paper import PaperBroker
 import pandas as pd
@@ -52,12 +52,39 @@ def main():
     ap.add_argument("--arm", action="store_true", help="actually place orders")
     ap.add_argument("--dry-run", action="store_true", help="never place orders (default)")
     ap.add_argument("--json", action="store_true", help="emit the plan as JSON")
+    ap.add_argument("--once-per-bar", action="store_true",
+                    help="do nothing if this 12h bar already has a decision. Use "
+                         "this with an HOURLY schedule on a machine that sleeps: "
+                         "the bar gets decided whenever the machine is next awake, "
+                         "and every other run that day is a no-op.")
     a = ap.parse_args()
 
     armed = a.arm and not a.dry_run
+
+    # Cheap pre-check, before the panel is even read: if the bar we are
+    # currently inside has already been traded, there is nothing to do and no
+    # reason to touch the exchange.
+    now = dt.datetime.now(dt.timezone.utc)
+    if a.once_per_bar and journal.decided(config.STORE, journal.floor_bar(now)):
+        if not a.json:
+            print(f"{now:%Y-%m-%dT%H:%M:%SZ}  bar "
+                  f"{journal.floor_bar(now):%Y-%m-%dT%H:%MZ} already decided — nothing to do")
+        return 0
     strat = get(a.strategy)()
     broker = make_broker(a.equity)
     plan = engine.plan_orders(strat, broker, a.equity, a.risk)
+
+    # And again against the bar the DATA actually landed on, which is not always
+    # the bar the clock says: when the feed falls back to the archive it can be
+    # a bar behind, and without this a second run would re-trade a bar that was
+    # already decided and churn the stop ladder for nothing.
+    if a.once_per_bar and plan.get("bar"):
+        b = dt.datetime.fromisoformat(plan["bar"])
+        if journal.decided(config.STORE, b):
+            if not a.json:
+                print(f"{plan['ts']}  data is still on bar {b:%Y-%m-%dT%H:%MZ}, "
+                      f"already decided — nothing to do")
+            return 0
 
     if a.json:
         print(json.dumps(plan, indent=1, default=str))
@@ -68,8 +95,10 @@ def main():
         print(f"  price {plan['price']:,.1f}   equity {eq:,.2f}{note}")
         age = plan.get("bar_age_hours")
         if age is not None:
-            flag = "  STALE - the feed is behind" if age > 24 else ""
-            print(f"  last bar {age:.0f}h old{flag}")
+            limit = engine.MAX_BAR_AGE_HOURS
+            flag = f"  STALE - past the {limit:.0f}h limit, this will not trade" \
+                   if age > limit else ""
+            print(f"  bar {plan.get('bar','?')}, {age:.0f}h old{flag}")
         print(f"  held {plan['position']:+.4f}   target {plan['target']:+.4f}")
         for s in plan["sleeves"]:
             q = f"{s['qty']:+.4f}" if s["qty"] else "flat"
@@ -86,6 +115,13 @@ def main():
     r = engine.execute(plan, broker, armed)
     print(f"  {'SENT' if r.get('sent') else 'not sent'}"
           f"{'' if r.get('sent') else ' — ' + r.get('reason', '')}")
+
+    # Every run goes in the record, sent or not. On a machine that is not always
+    # on - a laptop - the gaps in this file are the difference between a result
+    # you can reason about and one you cannot. See webapp/journal.py.
+    journal.record(config.STORE, plan, r)
+    if not a.json:
+        print(journal.summary_line(config.STORE))
     return 0
 
 
