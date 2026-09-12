@@ -127,13 +127,26 @@ def main():
     print(f"  {'SENT' if r.get('sent') else 'not sent'}"
           f"{'' if r.get('sent') else ' — ' + r.get('reason', '')}")
 
+    # Every rejection Binance sent, verbatim. Without this the log printed SENT
+    # while six stops were being refused, and the position ran unprotected with
+    # nothing on screen or on disk to say so. A broker reply nobody prints is a
+    # broker reply nobody reads.
+    errors = r.get("errors") or []
+    for e in errors:
+        print(f"  REJECTED: {e}", file=sys.stderr)
+    if errors:
+        n = len(plan["ladder"])
+        print(f"  !! holding {plan['position']:+.4f} with {n - len(errors)} of "
+              f"{n} protective orders placed. This bar is left UNDECIDED so the "
+              f"next run retries it.", file=sys.stderr)
+
     # Every run goes in the record, sent or not. On a machine that is not always
     # on - a laptop - the gaps in this file are the difference between a result
     # you can reason about and one you cannot. See webapp/journal.py.
     journal.record(config.STORE, plan, r)
     if not a.json:
         print(journal.summary_line(config.STORE))
-    return 0
+    return 1 if errors else 0
 
 
 if __name__ == "__main__":

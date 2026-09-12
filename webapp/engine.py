@@ -144,9 +144,31 @@ def execute(plan, broker, armed: bool, max_bar_age=MAX_BAR_AGE_HOURS):
             f"the limit."))
     done = []
     if plan["order"]:
+        # If the entry itself is rejected there is nothing to protect and
+        # nothing worth reporting but that rejection, so this one may raise.
         done.append(broker.market(plan["order"]["side"], plan["order"]["qty"],
                                   note=f"{plan['strategy']} rebalance"))
-    broker.cancel_all()
+    cancelled = broker.cancel_all()
+
+    # Each leg is placed independently and a failure is COLLECTED, not raised.
+    # Raising would abort before journal.record() and leave no trace of a
+    # position that had just opened; swallowing is how a naked position hid
+    # behind a log saying SENT. So place what can be placed, and report exactly
+    # what could not.
+    errors = []
     for leg in plan["ladder"]:
-        done.append(broker.place_stop(leg["side"], leg["qty"], leg["stop"], leg["kind"]))
-    return dict(sent=True, results=done)
+        try:
+            done.append(broker.place_stop(leg["side"], leg["qty"],
+                                          leg["stop"], leg["kind"]))
+        except Exception as e:                     # noqa: BLE001 - see above
+            errors.append(f"{leg['label']} {leg['kind']}: {e}")
+
+    # `sent` gates journal.decided(), which gates --once-per-bar. A partially
+    # protected position is NOT a decided bar: returning False lets the next
+    # hourly run retry the ladder, which is safe because the rebalance will be
+    # a no-op by then and cancel_all + re-place is idempotent.
+    ok = not errors
+    return dict(sent=ok, results=done, cancelled=cancelled, errors=errors,
+                reason=("" if ok else
+                        f"{len(errors)} of {len(plan['ladder'])} ladder legs "
+                        f"REJECTED — position is not fully protected"))
