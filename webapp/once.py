@@ -48,7 +48,7 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--strategy", default=os.environ.get("BOT_STRATEGY", "v7"))
     ap.add_argument("--equity", type=float, default=float(os.environ.get("BOT_EQUITY", 10_000)))
-    ap.add_argument("--risk", type=float, default=float(os.environ.get("BOT_RISK", 0.08)))
+    ap.add_argument("--risk", type=float, default=config.RISK)
     ap.add_argument("--arm", action="store_true", help="actually place orders")
     ap.add_argument("--dry-run", action="store_true", help="never place orders (default)")
     ap.add_argument("--json", action="store_true", help="emit the plan as JSON")

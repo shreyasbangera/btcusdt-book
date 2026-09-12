@@ -39,7 +39,7 @@ def healthz():
     Returns liveness only - no account data, no configuration."""
     return dict(ok=True)
 STATIC = pathlib.Path(__file__).parent / "static"
-STATE = {"armed": False, "strategy": "v7", "equity": 10_000.0, "risk": 0.08,
+STATE = {"armed": False, "strategy": "v7", "equity": 10_000.0, "risk": config.RISK,
          "last_plan": None}
 
 
