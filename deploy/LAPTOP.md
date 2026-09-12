@@ -112,23 +112,64 @@ that step is already done, so the second run is quick.
 * **[Git for Windows](https://git-scm.com/download/win)**, all defaults.
 * `curl.exe`, which ships with Windows 10 1803 and later. Nothing to install.
 
-### What the scheduled task is set to, and why
+### The two scheduled tasks, and why
 
-You do not have to touch Task Scheduler, but it is worth knowing what was
-registered, because three of these settings are the difference between a bot
-that runs and one that dies silently:
+**`BTCUSDT book`** — every hour, indefinitely, **no wake**. This is the
+catch-up: whenever the machine happens to be awake, the current bar gets its
+decision and `--once-per-bar` makes every other run that day a no-op.
+
+**`BTCUSDT book (wake)`** — twice a day, five minutes after each 12h bar closes
+(05:35 and 17:35 IST), and **allowed to wake a sleeping laptop**.
+
+The second one exists because the hourly task only helps while the machine is
+awake, and S93 measured what that costs:
+
+| | cost against a 73.2% baseline |
+|---|---|
+| every decision 3 hours late | −7.7 points |
+| 20% of bars missed in three-day blocks | **−17.9 points** |
+
+Missing days is worth more than twice being slow. A laptop left plugged in and
+**asleep** for a weekend away therefore misses nothing instead of six bars.
+
+It fires twice rather than hourly on purpose. Hourly wake-ups all night are how
+you end up disabling your own bot, and the bar only changes twice a day — two
+wakes cover everything the other twenty-two could.
+
+Settings shared by both, three of which decide whether a Windows schedule
+survives at all:
 
 | setting | value | why |
 |---|---|---|
-| Trigger | every **1 hour**, indefinitely | a laptop cannot be relied on to be awake at 05:35 and 17:35 IST. `--once-per-bar` makes all but one run a no-op |
-| Start if on batteries | **allowed** | Windows defaults this to *disallowed*. On a laptop that default stops the bot the moment you unplug, with no error anywhere |
+| Start if on batteries | **allowed** | Windows defaults to *disallowed*. On a laptop that stops the bot the moment you unplug, with no error anywhere |
 | Stop if going on batteries | **off** | same trap, other half |
 | Run a missed occurrence | **on** | catches up after sleep or a reboot |
 | Two at once | **ignore the new one** | never two decisions overlapping |
-| Window | hidden | otherwise a console flashes on your screen every hour for a year, and you will disable the task |
+| Window | hidden | otherwise a console flashes every hour for a year and you disable the task |
 
-To look at it later: `Get-ScheduledTask -TaskName 'BTCUSDT book'`.
-To stop it entirely: `Unregister-ScheduledTask -TaskName 'BTCUSDT book'`.
+```powershell
+Get-ScheduledTask -TaskName 'BTCUSDT book*' | Get-ScheduledTaskInfo   # check
+Get-ScheduledTask -TaskName 'BTCUSDT book*' | Unregister-ScheduledTask # stop
+.\deploy\laptop-setup.ps1 -Arm -NoWake                                 # hourly only
+```
+
+### What the wake task needs from you
+
+| laptop state | can it be woken? |
+|---|---|
+| **Sleep** | yes — this is what it is for |
+| **Hibernate** | usually yes |
+| **Shut down** | **no.** Nothing in Windows wakes a powered-off machine |
+
+So **sleep the laptop, do not shut it down**, and leave it plugged in when you
+are away. The setup script also enables "Allow wake timers" on AC power, which
+Windows commonly has off by default and without which `WakeToRun` is ignored.
+
+One caveat the script warns about if it applies: many recent laptops use
+**Modern Standby** (S0 low-power idle) rather than classic sleep, and OEM power
+policy there often suppresses wake timers whatever Windows reports. If that is
+your machine the setting is harmless but may simply not fire — and the journal
+is how you would find out, because it would show the missed bars.
 
 ### Doing it by hand instead
 

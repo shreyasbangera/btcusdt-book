@@ -67,17 +67,22 @@ def main():
         dts = pd.date_range(end=pd.Timestamp(open_time), periods=n, freq="12h")
         return {"panel_12h": pd.DataFrame({"dt": dts, "close": np.arange(n) + 1.0})}
 
+    # NOT floored to the hour: an earlier version of this rounded `now` down and
+    # so asserted a range that depended on how many minutes past the hour the
+    # suite happened to run. It passed for weeks and then did not. A test whose
+    # result moves with the wall clock is worse than no test.
     real_now = pd.Timestamp.now("UTC")
-    # A 12h bar that opened 13h ago closed 1h ago.
-    p = panel_ending(real_now.floor("h") - pd.Timedelta(hours=13))
+
+    # A 12h bar that opened 13h ago closed exactly 1h ago.
+    p = panel_ending(real_now - pd.Timedelta(hours=13))
     age = engine._bar_age(p)
-    assert 0.5 <= age <= 1.5, f"a bar that closed an hour ago reads {age}h"
+    assert 0.9 <= age <= 1.1, f"a bar that closed an hour ago reads {age}h"
     print(f"  ok  a bar closed 1h ago reads {age}h old, not 13h")
 
     # And one that closed 20h ago reads 20h, so the guard can see it.
-    p = panel_ending(real_now.floor("h") - pd.Timedelta(hours=32))
+    p = panel_ending(real_now - pd.Timedelta(hours=32))
     age = engine._bar_age(p)
-    assert 19.5 <= age <= 20.5, age
+    assert 19.9 <= age <= 20.1, age
     assert age > engine.MAX_BAR_AGE_HOURS
     print(f"  ok  a bar closed 20h ago reads {age}h old and is past the limit")
 

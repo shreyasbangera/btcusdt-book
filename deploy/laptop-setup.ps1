@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks that Binance serves this machine, installs Python dependencies into
     a virtualenv, runs the tests, seeds 36 months of market data, and registers
-    an HOURLY scheduled task.
+    two scheduled tasks.
 
     WHY HOURLY AND NOT TWICE A DAY. The book decides at 00:05 and 12:05 UTC -
     05:35 and 17:35 IST. A server is awake then; a laptop is shut, or in a bag,
@@ -15,16 +15,33 @@
     whenever it next opens, and there is no UTC arithmetic in the trigger to
     get wrong - hourly is hourly in every time zone.
 
-    The task is registered as a DRY RUN. Re-run with -Arm when you are ready
-    for it to actually place orders.
+    WHY A SECOND TASK. The hourly one only helps while the machine is awake.
+    S93 measured the alternative: missing 20% of bars in three-day blocks costs
+    17.9 points of CAGR, against 7.7 for being three hours late on every single
+    one. So missing days matters more than twice as much as being slow, and the
+    fix is a task that can WAKE a sleeping laptop.
+
+    It fires twice a day rather than hourly, five minutes after each bar closes.
+    Hourly wake-ups all night are how you end up disabling your own bot, and the
+    bar only changes twice a day - two wakes cover everything the other
+    twenty-two could.
+
+    This only works from SLEEP or hibernate. Nothing can wake a machine that is
+    shut down. Use -NoWake to skip it.
+
+    The tasks are registered as a DRY RUN. Re-run with -Arm when you are ready
+    for them to actually place orders.
 
 .EXAMPLE
     .\deploy\laptop-setup.ps1
     .\deploy\laptop-setup.ps1 -Arm
+    .\deploy\laptop-setup.ps1 -Arm -NoWake
 #>
 param(
     [switch]$Arm,
-    [string]$TaskName = "BTCUSDT book"
+    [switch]$NoWake,
+    [string]$TaskName = "BTCUSDT book",
+    [string]$WakeTaskName = "BTCUSDT book (wake)"
 )
 
 $ErrorActionPreference = "Stop"
@@ -132,46 +149,123 @@ if ($state -match "rows, to") {
 & $VenvPy "$Root\panelstore.py"
 
 # --------------------------------------------------------------------------
-Say "6. Schedule, hourly"
+Say "6. Schedule"
 $RunPs1 = Join-Path $Root "deploy\run.ps1"
 $psArgs = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$RunPs1`""
 if ($Arm) { $psArgs += " -Arm" }
-
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $psArgs -WorkingDirectory $Root
-$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).Date `
-             -RepetitionInterval (New-TimeSpan -Hours 1) `
-             -RepetitionDuration (New-TimeSpan -Days 3650)
+
 # Every one of these matters on a laptop:
 #   AllowStartIfOnBatteries / DontStopIfGoingOnBatteries - the defaults are the
 #     opposite, and they will silently stop the bot the moment you unplug. This
 #     is the single most common way a Windows schedule dies without a trace.
 #   StartWhenAvailable - run a missed occurrence once the machine is back.
 #   IgnoreNew - never let two decisions overlap.
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries `
-              -DontStopIfGoingOnBatteries -StartWhenAvailable `
-              -MultipleInstances IgnoreNew `
-              -ExecutionTimeLimit (New-TimeSpan -Minutes 30)
+$common = @{
+    AllowStartIfOnBatteries    = $true
+    DontStopIfGoingOnBatteries = $true
+    StartWhenAvailable         = $true
+    MultipleInstances          = "IgnoreNew"
+    ExecutionTimeLimit         = (New-TimeSpan -Minutes 30)
+}
 
-try {
-    Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger `
-        -Settings $settings -Force `
-        -Description "Twice-daily BTCUSDT book, run hourly with --once-per-bar." | Out-Null
-} catch {
-    Die @"
-    Could not register the scheduled task:
+function RegisterTask([string]$name, $trigger, $settings, [string]$desc) {
+    try {
+        Register-ScheduledTask -TaskName $name -Action $action -Trigger $trigger `
+            -Settings $settings -Force -Description $desc | Out-Null
+        return $true
+    } catch {
+        Die @"
+    Could not register the scheduled task '$name':
       $($_.Exception.Message)
 
     This usually means it needs elevation. Close this window, right-click
     Windows PowerShell, 'Run as administrator', then:
         cd '$Root'
-        .\deploy\laptop-setup.ps1$(if ($Arm) { ' -Arm' })
+        .\deploy\laptop-setup.ps1$(if ($Arm) { ' -Arm' })$(if ($NoWake) { ' -NoWake' })
 
     Everything before this step is already done, so the re-run will be quick.
 "@
+    }
+}
+
+# (a) THE HOURLY TASK - catch-up while the machine is awake. Deliberately does
+# NOT wake anything: an hourly wake-up all night is how you end up disabling
+# your own bot, and the bar only changes twice a day.
+RegisterTask $TaskName `
+    (New-ScheduledTaskTrigger -Once -At (Get-Date).Date `
+       -RepetitionInterval (New-TimeSpan -Hours 1) `
+       -RepetitionDuration (New-TimeSpan -Days 3650)) `
+    (New-ScheduledTaskSettingsSet @common) `
+    "BTCUSDT book: hourly catch-up, --once-per-bar." | Out-Null
+Write-Host "    '$TaskName' - hourly, no wake"
+
+# (b) THE WAKE TASK - twice a day, five minutes after each 12h bar closes, and
+# allowed to wake a sleeping machine. Two wakes a day rather than twenty-four,
+# at the only two moments that can possibly matter.
+#
+# Triggers fire on LOCAL time, so the two UTC bar closes are converted here at
+# setup. Moving the machine to another time zone silently shifts them; re-run
+# this script after travelling. (India has no DST, so they are stable here.)
+if (-not $NoWake) {
+    $utcMid = (Get-Date).ToUniversalTime().Date
+    $t1 = [System.TimeZoneInfo]::ConvertTimeFromUtc($utcMid.AddMinutes(5), [System.TimeZoneInfo]::Local)
+    $t2 = [System.TimeZoneInfo]::ConvertTimeFromUtc($utcMid.AddHours(12).AddMinutes(5), [System.TimeZoneInfo]::Local)
+    $wakeSettings = New-ScheduledTaskSettingsSet @common -WakeToRun
+    RegisterTask $WakeTaskName `
+        @((New-ScheduledTaskTrigger -Daily -At $t1),
+          (New-ScheduledTaskTrigger -Daily -At $t2)) `
+        $wakeSettings `
+        "BTCUSDT book: wake the machine just after each 12h bar closes." | Out-Null
+    Write-Host ("    '$WakeTaskName' - daily at {0:HH:mm} and {1:HH:mm} local, WAKES the machine" -f $t1, $t2)
+
+    # Windows ignores WakeToRun unless wake timers are permitted by the power
+    # plan, and they are commonly off by default. Set it for AC only: waking on
+    # battery is a good way to find the laptop flat in the morning.
+    #
+    # ErrorActionPreference is relaxed around these: powercfg writes "Access
+    # denied" to stderr when it wants elevation, and under Stop that becomes a
+    # terminating NativeCommandError which would kill the script AFTER the tasks
+    # were registered - leaving the setup half done and the reason invisible.
+    # The same trap that ate a Python traceback in run.ps1.
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $okA = $okB = $false
+    try {
+        & powercfg /setacvalueindex SCHEME_CURRENT SUB_SLEEP RTCWAKE 1 2>&1 | Out-Null
+        $okA = ($LASTEXITCODE -eq 0)
+        & powercfg /setactive SCHEME_CURRENT 2>&1 | Out-Null
+        $okB = ($LASTEXITCODE -eq 0)
+    } catch { }
+    $sleepStates = ""
+    try { $sleepStates = ((& powercfg /a) 2>&1 | Out-String) } catch { }
+    $ErrorActionPreference = $prev
+
+    if ($okA -and $okB) {
+        Write-Host "    wake timers enabled on AC power"
+    } else {
+        Write-Host "    could not set wake timers - do it by hand:" -ForegroundColor Yellow
+        Write-Host "      Control Panel > Power Options > Change plan settings >" -ForegroundColor Yellow
+        Write-Host "      Change advanced power settings > Sleep > Allow wake timers > Enable" -ForegroundColor Yellow
+    }
+
+    # Modern Standby laptops (S0 low-power idle) often suppress wake timers by
+    # OEM policy regardless of the Windows setting. Worth knowing up front
+    # rather than deducing it later from a journal full of missed bars.
+    if ($sleepStates -match "S0 Low Power Idle") {
+        Write-Host "    NOTE: this machine uses Modern Standby (S0). Wake timers are" -ForegroundColor Yellow
+        Write-Host "      often suppressed there whatever Windows says. If the journal" -ForegroundColor Yellow
+        Write-Host "      shows missed bars on days you were away, that is why." -ForegroundColor Yellow
+    }
+    Write-Host "    SLEEP the laptop rather than shutting it down, and leave it plugged"
+    Write-Host "    in. Nothing can wake a machine that is powered off."
+} else {
+    Unregister-ScheduledTask -TaskName $WakeTaskName -Confirm:$false -ErrorAction SilentlyContinue
+    Write-Host "    no wake task (-NoWake)"
 }
 
 $mode = if ($Arm) { "ARMED - this will place orders on the testnet" } else { "dry run - it will not place anything" }
-Write-Host "    registered '$TaskName', hourly, $mode"
+Write-Host "    $mode"
 
 # --------------------------------------------------------------------------
 Write-Host @"
@@ -199,6 +293,10 @@ Done. What is left:
      did not. A laptop WILL miss bars. Missing some is survivable; not knowing
      which ones is what turns a result into a wrong conclusion.
 
-  To check on the task:   Get-ScheduledTask -TaskName '$TaskName'
-  To stop it:             Unregister-ScheduledTask -TaskName '$TaskName'
+  5. SLEEP the laptop rather than shutting it down, and leave it plugged in
+     when you are away. The wake task can rouse a sleeping machine twice a day;
+     nothing can rouse one that is powered off.
+
+  To check on them:   Get-ScheduledTask -TaskName 'BTCUSDT book*' | Get-ScheduledTaskInfo
+  To stop everything: Get-ScheduledTask -TaskName 'BTCUSDT book*' | Unregister-ScheduledTask
 "@ -ForegroundColor Green
