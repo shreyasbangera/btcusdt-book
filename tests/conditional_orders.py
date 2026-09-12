@@ -16,6 +16,12 @@ Any one of those alone would have made it visible. This file pins all three,
 plus the endpoint contract, because the first symptom was a real account
 holding a position with zero protective orders and a log that said SENT.
 
+Section 7 covers the bug the FIX then exposed. With rejections finally raising,
+the very next scheduled run died on -1021: the laptop's clock was a second
+ahead, and Binance rejects any signed request timestamped more than 1000ms into
+its future - a ceiling recvWindow does not widen, because recvWindow only
+forgives being late. Signed requests now carry the exchange's clock.
+
 No network: a fake transport records what WOULD be sent.
 """
 import sys, pathlib, json
@@ -38,13 +44,21 @@ def check(name, cond, detail=""):
 class FakeBroker(BinanceFutures):
     """A BinanceFutures whose transport records instead of sending."""
 
-    def __init__(self, replies=None):
+    def __init__(self, replies=None, server_ms=None, seq=None):
         self.mode = "test"
         self.symbol = "BTCUSDT"
         self.recv = 5000
         self.key, self.secret, self.base = "k", "s", "https://x"
         self.sent = []
         self.replies = replies or {}
+        # `seq` is a QUEUE of replies per path, for testing retries. It must be
+        # a separate channel from `replies`, because a real API reply is often
+        # itself a list ([] for no open orders) and the two are indistinguishable.
+        self.seq = {k: list(v) for k, v in (seq or {}).items()}
+        self._skew = None
+        self._skew_at = 0.0
+        self.server_ms = server_ms          # pretend the exchange clock says this
+        self.time_calls = 0
 
     def _curl(self, args):
         url = args[-1]
@@ -52,7 +66,14 @@ class FakeBroker(BinanceFutures):
         path = url.split("?")[0].replace(self.base, "")
         params = dict(p.split("=", 1) for p in url.split("?")[1].split("&")
                       if "=" in p) if "?" in url else {}
+        if path == "/fapi/v1/time":
+            self.time_calls += 1
+            import time as _t
+            return {"serverTime": self.server_ms
+                    if self.server_ms is not None else int(_t.time() * 1000)}
         self.sent.append((method, path, params))
+        if path in self.seq and self.seq[path]:
+            return self.seq[path].pop(0)
         return self.replies.get(path, {"ok": True})
 
 
@@ -169,6 +190,57 @@ with tempfile.TemporaryDirectory() as store:
     journal.record(store, p, dict(sent=True, reason=""))
     check("a clean run is a decided bar", journal.decided(store, bar) is True)
 
+
+print("\n7. the clock: signed requests use the EXCHANGE's time, not the machine's")
+# Binance rejects anything timestamped >1000ms ahead of its own clock and that
+# ceiling is hard - recvWindow only forgives being late. A laptop one second
+# fast failed every order with -1021 while looking perfectly healthy.
+import time as _time  # noqa: E402
+
+now_ms = int(_time.time() * 1000)
+b = FakeBroker(server_ms=now_ms - 5000)          # machine is 5s AHEAD of Binance
+b.market("BUY", 0.017)
+ts = int(b.sent[-1][2]["timestamp"])
+check("timestamp is pulled back to exchange time", abs(ts - (now_ms - 5000)) < 1500,
+      f"sent {ts}, exchange {now_ms - 5000}")
+check("never lands in Binance's future window", ts - (now_ms - 5000) < 1000)
+
+b = FakeBroker(server_ms=now_ms + 5000)          # machine is 5s BEHIND
+b.market("BUY", 0.017)
+ts = int(b.sent[-1][2]["timestamp"])
+check("works in the other direction too", abs(ts - (now_ms + 5000)) < 1500)
+
+b = FakeBroker()
+for _ in range(4):
+    b.market("BUY", 0.017)
+check("the offset is cached, not fetched per order", b.time_calls == 1,
+      f"{b.time_calls} clock reads for 4 orders")
+
+b = FakeBroker(seq={"/fapi/v1/order": [
+    {"code": -1021, "msg": "Timestamp for this request was 1000ms ahead"},
+    {"orderId": 7}]})
+r = b.market("BUY", 0.017)
+check("a -1021 re-syncs and retries once", r == {"orderId": 7}, r)
+check("the retry re-read the clock", b.time_calls == 2, f"{b.time_calls} reads")
+check("exactly two attempts, never a loop", len(b.sent) == 2, f"{len(b.sent)} sent")
+
+b = FakeBroker(seq={"/fapi/v1/order": [
+    {"code": -1021, "msg": "still ahead"}, {"code": -1021, "msg": "still ahead"}]})
+try:
+    b.market("BUY", 0.017)
+    check("a persistent -1021 still raises", False, "swallowed after retry")
+except BinanceError as e:
+    check("a persistent -1021 still raises", True, f"[{e.code}]")
+    check("and stops at two attempts", len(b.sent) == 2, f"{len(b.sent)} sent")
+
+b = FakeBroker(seq={"/fapi/v1/order": [
+    {"code": -2019, "msg": "Margin is insufficient"}, {"orderId": 9}]})
+try:
+    b.market("BUY", 0.017)
+    check("an unrelated rejection is NOT retried", False, "retried a real refusal")
+except BinanceError:
+    check("an unrelated rejection is NOT retried", len(b.sent) == 1,
+          f"{len(b.sent)} sent")
 
 print()
 if FAIL:

@@ -42,10 +42,20 @@ class BinanceError(RuntimeError):
 
 
 class BinanceFutures(Broker):
+    # Binance rejects any signed request timestamped more than 1000ms AHEAD of
+    # its own clock, and that ceiling is hard - recvWindow only widens the
+    # tolerance for being late, never for being early. A laptop one second fast
+    # therefore fails every order with -1021 while looking perfectly healthy to
+    # its owner, which is what happened the first evening this ran unattended.
+    # So the timestamp is taken from the exchange's clock, not the machine's.
+    CLOCK_TTL = 1800.0                       # re-read the offset every 30 min
+
     def __init__(self, mode="test", symbol="BTCUSDT", recv_window=5000):
         self.mode = mode
         self.symbol = symbol
         self.recv = recv_window
+        self._skew = None                    # serverTime - localTime, in ms
+        self._skew_at = 0.0
         self.key, self.secret, self.base = config.credentials(mode)
         if not (self.key and self.secret):
             raise PermissionError(f"no API credentials for mode={mode!r}")
@@ -78,16 +88,40 @@ class BinanceFutures(Broker):
                 raise BinanceError(reply, path)
         return reply
 
-    def _signed(self, method, path, params=None):
+    def _skew_ms(self, force=False):
+        """How far this machine's clock is behind Binance's, in milliseconds.
+
+        Measured against GET /fapi/v1/time and cached, because one request per
+        order to ask the time is wasteful and one per half hour is plenty for
+        drift this size.
+        """
+        if force or self._skew is None or time.time() - self._skew_at > self.CLOCK_TTL:
+            t = self._curl([f"{self.base}/fapi/v1/time"])
+            self._skew = int(t["serverTime"]) - int(time.time() * 1000)
+            self._skew_at = time.time()
+        return self._skew
+
+    def _signed(self, method, path, params=None, _retry=True):
         p = dict(params or {})
-        p["timestamp"] = int(time.time() * 1000)
+        p["timestamp"] = int(time.time() * 1000) + self._skew_ms()
         p["recvWindow"] = self.recv
         q = urllib.parse.urlencode(p)
         sig = hmac.new(self.secret.encode(), q.encode(), hashlib.sha256).hexdigest()
         url = f"{self.base}{path}?{q}&signature={sig}"
-        return self._check(
-            self._curl(["-X", method, "-H", f"X-MBX-APIKEY: {self.key}", url]),
-            f"{method} {path}")
+        try:
+            return self._check(
+                self._curl(["-X", method, "-H", f"X-MBX-APIKEY: {self.key}", url]),
+                f"{method} {path}")
+        except BinanceError as e:
+            # -1021 timestamp outside recvWindow, -1022 bad signature: both can
+            # mean the cached offset went stale (the machine's clock stepped, or
+            # it woke from sleep). Re-read the exchange clock and try once more.
+            # Only once - a retry loop against an order endpoint is how one
+            # intended trade becomes several.
+            if _retry and e.code in (-1021, -1022):
+                self._skew_ms(force=True)
+                return self._signed(method, path, params, _retry=False)
+            raise
 
     def _public(self, path, params=None):
         q = "?" + urllib.parse.urlencode(params) if params else ""
