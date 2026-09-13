@@ -171,6 +171,25 @@ policy there often suppresses wake timers whatever Windows reports. If that is
 your machine the setting is harmless but may simply not fire — and the journal
 is how you would find out, because it would show the missed bars.
 
+Check rather than trusting the warning, which read the wrong half of `powercfg`
+output until 2026-09-13 and cried wolf on machines that were perfectly fine:
+
+```powershell
+powercfg /a
+```
+
+**Standby (S3)** in the *available* list means classic sleep, and wake timers
+behave normally — nothing to do. **Standby (S0 Low Power Idle)** in the
+*available* list is the case described above. Seeing S0 under **not available**
+is the opposite of a problem.
+
+If you do have S0 and the journal shows it eating wakes, the low-effort fix is
+`powercfg /hibernate on` and hibernating rather than sleeping — wake timers are
+reliable from S4. Disabling Modern Standby outright (`PlatformAoAcOverride = 0`
+under `HKLM\SYSTEM\CurrentControlSet\Control\Power`, elevated, then reboot)
+only helps where the firmware offers S3 at all, which `powercfg /a` has already
+told you.
+
 ### Doing it by hand instead
 
 If you would rather not run a script, `deploy\run.bat` is the same job as a

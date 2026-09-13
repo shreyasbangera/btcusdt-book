@@ -252,10 +252,24 @@ if (-not $NoWake) {
     # Modern Standby laptops (S0 low-power idle) often suppress wake timers by
     # OEM policy regardless of the Windows setting. Worth knowing up front
     # rather than deducing it later from a journal full of missed bars.
-    if ($sleepStates -match "S0 Low Power Idle") {
+    # `powercfg /a` prints an AVAILABLE section and then a NOT-AVAILABLE one,
+    # and "S0 Low Power Idle" appears in whichever one applies. Matching the
+    # whole output therefore fires on exactly the machines that do NOT have
+    # Modern Standby. It did: on a laptop whose firmware explicitly does not
+    # support S0 and which offers plain S3, it printed the warning and sent its
+    # owner off to edit the registry for a problem they did not have. Only the
+    # available section counts.
+    #
+    # If Windows is localised the header will not match, the split is a no-op,
+    # and this degrades to the old over-warning behaviour: noisy, not wrong.
+    $availStates = ($sleepStates -split
+                    "(?m)^The following sleep states are not available")[0]
+    if ($availStates -match "S0 Low Power Idle") {
         Write-Host "    NOTE: this machine uses Modern Standby (S0). Wake timers are" -ForegroundColor Yellow
         Write-Host "      often suppressed there whatever Windows says. If the journal" -ForegroundColor Yellow
         Write-Host "      shows missed bars on days you were away, that is why." -ForegroundColor Yellow
+    } elseif ($availStates -match "S3") {
+        Write-Host "    sleep state S3 - classic sleep, wake timers work normally here"
     }
     Write-Host "    SLEEP the laptop rather than shutting it down, and leave it plugged"
     Write-Host "    in. Nothing can wake a machine that is powered off."
