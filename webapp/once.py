@@ -124,8 +124,15 @@ def main():
         return 2
 
     r = engine.execute(plan, broker, armed)
+    # Under --json, stdout is a machine-readable document and nothing else may
+    # touch it. This line went to stdout unconditionally, so `--json > f` wrote
+    # a valid plan object followed by "  not sent - not armed" and the file was
+    # not JSON. Every reader of it did `json.loads` and swallowed the error.
+    # The journal summary below was already guarded; this was the one that got
+    # missed, which is why the guard is now a single explicit stream.
+    out = sys.stderr if a.json else sys.stdout
     print(f"  {'SENT' if r.get('sent') else 'not sent'}"
-          f"{'' if r.get('sent') else ' — ' + r.get('reason', '')}")
+          f"{'' if r.get('sent') else ' — ' + r.get('reason', '')}", file=out)
 
     # Every rejection Binance sent, verbatim. Without this the log printed SENT
     # while six stops were being refused, and the position ran unprotected with

@@ -1,5 +1,24 @@
 # Running the book on GitHub Actions
 
+> ## RETIRED — 2026-09-13
+>
+> **This does not work and is no longer scheduled.** Binance refuses most
+> datacentre ranges, GitHub's runners included, so the runs could not reach the
+> API reliably enough to be trusted with a decision.
+>
+> The `schedule:` triggers are removed, and the step that published
+> `status/latest.json` is deleted — otherwise a manual diagnostic run would
+> leave a one-off dry run on `main` for a dashboard to read as live state.
+> `workflow_dispatch` remains, for diagnostics only.
+>
+> **The laptop is now the sole decision path** — see `deploy/LAPTOP.md`. The
+> hourly task covers the hours it is awake, the wake task covers 05:35 / 17:35
+> IST, and `python -m webapp.journal` is the only record of which 12h bars
+> actually got a decision.
+>
+> Reviving this needs a runner on an IP Binance serves. Everything below is kept
+> because it describes how that would work, not because it is running.
+
 Zero infrastructure: GitHub's runners wake twice a day, decide, place orders on
 **Binance testnet**, and exit. Nothing of yours stays switched on.
 

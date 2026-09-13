@@ -1,20 +1,24 @@
-# Twice-daily decision for the BTCUSDT book, on GitHub's runners.
+# RETIRED AS A SCHEDULED DECISION PATH - 2026-09-13.
 #
-# SCHEDULES ONLY FIRE FROM THE DEFAULT BRANCH. GitHub ignores `schedule:` on any
-# other branch, so this file has to be on `main` before it runs on its own. Until
-# then use the "Run workflow" button, which works from any branch.
+# Binance refuses most datacentre ranges, GitHub's runners included, so this
+# could not reach the API reliably enough to be trusted with a decision. The
+# schedule is REMOVED rather than left to fail twice a day, for two reasons: a
+# job that fires and errors is noise in the Actions tab, and a run that half
+# succeeds publishes a status file that a dashboard would read as current.
 #
-# BEST-EFFORT TIMING. Scheduled workflows are commonly delayed 10-30 minutes
-# under load and are sometimes skipped entirely. The backtest assumes a fill at
-# the next bar's open, so a late run is a worse fill and a skipped run is a
-# decision the backtest never missed. Survivable for a 12h book; still the reason
-# a $4 VPS is better for anything you mind losing.
+# `workflow_dispatch` is kept so the job can still be run by hand for
+# diagnostics. It decides nothing on its own and nothing should depend on it.
+#
+# THE LAPTOP IS NOW THE SOLE DECISION PATH: the hourly task while it is awake,
+# and the wake task at 05:35 / 17:35 IST while it sleeps. The only record of
+# what actually got decided is `python -m webapp.journal`, and on a laptop that
+# is the only thing that will tell you about a bar nobody was there for.
+#
+# If this is ever revived, it needs a runner on an IP Binance serves, and the
+# schedule below - 00:05 and 12:05 UTC, just after each 12h bar closes.
 name: BTCUSDT book
 
 on:
-  schedule:
-    - cron: "5 0 * * *"      # 00:05 UTC, just after the 12h bar closes
-    - cron: "5 12 * * *"     # 12:05 UTC
   workflow_dispatch:
     inputs:
       arm:
@@ -23,7 +27,7 @@ on:
         default: false
       risk:
         description: "Total risk budget per decision"
-        default: "0.08"
+        default: "0.144"
 
 concurrency:
   group: btcusdt-book        # never let two decisions overlap
@@ -127,24 +131,18 @@ jobs:
         if: always()
         run: python -m webapp.once --strategy "$BOT_STRATEGY" --json > plan.json || true
 
-      - name: Publish the decision for the dashboard
-        # The dashboard reads this instead of carrying market-data panels, which
-        # is what lets it run on a free tier with no disk.
-        # Publishes from the DEFAULT BRANCH on any run, scheduled or manual, so
-        # you can press "Run workflow" once after merging and watch the dashboard
-        # fill in rather than waiting up to 12 hours for the next schedule. Never
-        # publishes from a feature branch, so an experiment cannot overwrite the
-        # record the dashboard reads.
-        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-        run: |
-          mkdir -p status
-          cp plan.json status/latest.json || exit 0
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add status/latest.json
-          git diff --staged --quiet || git commit -m "status: decision $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+      # The publish step is GONE, with the schedule that justified it.
+      #
+      # It copied the run's plan to status/latest.json and pushed it, so a
+      # dashboard with STATUS_URL set could read the last decision without
+      # carrying market-data panels. That made sense while this workflow decided
+      # twice a day. It is actively harmful now: the only runs left are manual
+      # diagnostics, and publishing one would put a one-off dry run on `main`
+      # where a dashboard reads it as the current state of a live book.
+      #
+      # The decision record lives on the laptop - `python -m webapp.journal`.
+      # The run's plan is still attached to the run as an artifact below, which
+      # is what a diagnostic actually needs.
 
       - uses: actions/upload-artifact@v4
         if: always()

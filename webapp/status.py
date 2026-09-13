@@ -9,7 +9,7 @@ tier that offers neither.
 If local panels ARE present the app computes live as before; this is the
 fallback, not a replacement.
 """
-import json, os, subprocess, time
+import json, os, subprocess, sys, time
 
 URL = os.environ.get("STATUS_URL", "")
 _CACHE = {"at": 0.0, "data": None}
@@ -31,8 +31,16 @@ def fetch(force=False):
         return _CACHE["data"]
     try:
         data = json.loads(r.stdout)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        # Say so. This swallowed the error and returned the cache, so a status
+        # file that was not JSON - and for a while the published one was not,
+        # carrying a trailing "not sent" line after the object - looked exactly
+        # like a dashboard with nothing to show yet. A parse failure is a fault,
+        # not an empty state.
+        print(f"status: {URL} is not valid JSON ({e}); "
+              f"first 120 bytes: {r.stdout[:120]!r}", file=sys.stderr)
         return _CACHE["data"]
     data["_source"] = "published by GitHub Actions"
+    data["_fetched_at"] = time.time()
     _CACHE.update(at=time.time(), data=data)
     return data

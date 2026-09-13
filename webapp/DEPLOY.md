@@ -16,22 +16,32 @@ app; it has only ever been bound to localhost.
 
 Split the two jobs:
 
+> **Out of date since 2026-09-13.** The Actions half of this split no longer
+> exists: Binance refuses GitHub's runner ranges, the workflow is retired
+> (`webapp/ACTIONS.md`), and the `status/latest.json` it published is deleted.
+> **Trading now happens only on the laptop** — `deploy/LAPTOP.md`. A dashboard
+> deployed as below has no status file to read, so it needs local panels or it
+> shows nothing. Kept as the shape of a free-hosting setup, not as instructions
+> that currently work.
+
 | job | where | why |
 |---|---|---|
-| **placing trades** | GitHub Actions, twice a day | already built; needs nothing running |
+| ~~**placing trades**~~ | ~~GitHub Actions, twice a day~~ | **retired — Binance blocks the runners** |
 | **the website** | Render / Fly / Railway free tier | if it sleeps, nothing breaks |
 
-This is the trick that makes free hosting viable. Free web services sleep when
+This was the trick that made free hosting viable. Free web services sleep when
 idle, which would be fatal if the website were the thing trading — but it is
-not. It is a viewer. The bot is `.github/workflows/btcusdt-book.yml`.
+not. It is a viewer.
 
 ## Render — the shortest path
 
 **Render's free tier does not support persistent disks**, which turned out to be
-a useful constraint: it forced the dashboard to stop needing one. Actions
-already decides twice a day and publishes the result to
-`research/btcusdt-quant/status/latest.json`; the dashboard reads that file over
-HTTPS. No panels, no 36-month seed on every cold start, no disk.
+a useful constraint: it forced the dashboard to stop needing one. Actions used
+to decide twice a day and publish the result to `status/latest.json` for the
+dashboard to read over HTTPS — no panels, no 36-month seed on every cold start,
+no disk. **That file is gone with the workflow**, so a free-tier dashboard now
+has nothing to display; it would need either a revived publisher on an IP
+Binance serves, or local panels and a disk.
 
 1. Push this repo to GitHub (done).
 2. render.com → **New → Blueprint** → pick the repo. It reads `render.yaml`.
