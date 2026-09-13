@@ -20,7 +20,7 @@ so the next person to change the size cannot change half of it.
 
 No network, no exchange, no pandas.
 """
-import sys, pathlib, os, importlib, argparse
+import sys, pathlib, os, importlib, argparse, ast
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -58,15 +58,34 @@ print("\n2. the scheduled task and the dashboard agree")
 ap = argparse.ArgumentParser()
 ap.add_argument("--risk", type=float, default=config.RISK)
 cli_default = ap.parse_args([]).risk
-from webapp import app as webapp_app  # noqa: E402
-
 check("once.py's CLI default == config.RISK", cli_default == config.RISK,
       f"{cli_default}")
-check("app.py's STATE['risk'] == config.RISK",
-      webapp_app.STATE["risk"] == config.RISK, f"{webapp_app.STATE['risk']}")
-check("they are the same number",
-      cli_default == webapp_app.STATE["risk"],
-      f"once {cli_default} vs app {webapp_app.STATE['risk']}")
+
+# app.py is read with `ast`, never imported. Importing it pulls in fastapi,
+# which the bot deliberately does not depend on - `no_heavy_deps.py` exists to
+# enforce exactly that - so an import here passes on a developer machine and
+# fails on the laptop that actually trades. It did: this file blocked the
+# laptop's setup script with ModuleNotFoundError: No module named 'fastapi'.
+#
+# Parsing is also a stronger check than the substring match above: it confirms
+# STATE['risk'] is literally the attribute `config.RISK` and not a number that
+# merely happens to agree today.
+tree = ast.parse(src_app)
+state_risk = None
+for node in ast.walk(tree):
+    if not isinstance(node, ast.Assign):
+        continue
+    if not any(getattr(t, "id", None) == "STATE" for t in node.targets):
+        continue
+    if isinstance(node.value, ast.Dict):
+        for k, v in zip(node.value.keys, node.value.values):
+            if getattr(k, "value", None) == "risk":
+                state_risk = v
+check("app.py's STATE has a 'risk' key", state_risk is not None)
+check("and it IS config.RISK, not a copy of the number",
+      isinstance(state_risk, ast.Attribute) and state_risk.attr == "RISK"
+      and getattr(state_risk.value, "id", None) == "config",
+      ast.dump(state_risk)[:60] if state_risk is not None else "missing")
 
 print("\n3. the environment can still override it, for one run")
 os.environ["BOT_RISK"] = "0.06"

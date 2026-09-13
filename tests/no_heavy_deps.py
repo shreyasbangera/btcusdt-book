@@ -105,6 +105,26 @@ def main():
     assert on_disk == ["panel_12h.pkl", "panel_4h.pkl"], on_disk
     print("  ok  never two formats of one panel in a store")
 
+    # And the TEST SUITE must not need them either. laptop-setup.ps1 runs
+    # tests/all.py on the trading machine before it registers anything, so one
+    # test that imports the dashboard blocks the entire setup on a laptop that
+    # correctly does not have fastapi installed. Not hypothetical: a risk test
+    # did exactly this and stopped a setup run dead.
+    heavy = ("fastapi", "uvicorn", "starlette", "pydantic",
+             "webapp.app", "webapp import app")
+    here = pathlib.Path(__file__).resolve().parent
+    files = sorted(here.glob("*.py"))
+    bad = []
+    for f in files:
+        for ln in f.read_text(encoding="utf-8", errors="replace").splitlines():
+            s = ln.strip()
+            if (s.startswith("import ") or s.startswith("from ")) and \
+                    any(h in s for h in heavy):
+                bad.append(f"{f.name}: {s}")
+    assert not bad, ("tests must not import dashboard-only dependencies:\n  "
+                     + "\n  ".join(bad))
+    print(f"  ok  no test imports a dashboard-only dependency ({len(files)} files)")
+
     print("\nPASS  the bot needs pandas and numpy, and nothing else.")
     return 0
 
