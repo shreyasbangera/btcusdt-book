@@ -46,7 +46,14 @@ class Strategy:
         """Panel names this strategy reads, e.g. ['panel_12h', 'panel_4h']."""
         return ["panel_12h"]
 
-    def decide(self, panels: dict, equity: float, risk: float) -> Decision:
+    def decide(self, panels: dict, equity: float, risk: float,
+               book: dict | None = None) -> Decision:
+        """`book` is what is currently open, keyed by sleeve label, or None.
+
+        A strategy that sizes fresh every bar can ignore it.  One that runs
+        trades - open, hold at a frozen size, close on a rule - reads it to know
+        what it is already in.  The engine reconciles it against the account
+        before passing it, and persists it only after an armed send."""
         raise NotImplementedError
 
     # -- helpers every strategy may use -------------------------------------

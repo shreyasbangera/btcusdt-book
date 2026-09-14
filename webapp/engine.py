@@ -11,6 +11,7 @@ import panelstore
 
 from .config import STORE, MODE
 from .strategies.registry import get, discover
+from . import tradebook
 
 
 def _decision_bar(panels):
@@ -62,7 +63,15 @@ def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
     px = broker.price()
     sizing_equity = pos.equity if pos.equity and pos.equity > 0 else equity
 
-    d = strategy.decide(panels, sizing_equity, risk)
+    # What is already open, reconciled against the account first: nothing can be
+    # open if we are flat, and a trade whose stop or target price has been reached
+    # is over whether or not we have seen the fill.  The strategy runs TRADES -
+    # frozen size, fixed levels, a holding cap - so it has to be told what it is
+    # already in.  Read here, written only by execute(), so a dry run cannot
+    # change the book.
+    book = tradebook.reconcile(tradebook.load(STORE), px, flat=(pos.qty == 0))
+
+    d = strategy.decide(panels, sizing_equity, risk, book=book)
     target = sum(s.qty for s in d.sleeves)
 
     sides = {1 if s.qty > 0 else -1 for s in d.sleeves if s.qty}
@@ -94,6 +103,7 @@ def plan_orders(strategy, broker, equity, risk, min_notional=100.0):
         sleeves=[dict(label=s.label, qty=s.qty, stop=s.stop, tp=s.take_profit,
                       hold_bars=s.hold_bars, meta=s.meta) for s in d.sleeves],
         diagnostics=d.diagnostics, note=d.note,
+        trades=tradebook.snapshot(d.sleeves), trades_open=len(book),
         conflict=conflict,
         conflict_note=("sleeves disagree on side — the engine refuses to net them. "
                        "This should be impossible for V7; investigate before trading."
@@ -149,6 +159,13 @@ def execute(plan, broker, armed: bool, max_bar_age=MAX_BAR_AGE_HOURS):
         done.append(broker.market(plan["order"]["side"], plan["order"]["qty"],
                                   note=f"{plan['strategy']} rebalance"))
     cancelled = broker.cancel_all()
+
+    # The position is now whatever the decision asked for, so record the open
+    # trades BEFORE the ladder. If a leg fails below we still want the book to
+    # say what is open - otherwise the next decision reads a flat book and opens
+    # a second position on top of the one that is already there. Written only on
+    # this path, so a dry run never changes it.
+    tradebook.save(STORE, plan.get("trades", {}))
 
     # Each leg is placed independently and a failure is COLLECTED, not raised.
     # Raising would abort before journal.record() and leave no trace of a
