@@ -2809,3 +2809,29 @@ S89 what shape, S90/S91 which signal — established that a trend gate is real, 
 against a smoothed reference rather than direction or trend strength, that its shape is a step the
 sample cannot resolve further, and that funding is the signal it is mostly correcting. None of the
 refinements beat the plain net gate at the 20% drawdown limit.
+
+## Verifying the trade-rules conversion against the backtest
+
+`research/replay.py` runs webapp.engine + webapp.strategies.v7 over history and
+was checked against engine/core.py, which produced the published numbers.
+
+                        CAGR    maxDD   medDD   Shp    PF    Clm
+  risk 8%
+    backtest reference   86.2   -12.3      --   2.15  3.17   7.00
+    TRADES (converted)   80.3   -11.0   -17.3   2.18  3.64   7.32
+    TARGETS (shipped)    34.8   -30.1   -34.8   0.99  1.50   1.15
+  risk 14.4%
+    backtest reference  179.0   -20.0   -30.1   2.13  3.18   8.95
+    TRADES (converted)  170.0   -19.2   -28.6   2.21  3.59   8.86
+    TARGETS (shipped)    58.0   -53.3   -55.6   0.99  1.41   1.09
+
+Sharpe and drawdown match the reference at both settings; CAGR runs ~5-7% light,
+as expected from netting three sleeves on one account rather than summing three
+independent books.  TARGETS is the code as it shipped and is a different, much
+worse strategy.
+
+  yearly, risk 8%   TRADES   2022  +1%  2023 +155%  2024 +132%  2025 +41%  2026 +67%
+                    TARGETS  2022 -16%  2023 +257%  2024  +14%  2025 -12%  2026 +27%
+
+Risk is still a linear dial: 14.4% has a -28.6% MEDIAN drawdown and a 96% chance
+of breaching 20%.  The conversion fixes the strategy mismatch, not the sizing.
