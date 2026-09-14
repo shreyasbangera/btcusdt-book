@@ -49,7 +49,15 @@ class V7(Strategy):
         px = pd.Series(close)
         return bool((px > px.ewm(span=span, adjust=False).mean()).iloc[-1])
 
-    def decide(self, panels, equity, risk):
+    def decide(self, panels, equity, risk, book=None):
+        """One TRADE per sleeve, which is what engine/core.py measures.
+
+        A sleeve opens at the signal, holds its quantity and both levels
+        unchanged for the life of the trade, and closes on a flat signal, the
+        holding cap, or a reversal - the stop and the target close it on the
+        exchange.  A cap or a reversal closes and re-opens on the same bar,
+        exactly as the backtest does.
+        """
         plan_path = self.params["plan"]
         if not os.path.exists(plan_path):
             return Decision([], note=f"no plan at {plan_path} — run live/v7_select.py")
@@ -66,33 +74,67 @@ class V7(Strategy):
         px = float(df.close.iloc[i]); a = float(atr[i])
         close = df.close.to_numpy(float)
         per = risk / len(cfgs)
+        bar = pd.to_datetime(df.dt.iloc[i])
+        book = book or {}
 
-        sleeves = []
+        sleeves, closed = [], []
         for n, (p, stp, rr, hold, gk, gn) in enumerate(cfgs, 1):
-            u = float(self._shaped(base, p, self.params["cap"])[i])
-            if gk and u < 0 and self._above_ema(close, gn):
-                u = 0.0                                    # gate blocks SHORTS only
+            label = (f"#{n} exp {p} · {stp}ATR ×{rr}R · {hold}d"
+                     + (f" · gate ema{gn}" if gk else ""))
+            u0 = float(self._shaped(base, p, self.params["cap"])[i])
+            # The gate blocks SHORT entries.  It never forces an exit, so the
+            # flat test below reads the UNGATED signal, as the backtest does.
+            u = 0.0 if (gk and u0 < 0 and self._above_ema(close, gn)) else u0
+
+            held, why = book.get(label), ""
+            if held:
+                opened = held.get("opened")
+                opened = pd.to_datetime(opened) if opened else None
+                if u0 == 0.0:
+                    why = "signal flat"
+                elif opened is not None and bar - opened >= pd.Timedelta(days=hold):
+                    why = f"{hold}d cap"
+                elif u != 0.0 and (u > 0) != (held["qty"] > 0):
+                    why = "reversal"
+                if not why:
+                    sleeves.append(Sleeve(
+                        label=label, qty=held["qty"], stop=held.get("stop"),
+                        take_profit=held.get("tp"), hold_bars=int(hold * 2),
+                        meta=dict(conviction=round(u, 4), exponent=p, stop_atr=stp,
+                                  rr=rr, opened=held.get("opened"), hold_days=hold,
+                                  state="held")))
+                    continue
+                closed.append(f"{label.split()[0]} {why}")
+                if why == "signal flat":
+                    sleeves.append(Sleeve(label, 0.0, hold_bars=int(hold * 2),
+                                          meta=dict(conviction=0.0, hold_days=hold,
+                                                    state="closed", why=why)))
+                    continue
+                # A cap or a reversal re-enters on the same bar, at today's size.
+
             if u == 0.0:
-                sleeves.append(Sleeve(f"#{n} exp {p} · {stp}ATR ×{rr}R · {hold}d", 0.0,
-                                      meta=dict(conviction=0.0, gated=bool(gk))))
+                sleeves.append(Sleeve(label, 0.0, hold_bars=int(hold * 2),
+                                      meta=dict(conviction=0.0, gated=bool(gk),
+                                                hold_days=hold, state="flat")))
                 continue
             side = 1 if u > 0 else -1
             sd = stp * a
             q = self.size_for(equity, per, u, sd, px, self.params["max_leverage"])
             sleeves.append(Sleeve(
-                label=f"#{n} exp {p} · {stp}ATR ×{rr}R · {hold}d"
-                      + (f" · gate ema{gn}" if gk else ""),
-                qty=side * q,
+                label=label, qty=side * q,
                 stop=px - side * sd,
                 take_profit=px + side * rr * sd,
-                hold_bars=int(hold * 2),                   # days -> 12h bars
-                meta=dict(conviction=round(u, 4), exponent=p, stop_atr=stp, rr=rr)))
+                hold_bars=int(hold * 2),
+                meta=dict(conviction=round(u, 4), exponent=p, stop_atr=stp, rr=rr,
+                          opened=bar.isoformat(), hold_days=hold,
+                          state="opened" + (f" after {why}" if why else ""))))
 
         diag = {k: round(float(s[k][i]), 3) for k in s}
         diag |= {"composite": round(float(base[i]), 4), "atr14": round(a, 1),
-                 "close": round(px, 1), "plan_asof": plan.get("asof", "?")}
+                 "close": round(px, 1), "plan_asof": plan.get("asof", "?"),
+                 "held": sum(1 for x in sleeves if (x.meta or {}).get("state") == "held")}
         return Decision(sleeves, diagnostics=diag,
-                        note=f"bar {pd.to_datetime(df.dt.iloc[i])}")
+                        note=f"bar {bar}" + ("  closed: " + ", ".join(closed) if closed else ""))
 
 
 class BuyAndHold(Strategy):
@@ -103,7 +145,7 @@ class BuyAndHold(Strategy):
     decision_tf = "12h"
     warmup_bars = 2
 
-    def decide(self, panels, equity, risk):
+    def decide(self, panels, equity, risk, book=None):
         df = panels["panel_12h"]
         px = float(df.close.iloc[-1])
         return Decision([Sleeve("long 1x", equity / px)],
